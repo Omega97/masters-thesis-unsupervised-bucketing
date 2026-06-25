@@ -84,10 +84,5 @@ Researchers compute a latent saliency map by attempting to flip the color of eac
 - In the human-made dataset, the model learned strategic moves.
 
 ---
-
-**MOC**: [[World-Modelling-papers-read]]
-**Related**: [[Othello - The Gradient]] (accessible explainer)
-**Tree**: [[Thesis Knowledge Tree]]
-
-#WorldModels #Interpretability #EmergentRepresentations #Othello #PaperNote #thesis
+#WorldModels #Interpretability #EmergentRepresentations #Othello #PaperNote
 

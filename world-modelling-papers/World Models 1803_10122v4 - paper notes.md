@@ -51,8 +51,4 @@ The training of the controller can be performed in this "dream world".
 The weakness of this approach of learning a policy inside a learned dynamics model is that our agent can easily find an adversarial policy that can fool our dynamics model – it’ll find a policy that looks good under our dynamics model, but will fail in the actual envi- ronment, usually because it visits states where the model is wrong because they are away from the training distribution.
 
 ---
-
-**MOC**: [[World-Modelling-papers-read]]
-**Tree**: [[Thesis Knowledge Tree]]
-
-#WorldModels #PaperNote #thesis #LiteratureNote
+#WorldModels #PaperNote 

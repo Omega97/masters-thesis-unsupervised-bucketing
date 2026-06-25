@@ -102,14 +102,14 @@ Standard approaches (advantage normalization, fixed entropy targets, or reward s
 
 ### Robust predictions
 
+...
+
 ---
 
 ## 3. Results
 
+..
 
 ---
 
-**MOC**: [[World-Modelling-papers-read]] (see especially the "Diverse Domains" discussion)
-**Central**: [[Thesis Knowledge Tree]]
-
-#WorldModels #DiverseDomains #Dreamer #PaperNote #thesis
+#WorldModels #DiverseDomains #Dreamer #PaperNote

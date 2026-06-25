@@ -67,8 +67,4 @@ Inference focuses on reliable autoregressive rollout:
 Section 8 situates GAIA-1 among prior world models (e.g., RSSM-based like Dreamer, video prediction models) and generative approaches. It highlights GAIA-1's novelty in scaling discrete token-based world modeling to real-world driving with multimodal control and high-fidelity decoding.
 
 ---
-
-**MOC**: [[World-Modelling-papers-read]]
-**Tree**: [[Thesis Knowledge Tree]]
-
-#WorldModels #Generative #GAIA #PaperNote #thesis
+#WorldModels #Generative #GAIA #PaperNote 

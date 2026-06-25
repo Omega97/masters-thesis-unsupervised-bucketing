@@ -37,12 +37,11 @@ However, challenges remain:
 - How do we reverse-engineer complex, multifaceted world models?
 - Can we intervene minimally without disrupting unrelated knowledge?
 
-**Thought-provoking takeaway**: Even simple autoregressive training on sequences can lead to rich internal simulations of reality. This bridges statistical learning with more structured, causal understanding.
+
+This experiment is a landmark in interpretability research—elegant, rigorous, and full of potential for future work on understanding (and controlling) the "minds" of LLMs. It invites deeper curiosity: What other hidden world models might current frontier models be building about physics, social dynamics, or code semantics? I'd love to discuss extensions, like applying similar probes to modern transformers! 
+
+Even simple autoregressive training on sequences can lead to rich internal simulations of reality. This bridges statistical learning with more structured, causal understanding.
 
 ---
 
-**See in tree**: [[World-Modelling-papers-read]] | [[EMERGENT WORLD REPRESENTATIONS]] (detailed notes + interventions) | [[Thesis Knowledge Tree]]
-
 #WorldModels #Interpretability #thesis
-
-🌟 This experiment is a landmark in interpretability research—elegant, rigorous, and full of potential for future work on understanding (and controlling) the "minds" of LLMs. It invites deeper curiosity: What other hidden world models might current frontier models be building about physics, social dynamics, or code semantics? I'd love to discuss extensions, like applying similar probes to modern transformers! 🚀
