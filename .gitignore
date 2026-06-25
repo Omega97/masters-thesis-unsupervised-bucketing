@@ -1,4 +1,5 @@
 PRIVATE/
+terminals/
 
 # Ignore other local Grok runtime stuff (sessions, caches, etc.)
 .grok/
