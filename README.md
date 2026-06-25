@@ -1,6 +1,5 @@
 # World Models Thesis
 
-
 The repository is organized as an [Obsidian](https://obsidian.md/) vault with linked literature notes, paper summaries, and supporting materials. It is designed for literature synthesis and incremental thesis writing.
 
 ---
@@ -13,13 +12,13 @@ The repository is organized as an [Obsidian](https://obsidian.md/) vault with li
 
 ## Papers I covered so far
 
-In [[_World_Modelling_papers_read]] you can find a list of world-model-related papers that I reviewed so far. The same document contains also the links to the notes I took about the papers.
+See [[_World_Modelling_papers_read]] for the list of world-model-related papers reviewed so far, with links to the notes for each paper. Supplementary reading lives in `other-world-modelling-resources/`.
 
 ---
 
-## `Documents/`
+## `Graduation/`
 
-[[_Graduation]]: University administrative files: thesis front-page template, privacy/consent forms, and related paperwork. These are reference material for graduation requirements, not part of the research notes.
+[[_Graduation]] — University administrative material for the DSAI master's degree: thesis requirements, graduation deadlines, checklists, and official UNITS forms (title-page template, application forms, privacy notices). Reference material for graduation, separate from the research notes.
 
 ---
 
