@@ -5,6 +5,7 @@ PRIVATE/
 # But explicitly include the skills directory so it is tracked in git and loaded by Grok
 !.grok/skills/
 !.grok/skills/**
+AI-SKILLS/
 
 # Common project ignores
 .obsidian/
