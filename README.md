@@ -2,6 +2,10 @@
 
 The repository is organized as an [Obsidian](https://obsidian.md/) vault with linked literature notes, paper summaries, and supporting materials. It is designed for literature synthesis and incremental thesis writing.
 
+- [About me](https://omega97.github.io/)
+- [Thesis repo](https://github.com/Omega97/world-models-thesis)
+- [Internship repo](https://github.com/Omega97/TinyML_Internship)
+
 ---
 
 ## The Goal of this Thesis
