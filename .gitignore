@@ -1,0 +1,19 @@
+PRIVATE/
+
+# Ignore other local Grok runtime stuff (sessions, caches, etc.)
+.grok/
+# But explicitly include the skills directory so it is tracked in git and loaded by Grok
+!.grok/skills/
+!.grok/skills/**
+
+# Common project ignores
+.obsidian/
+*.pyc
+__pycache__/
+.DS_Store
+Thumbs.db
+
+# Generated plot outputs (optional - comment out if you want to commit figures)
+figures/
+*.pdf
+*.png
