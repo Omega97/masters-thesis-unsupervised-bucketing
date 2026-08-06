@@ -1,8 +1,9 @@
 
 # Thesis Notes
 
-https://dsai.units.it/index.php/final-exam-2/
-
+- [final-exam](https://dsai.units.it/index.php/final-exam-2/)
+    
+- [thesis-format](**https://www.overleaf.com/latex/templates/universita-degli-studi-di-trieste-thesis/xcbqtpyxqgnb**)
 
 ---
 
@@ -68,4 +69,4 @@ The final mark will be based on the evaluation of the curriculum, the content of
 See the course rules for further details. 
 
 ---
-tags: #Admin #Graduation #Process #thesis 
+tags:  #Graduation #Process #thesis 

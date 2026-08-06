@@ -32,4 +32,4 @@ Official university forms and reference exports. PDFs exist locally but are giti
 
 ---
 
-#core #Admin #Graduation #MOC #thesis
+#core  #Graduation #MOC #thesis

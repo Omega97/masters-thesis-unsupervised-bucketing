@@ -65,4 +65,4 @@ Deadlines for the **11 December 2026** **session**:
 
 ---
 
-tags: #Admin #Graduation #thesis
+tags: #Graduation #thesis
