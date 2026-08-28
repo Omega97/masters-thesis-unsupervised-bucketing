@@ -1,15 +1,16 @@
+# === Local === 
 PRIVATE/
+LEGACY/ 
+DAILY-LOGS/
 terminals/
 
+# === AI === 
 # Ignore other local Grok runtime stuff (sessions, caches, etc.)
 .grok/
 # But explicitly include the skills directory so it is tracked in git and loaded by Grok
 !.grok/skills/
 !.grok/skills/**
 AI-SKILLS/
-
-# Daily work logs (YYYY-MM-DD.md)
-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md
 
 # Common project ignores
 .obsidian/
