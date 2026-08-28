@@ -11,6 +11,7 @@ terminals/
 !.grok/skills/
 !.grok/skills/**
 AI-SKILLS/
+ai-feed.md
 
 # Common project ignores
 .obsidian/
