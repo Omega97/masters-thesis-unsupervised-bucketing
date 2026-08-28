@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="14426316-5e72-4e05-982d-16e8b7d861b1" name="Changes" comment="Added translations">
+      <change afterPath="$PROJECT_DIR$/CITATION.cff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="master" />
+      </list>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2aHRsuzGT8HylpeT3C7aQQ2sQgh" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/peiva/IdeaProjects/thesis_template&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/.github/workflows" />
+      <recent name="$PROJECT_DIR$/img" />
+      <recent name="$PROJECT_DIR$/front" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="14426316-5e72-4e05-982d-16e8b7d861b1" name="Changes" comment="" />
+      <created>1703973728870</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1703973728870</updated>
+    </task>
+    <task id="LOCAL-00001" summary="First commit, empty project">
+      <created>1703973787618</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1703973787618</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Basic project structure complete">
+      <created>1704123643010</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1704123643010</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added texlive requirements for CI pipeline">
+      <created>1704123716881</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1704123716881</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added latexmk configuration file">
+      <created>1704123760452</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1704123760452</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Corrected filename">
+      <created>1704123795664</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1704123795664</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Corrected subfigures syntax">
+      <created>1704124309801</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1704124309801</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Added missing translation">
+      <created>1704124341003</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1704124341003</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Table example upgraded, comment corrected">
+      <created>1704124628750</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1704124628750</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added CI pipeline requirements for italian as well">
+      <created>1704124734841</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1704124734841</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added CI workflow">
+      <created>1704124797048</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1704124797048</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added gitignore">
+      <created>1704124908765</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1704124908765</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added README.md">
+      <created>1704126497324</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1704126497324</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Added license shield">
+      <created>1704126739199</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1704126739199</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Added license">
+      <created>1704126939290</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1704126939290</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Correction">
+      <created>1704127095323</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1704127095323</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Added issue templates">
+      <created>1704127404151</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1704127404151</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Added README.md section">
+      <created>1704127706243</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1704127706243</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Added line about multiple releases">
+      <created>1704128421164</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1704128421164</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Added release badges">
+      <created>1704128607035</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1704128607035</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Added release badges">
+      <created>1704128620202</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1704128620202</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Removed custom characters encoding">
+      <created>1704128758912</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1704128758912</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First commit, empty project" />
+    <MESSAGE value="Basic project structure complete" />
+    <MESSAGE value="Added texlive requirements for CI pipeline" />
+    <MESSAGE value="Added latexmk configuration file" />
+    <MESSAGE value="Corrected filename" />
+    <MESSAGE value="Corrected subfigures syntax" />
+    <MESSAGE value="Added missing translation" />
+    <MESSAGE value="Table example upgraded, comment corrected" />
+    <MESSAGE value="Added CI pipeline requirements for italian as well" />
+    <MESSAGE value="Added CI workflow" />
+    <MESSAGE value="Added gitignore" />
+    <MESSAGE value="Added README.md" />
+    <MESSAGE value="Added license shield" />
+    <MESSAGE value="Added license" />
+    <MESSAGE value="Correction" />
+    <MESSAGE value="Added issue templates" />
+    <MESSAGE value="Added README.md section" />
+    <MESSAGE value="Added line about multiple releases" />
+    <MESSAGE value="Added release badges" />
+    <MESSAGE value="Removed custom characters encoding" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed custom characters encoding" />
+  </component>
+</project>
