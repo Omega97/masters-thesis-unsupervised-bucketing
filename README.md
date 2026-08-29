@@ -5,6 +5,10 @@
 
 | Disclaimer<br>The text in this document is *handwritten*. AI was only used to help with phrasing and formatting. |
 | ---------------------------------------------------------------------------------------------------------------- |
+- [thesis-structure.md](thesis-structure.md) — chapter outline
+- [thesis-info.md](thesis-info.md) — author and front-page data
+- [related-work.md](related-work.md)
+- [ideas.md](ideas.md)
 
 ---
 
