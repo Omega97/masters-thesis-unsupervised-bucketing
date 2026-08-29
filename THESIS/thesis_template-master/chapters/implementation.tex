@@ -1,0 +1,35 @@
+\chapter{Implementation: NNUE and MoE for Chess}\label{ch:implementation}
+
+\draftnote{Instantiate the method on chess: data, architecture, training details, and how the MoE NNUE is plugged into Cfish on the target device.}
+
+\section{Dataset and Teacher}\label{sec:dataset}
+
+\draftnote{Lichess PGNs \(\to\) FEN positions \(\to\) Lc0 WDL labels (depth 1). About 5M positions. Preprocessing: 844-dim feature encoder (716 base + 128 tactical), dual point-of-view.}
+
+\section{Base NNUE Architecture}\label{sec:base-nnue}
+
+\draftnote{L1: \(844 \to 64\) (shared, dual-POV). L2: \(128 \to 128\). Output: \(128 \to 3\) WDL logits. Activations: CReLU (L1), ReLU (L2), softmax (output). Training: soft cross-entropy, Adam, 100 epochs.}
+
+\section{Sample Gradient Computation}\label{sec:grad-impl}
+
+\draftnote{Implementation: \texttt{torch.autograd.grad}, per-sample gradients. Storage: \texttt{.npy} arrays, optionally \texttt{.parquet} for metadata.}
+
+\section{Clustering}\label{sec:clustering-impl}
+
+\draftnote{Mini-Batch K-Means for scale; Density Peak Clustering; other algorithms to be decided. Working choice \(B = 8\) (to match Stockfish-style bucketing; to be checked). Visualisation: t-SNE, PCA.}
+
+\section{Dispatcher Training}\label{sec:dispatcher-impl}
+
+\draftnote{Input: L1 activations concatenated as \([\mathrm{own} \Vert \mathrm{opp}]\) (own side alone may suffice). Architecture: linear \(2W \to B\) (or \(W \to B\)). Training: cross-entropy, Adam, 20 epochs.}
+
+\section{Expert Fine-Tuning}\label{sec:expert-impl}
+
+\draftnote{One sweep per bucket vs.\ full training: still to decide. Validation: per-bucket test cross-entropy.}
+
+\section{Final MoE Model}\label{sec:final-moe}
+
+\draftnote{Shared L1 + dispatcher + expert heads. Inference: L1 \(\to\) dispatcher \(\to\) selected expert \(\to\) output.}
+
+\section{Integration with Cfish}\label{sec:cfish}
+
+\draftnote{Replace the \texttt{evaluate()} hook with the MoE NNUE. Quantization: int8 weights, int16 accumulators, int32 MAC. Memory: sparse L1 (70--80\% pruning); dispatcher and heads in flash.}

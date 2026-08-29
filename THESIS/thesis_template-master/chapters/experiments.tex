@@ -1,0 +1,35 @@
+\chapter{Experiments and Results}\label{ch:experiments}
+
+\draftnote{Core empirical chapter. Protocol, metrics, then results for the base model, clustering/dispatcher, MoE, playing strength, ablations, and visualisations. Several numbers below are targets or current snapshots, not final.}
+
+\section{Experimental Setup}\label{sec:setup}
+
+\draftnote{Split: train 2.4M, test 31k. Hardware: CPU for training, Wio Terminal for inference. Baselines: single-head NNUE; dense FFNN (\(256\times 256\)); handcrafted bucketing (piece count + queen presence).}
+
+\section{Evaluation Metrics}\label{sec:metrics}
+
+\draftnote{Test cross-entropy (CE). MAE on expected reward. Dispatcher accuracy. Per-bucket test CE vs.\ the base head. Playing strength (ACPL / Elo) via Stockfish analysis.}
+
+\section{Results: Base Model}\label{sec:res-base}
+
+\draftnote{Snapshot: test CE \(0.71\) after 50 epochs; MAE \(0.25\). Compare with FFNN (\(0.74\) CE, 499k parameters).}
+
+\section{Results: Clustering and Dispatcher}\label{sec:res-cluster}
+
+\draftnote{Cluster quality (silhouette). Target dispatcher accuracy \(> 70\%\). Interpret clusters (endgame vs.\ middlegame, tactical vs.\ positional).}
+
+\section{Results: MoE Model}\label{sec:res-moe}
+
+\draftnote{Test CE still TBD (goal: below the \(0.71\) baseline). Per-bucket improvement over the base head. Ablation on \(B \in \{4,8,16\}\).}
+
+\section{Results: Playing Strength}\label{sec:res-strength}
+
+\draftnote{To compute: ACPL / Elo vs.\ baseline. Cfish on Wio: nps, depth, move time.}
+
+\section{Ablation Studies}\label{sec:ablations}
+
+\draftnote{Optional: number of clusters \(B\); dispatcher architecture (linear vs.\ MLP); fine-tuning duration (1 vs.\ 5 epochs).}
+
+\section{Visualisation}\label{sec:visualisation}
+
+\draftnote{t-SNE / PCA of sample gradients. Dispatcher decision boundaries. Expert activation distribution.}

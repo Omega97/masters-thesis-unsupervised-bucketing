@@ -1,0 +1,35 @@
+\chapter{Method: Unsupervised Bucketing via Sample Gradients}\label{ch:method}
+
+\draftnote{This is the core contribution. Present the pipeline independently of chess, with notation, then specialise only where needed.}
+
+\section{Overview}\label{sec:method-overview}
+
+\draftnote{Five-step pipeline: (1)~train a base model; (2)~compute sample gradients; (3)~cluster sample gradients; (4)~train a dispatcher; (5)~fine-tune expert heads.}
+
+\section{Notation and Definitions}\label{sec:notation}
+
+\draftnote{State space \(\mathcal{S}\), model \(f_w\), loss \(\mathcal{L}\), target \(\hat{v}\). Sample gradient \(\delta_i = \nabla_{w^{(\mathrm{head})}} \mathcal{L}(f_w(s_i), \hat{v}_i)\). Dispatcher \(g_\phi(h) = \mathrm{softmax}(W_\phi h)\).}
+
+\section{Step 1: Train the Base Model}\label{sec:step-base}
+
+\draftnote{Architecture: L1 (dual point-of-view, shared), L2, output head. Training: soft cross-entropy on WDL labels from Lc0.}
+
+\section{Step 2: Compute Sample Gradients}\label{sec:step-gradients}
+
+\draftnote{Per-sample gradients with respect to head parameters. Normalisation (L2 or standardisation). Storage and computational cost.}
+
+\section{Step 3: Cluster Sample Gradients}\label{sec:step-cluster}
+
+\draftnote{K-Means, or alternatives such as DBSCAN or Density Peak (some methods choose \(B\) automatically). Choosing the number of clusters \(B\). Validation: inertia, silhouette score, cluster interpretability.}
+
+\section{Step 4: Train the Dispatcher}\label{sec:step-dispatcher}
+
+\draftnote{Input: L1 activations \(h\). Output: bucket id \(b\). Architecture: linear layer or small MLP. Loss: cross-entropy.}
+
+\section{Step 5: Fine-Tune Expert Heads}\label{sec:step-experts}
+
+\draftnote{Freeze L1, fine-tune one head per bucket. Result: \(B\) specialised experts.}
+
+\section{Generalisation Beyond Chess}\label{sec:generalisation-method}
+
+\draftnote{The method only needs a state space, a model, a loss, and a target (e.g.\ expected reward). Candidates: other games (Go, Shogi), robotics, and settings with a world model.}

@@ -51,18 +51,18 @@ cd thesis_template/
 latexmk
 ```
 
-Il file compilato finale `thesis.pdf` e tutti i file prodotti saranno disponibili nella cartella `out/`.
+Il file compilato finale `main.pdf` e tutti i file prodotti saranno disponibili nella cartella `out/`.
 
 Inoltre, eseguendo il comando `latexmk -c`, verranno rimossi tutti i file rigenerabili, ovvero tutti tranne
-`thesis.pdf` e `thesis.bbl`. Maggiori informazioni sono disponibili [qui](https://mg.readthedocs.io/latexmk.html).
+`main.pdf` e `main.bbl`. Maggiori informazioni sono disponibili [qui](https://mg.readthedocs.io/latexmk.html).
 
 In alternativa, per compilare la tesi in formato `pdf`, è possibile eseguire i seguenti comandi:
 ```shell
 cd thesis_template/
-pdflatex thesis.tex
-biber thesis.bcf
-pdflatex thesis.tex
-pdflatex thesis.tex
+pdflatex main.tex
+biber main.bcf
+pdflatex main.tex
+pdflatex main.tex
 ```
 
 ## Confronto fra versioni
@@ -72,7 +72,7 @@ A tal proposito, è sufficiente installare il comando `git-latexdiff`, tramite `
 Ad esempio, per confrontare il `HEAD` con la versione precedente di due commit, eseguire:
 ```shell
 cd thesis_template/
-git-latexdiff --main thesis.tex --latexmk --build-dir out/ -o out/thesis_diff.pdf HEAD~2
+git-latexdiff --main main.tex --latexmk --build-dir out/ -o out/main_diff.pdf HEAD~2
 ```
 Più informazione e alcuni esempi sono disponibili [qui](https://ctan.org/tex-archive/support/git-latexdiff).
 

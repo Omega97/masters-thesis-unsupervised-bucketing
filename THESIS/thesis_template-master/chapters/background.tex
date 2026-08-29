@@ -1,0 +1,23 @@
+\chapter{Background and Related Work}\label{ch:background}
+
+\draftnote{Give the reader the minimum chess, NNUE, MoE, and gradient background needed to follow the method, then situate the thesis against related work.}
+
+\section{Chess Engines and Evaluation Functions}\label{sec:engines}
+
+\draftnote{Classical evaluation (material, piece-square tables, mobility, king safety). NNUE: sparse, accumulator-based efficiently updatable networks. Search: alpha-beta, iterative deepening, move ordering.}
+
+\section{Mixture of Experts}\label{sec:moe}
+
+\draftnote{Multiple expert networks, each specialising in a sub-domain. Routing: learned vs.\ fixed. Applications in vision, NLP, and reinforcement learning.}
+
+\section{Sample Gradients}\label{sec:sample-gradients}
+
+\draftnote{Define sample (per-example) gradients with respect to the output-head parameters, and why they are a useful similarity signal for partitioning the state space. Related literature on gradient clustering still needs a closer survey.}
+
+\section{Bucketing in NNUE}\label{sec:nnue-bucketing}
+
+\draftnote{Default techniques: piece count, king location, piece presence (queen, bishop pair, etc.). Limitations: handcrafted rules may not align with what the model actually needs.}
+
+\section{Related Work}\label{sec:related-work}
+
+\draftnote{Efficiency: EfficientNet, pruning, quantization. Distillation and teacher--student training. Reinforcement learning from self-play (AlphaZero, Lc0). Expand the survey of work related to sample gradients.}
