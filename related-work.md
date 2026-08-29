@@ -6,7 +6,7 @@ These papers form the core methodological lineage for your approach.
 ---
 
 ### 1. GradientSpace (Sridharan et al., 2025) ⭐⭐⭐⭐⭐
-**The closest match to your full pipeline.**
+**Similar idea to mine, but applied on LLMs**
 
 - **Summary:** Clusters samples directly in full-dimensional gradient space (using LoRA gradients), trains a specialized LoRA expert per cluster, and deploys a lightweight encoder-based router for fast single-expert inference—all while keeping the base model frozen.
 - **Similarity to your method:** Almost identical pipeline: gradient-space clustering → expert fine-tuning → lightweight router.
@@ -19,6 +19,7 @@ These papers form the core methodological lineage for your approach.
 
 ### 2. ELREA (Li et al., ICLR 2025) ⭐⭐⭐⭐☆
 **The direct precursor to GradientSpace; a strong methodological match.**
+Amazon, 🇨🇳
 
 - **Summary:** Clusters training instructions by their gradient directions, representing different areas of expertise, to reduce conflicts during optimization.
 - **Similarity to your method:** Core idea of gradient-space partitioning as the basis for a mixture of experts.
