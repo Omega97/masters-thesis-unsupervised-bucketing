@@ -22,5 +22,4 @@ Thumbs.db
 
 # Generated plot outputs (optional - comment out if you want to commit figures)
 figures/
-*.pdf
 *.png
