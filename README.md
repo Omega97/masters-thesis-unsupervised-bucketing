@@ -113,7 +113,7 @@ The forward pass for the model is quite straightforward:
 
 - [NNUE: Efficiently Updatable Neural Networks](https://en.wikipedia.org/wiki/Efficiently_updatable_neural_network)
     
-- [SARDINE Engine Blueprint]() – My related internship project 
+- [SARDINE Engine Blueprint](https://github.com/Omega97/TinyML_Internship/blob/main/LEGACY/NOTES/SARDINE%20Engine%20Blueprint.md) – My related internship project 
     
 - [Goal.md](https://github.com/Omega97/TinyML_Internship/blob/main/Goal.md) – High‑level project goals
 
