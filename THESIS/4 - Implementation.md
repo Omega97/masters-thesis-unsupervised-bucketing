@@ -8,9 +8,13 @@
 
 #todo Lichess PGNs \(\to\) FEN \(\to\) Lc0 WDL labels (depth 1). About 5M positions. 844-dim encoder (716 base + 128 tactical), dual-POV.
 
+#todo Teacher: Lc0's AlphaZero-style value net produces WDL. Contrast with 2.1.2. Do not mix Lc0/AZ MCTS with Cfish α-β.
+
 ### 4.2 Base NNUE Architecture
 
-#todo L1 \(844 \to 64\) shared dual-POV; L2 \(128 \to 128\); output \(128 \to 3\) WDL logits. CReLU / ReLU / softmax. Soft CE, Adam, epoch budget.
+#todo L1 \(844 \to 64\) shared dual-POV; L2 \(128 \to 128\); output \(128 \to 3\) WDL logits. CReLU / ReLU / softmax. Soft CE, Adam, epoch budget. Own architecture lives here, not in 2.1.3.
+
+#todo Training loss = soft CE on WDL (hyperparameter). Scalar cp / EV are not the training target; MAE on EV may still be reported in 5.2.
 
 ### 4.3 Sample Gradient Computation
 
@@ -32,6 +36,10 @@
 
 #todo Shared L1 + dispatcher + expert heads. Inference: L1 \(\to\) dispatcher \(\to\) selected expert \(\to\) output.
 
-### 4.8 Integration with Cfish
+### 4.8 Cfish as the host engine
 
-#todo Hook `evaluate()`. Quantization (int8 weights, int16 accumulators, int32 MAC). Memory: sparse L1, dispatcher and heads in flash.
+#todo Instantiate 2.1.6: what Cfish is (C port of Stockfish), `evaluate()`, search tree (α-β, iterative deepening, transposition table), Wio constraints (RAM, flash, nps).
+
+### 4.9 Integration with Cfish
+
+#todo Hook `evaluate()` with the MoE NNUE. Quantization (int8 weights, int16 accumulators, int32 MAC). Memory: sparse L1, dispatcher and heads in flash. 
