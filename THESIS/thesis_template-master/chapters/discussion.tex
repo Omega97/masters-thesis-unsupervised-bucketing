@@ -1,19 +1,17 @@
 \chapter{Discussion}\label{ch:discussion}
 
-\draftnote{Interpret the empirical findings; do not introduce new experiments. Emphasise that unsupervised bucketing via sample-gradients is the claimed novelty, and chess is the validation domain.}
-
 \section{Interpretation of Results}\label{sec:interpretation}
 
-\draftnote{What the numbers mean for specialisation, evaluation quality, and on-device cost. Which buckets are semantically meaningful.}
+\draftnote{What the numbers imply for specialisation, eval quality, and on-device cost. Whether clusters are semantically meaningful.}
 
 \section{Limitations}\label{sec:limitations}
 
-\draftnote{Likely limits: clustering quality, dispatcher errors, memory/compute on the Wio Terminal, sensitivity to \(B\), dependence on the teacher (Lc0) and on a single game.}
+\draftnote{Clustering quality, dispatcher errors, Wio memory/compute, sensitivity to \(B\), dependence on Lc0 and on a single game.}
 
 \section{Generalisation}\label{sec:generalisation-disc}
 
-\draftnote{Can the method transfer to other domains? What must change (features, loss, target, hardware constraints)?}
+\draftnote{Transfer to other domains. What must change (features, loss, target, hardware).}
 
 \section{Comparison with Related Work}\label{sec:comparison}
 
-\draftnote{Vs.\ handcrafted NNUE bucketing. Vs.\ learned routing in other MoE systems.}
+\draftnote{Vs.\ handcrafted NNUE bucketing. Vs.\ learned routing and gradient-clustering MoE (activations vs.\ sample-gradients; LLM LoRA vs.\ NNUE heads).}

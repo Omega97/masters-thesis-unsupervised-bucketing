@@ -8,7 +8,15 @@
 - [thesis-structure.md](thesis-structure.md) — chapter outline
 - [thesis-info.md](thesis-info.md) — author and front-page data
 - [related-work.md](related-work.md)
-- [ideas.md](ideas.md)
+
+---
+
+## Sections 📖
+
+| [[0 - Abstract]]   | [[1 - Introduction]]   | [[2 - Background]] |
+| ------------------ | ---------------------- | ------------------ |
+| [[3 - Method]]     | [[4 - Implementation]] | [[5 - Results]]    |
+| [[6 - Discussion]] | [[7 - Conclusion]]     | [[Appendix A]]   |
 
 ---
 

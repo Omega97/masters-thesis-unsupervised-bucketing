@@ -1,35 +1,167 @@
 \chapter{Method: Unsupervised Bucketing via Sample Gradients}\label{ch:method}
 
-\draftnote{This is the core contribution. Present the pipeline independently of chess, with notation, then specialise only where needed.}
-
 \section{Overview}\label{sec:method-overview}
 
-\draftnote{Five-step pipeline: (1)~train a base model; (2)~compute sample gradients; (3)~cluster sample gradients; (4)~train a dispatcher; (5)~fine-tune expert heads.}
+\draftnote{Five-step pipeline: train a base model; compute sample-gradients; cluster them; train a dispatcher; fine-tune expert heads.}
 
 \section{Notation and Definitions}\label{sec:notation}
 
-\draftnote{State space \(\mathcal{S}\), model \(f_w\), loss \(\mathcal{L}\), target \(\hat{v}\). Sample gradient \(\delta_i = \nabla_{w^{(\mathrm{head})}} \mathcal{L}(f_w(s_i), \hat{v}_i)\). Dispatcher \(g_\phi(h) = \mathrm{softmax}(W_\phi h)\).}
+We introduce here the formal notation used throughout this chapter and the remainder of the thesis. The notation is organized into sets, scalars, vectors and matrices, functions, and key operators.
+
+\subsection{Sets}\label{sec:notation-sets}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.42\textwidth} X@{}}
+\hline
+\textbf{Symbol} & \textbf{Description} \\
+\hline
+\(\mathcal{S}\) &
+  The space of all possible chess positions (states). \\
+\(\mathcal{D}\) &
+  The training dataset of positions with labels: \(\mathcal{D} = \{(s_i, v_i)\}_{i=1}^{N}\). \\
+\(\mathcal{P} = \{\mathcal{D}_1, \dots, \mathcal{D}_B\}\) &
+  A partition of the state space into \(B\) buckets, where each \(\mathcal{D}_i \subset \mathcal{S}\) is a non-empty subset. \\
+\(\Theta\) &
+  The space of all model parameters (weights). \\
+\(\mathbb{R}\) &
+  The set of real numbers. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Scalars}\label{sec:notation-scalars}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\hline
+\textbf{Symbol} & \textbf{Description} \\
+\hline
+\(B\) & The number of experts (buckets). \\
+\(N\) & The total number of positions in the training dataset. \\
+\(N_i\) & The number of positions in bucket \(\mathcal{D}_i\). \\
+\(h\) & The hidden dimension of the NNUE accumulator. \\
+\(d_{\mathrm{in}}\) & The input dimension of the NNUE accumulator (844 in this work). \\
+\(v_i \in \mathbb{R}\) & The scalar label (expected reward) for position \(s_i\). \\
+\(\eta\) & The learning rate used for gradient updates. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Vectors and Matrices}\label{sec:notation-vectors}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.40\textwidth} l X@{}}
+\hline
+\textbf{Symbol} & \textbf{Type} & \textbf{Description} \\
+\hline
+\(W_{L1} \in \mathbb{R}^{d_{\mathrm{in}} \times h}\) &
+  Matrix &
+  Weights of the first layer (accumulator), \textbf{frozen} after base training. \\
+\(W_{L2} \in \mathbb{R}^{h \times h}\) &
+  Matrix &
+  Weights of the second layer. \\
+\(W_{\mathrm{out}} \in \mathbb{R}^{h \times 3}\) &
+  Matrix &
+  Weights of the output layer (3 logits for WDL). \\
+\(w_{\mathrm{base}} \in \mathbb{R}^{P}\) &
+  Vector &
+  All parameters of the base model: \(w_{\mathrm{base}} = \mathrm{vec}(W_{L1}, W_{L2}^{\mathrm{base}}, W_{\mathrm{out}}^{\mathrm{base}})\). \\
+\(\theta_i \in \mathbb{R}^{P}\) &
+  Vector &
+  All parameters of the expert model \(i\): \(\theta_i = \mathrm{vec}(W_{L1}, W_{L2}^{(i)}, W_{\mathrm{out}}^{(i)})\). \\
+\(\delta_i \in \mathbb{R}^{P_{\mathrm{head}}}\) &
+  Vector &
+  The \textbf{task vector} for expert \(i\): \(\delta_i = \theta_i^{\mathrm{head}} - \theta_{\mathrm{base}}^{\mathrm{head}}\), where \(\theta^{\mathrm{head}} = \mathrm{vec}(W_{L2}, W_{\mathrm{out}})\). \\
+\(\Delta_i \in \mathbb{R}^{P_{\mathrm{head}}}\) &
+  Vector &
+  The \textbf{per-sample gradient} for position \(s_i\): \(\Delta_i = \nabla_{w_{\mathrm{head}}} \mathcal{L}(\hat{f}_{w_{\mathrm{base}}}(s_i), v_i)\). \\
+\(x_i \in \{0,1\}^{d_{\mathrm{in}}}\) &
+  Vector &
+  The sparse binary feature vector for position \(s_i\). \\
+\(h_i = W_{L1} \cdot x_i \in \mathbb{R}^{h}\) &
+  Vector &
+  The accumulator output (L1 activation) for position \(s_i\). \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Functions and Models}\label{sec:notation-functions}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.42\textwidth} X@{}}
+\hline
+\textbf{Symbol} & \textbf{Description} \\
+\hline
+\(f_w: \mathcal{S} \rightarrow \mathbb{R}^3\) &
+  The NNUE evaluation function parameterized by weights \(w\), producing WDL logits. \\
+\(\hat{f}_w: \mathcal{S} \rightarrow \mathbb{R}\) &
+  The NNUE scalar value function: \(\hat{f}_w(s) = \mathrm{softmax}(f_w(s))_W - \mathrm{softmax}(f_w(s))_L\). \\
+\(g_\phi: \mathcal{S} \rightarrow \{1, \dots, B\}\) &
+  The \textbf{dispatcher} function, parameterized by \(\phi\), mapping a position to a bucket index. \\
+\(\mathcal{L}(y, v)\) &
+  The loss function, typically soft cross-entropy on WDL probabilities. \\
+\(\mathcal{L}_{\mathrm{acc}}(y, v)\) &
+  The accumulated loss over a batch or epoch. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Key Operators}\label{sec:notation-operators}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.48\textwidth} X@{}}
+\hline
+\textbf{Symbol} & \textbf{Description} \\
+\hline
+\(\mathrm{vec}(\cdot)\) &
+  The vectorization operator, flattening a matrix into a column vector. \\
+\(\nabla_w \mathcal{L}\) &
+  The gradient of the loss with respect to the parameters \(w\). \\
+\(\lVert \cdot \rVert\) &
+  The Euclidean (L2) norm. \\
+\(\mathrm{softmax}(z)_k = \frac{e^{z_k}}{\sum_j e^{z_j}}\) &
+  The softmax function over logits \(z\). \\
+\(d_{\mathrm{cos}}(u, v) = 1 - \frac{u \cdot v}{\lVert u\rVert \lVert v\rVert}\) &
+  The cosine distance between two vectors \(u\) and \(v\). \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Relationship Between \texorpdfstring{\(\Delta_i\) and \(\delta_i\)}{Delta i and delta i}}\label{sec:delta-vs-task}
+
+A crucial distinction in this work is between \textbf{per-sample gradients} \(\Delta_i\) and \textbf{task vectors} \(\delta_i\):
+\begin{itemize}
+    \item \(\Delta_i = \nabla_{w_{\mathrm{head}}} \mathcal{L}(\hat{f}_{w_{\mathrm{base}}}(s_i), v_i)\) is the gradient of the loss with respect to the head parameters, evaluated at a \textbf{single position} \(s_i\) using the base model. It represents the direction in which the head would need to move to reduce the loss on that specific position.
+    \item \(\delta_i = \theta_i - \theta_{\mathrm{base}}\) is the actual change in the head parameters after \textbf{fine-tuning} on all positions in bucket \(\mathcal{D}_i\). It is the accumulated effect of the per-sample gradients over the bucket.
+\end{itemize}
+
+The central hypothesis of this work is that clustering positions by their \(\Delta_i\) yields a partition \(\mathcal{P}\) for which the resulting \(\delta_i\) are maximally diverse, meaning each expert specializes in a distinct region of the state space.
 
 \section{Step 1: Train the Base Model}\label{sec:step-base}
 
-\draftnote{Architecture: L1 (dual point-of-view, shared), L2, output head. Training: soft cross-entropy on WDL labels from Lc0.}
+\draftnote{Shared dual-POV L1, L2, output head. Soft cross-entropy on WDL labels from a strong teacher (Lc0). This is the chosen loss (not MSE on centipawns or EV).}
 
 \section{Step 2: Compute Sample Gradients}\label{sec:step-gradients}
 
-\draftnote{Per-sample gradients with respect to head parameters. Normalisation (L2 or standardisation). Storage and computational cost.}
+\draftnote{Per-sample gradients w.r.t.\ head parameters. Normalisation (L2 or standardisation). Storage and compute cost.}
 
 \section{Step 3: Cluster Sample Gradients}\label{sec:step-cluster}
 
-\draftnote{K-Means, or alternatives such as DBSCAN or Density Peak (some methods choose \(B\) automatically). Choosing the number of clusters \(B\). Validation: inertia, silhouette score, cluster interpretability.}
+\draftnote{K-Means and alternatives (DBSCAN, Density Peak; some choose \(B\)). How to pick \(B\). Validation: inertia, silhouette, interpretability.}
 
 \section{Step 4: Train the Dispatcher}\label{sec:step-dispatcher}
 
-\draftnote{Input: L1 activations \(h\). Output: bucket id \(b\). Architecture: linear layer or small MLP. Loss: cross-entropy.}
+\draftnote{Input: L1 activations \(h\). Output: bucket id \(b\). Linear layer or small MLP. Cross-entropy. Needed because gradients are not available at inference.}
 
 \section{Step 5: Fine-Tune Expert Heads}\label{sec:step-experts}
 
-\draftnote{Freeze L1, fine-tune one head per bucket. Result: \(B\) specialised experts.}
+\draftnote{Freeze L1; fine-tune one head per bucket from the base model. Result: \(B\) specialised experts.}
 
 \section{Generalisation Beyond Chess}\label{sec:generalisation-method}
 
-\draftnote{The method only needs a state space, a model, a loss, and a target (e.g.\ expected reward). Candidates: other games (Go, Shogi), robotics, and settings with a world model.}
+\draftnote{The method needs only a state space, a model, a loss, and a target. Other games, robotics, world-model settings.}

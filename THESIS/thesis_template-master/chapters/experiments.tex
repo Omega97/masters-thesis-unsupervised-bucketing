@@ -1,35 +1,41 @@
 \chapter{Experiments and Results}\label{ch:experiments}
 
-\draftnote{Core empirical chapter. Protocol, metrics, then results for the base model, clustering/dispatcher, MoE, playing strength, ablations, and visualisations. Several numbers below are targets or current snapshots, not final.}
-
 \section{Experimental Setup}\label{sec:setup}
 
-\draftnote{Split: train 2.4M, test 31k. Hardware: CPU for training, Wio Terminal for inference. Baselines: single-head NNUE; dense FFNN (\(256\times 256\)); handcrafted bucketing (piece count + queen presence).}
+\draftnote{Splits (train / test sizes). Training on CPU, inference on Wio Terminal. Baselines: single-head NNUE; dense FFNN; handcrafted bucketing (piece count + queen presence).}
 
 \section{Evaluation Metrics}\label{sec:metrics}
 
-\draftnote{Test cross-entropy (CE). MAE on expected reward. Dispatcher accuracy. Per-bucket test CE vs.\ the base head. Playing strength (ACPL / Elo) via Stockfish analysis.}
+\draftnote{Centipawn-based probabilistic Elo estimator. Test CE on WDL; MAE on expected value (even if the model is trained with CE, not MSE on EV); dispatcher accuracy; per-bucket CE vs.\ the base head.}
 
-\section{Results: Base Model}\label{sec:res-base}
+\draftnote{Elo protocol (not just the name): matches, time control, opponent, BayesElo or SPRT, ACPL. Playing-strength numbers go in Section~\ref{sec:res-comparison}.}
 
-\draftnote{Snapshot: test CE \(0.71\) after 50 epochs; MAE \(0.25\). Compare with FFNN (\(0.74\) CE, 499k parameters).}
+\section{Results}\label{sec:results}
 
-\section{Results: Clustering and Dispatcher}\label{sec:res-cluster}
+\draftnote{We will list the CE of the models, and the Elo estimates.}
 
-\draftnote{Cluster quality (silhouette). Target dispatcher accuracy \(> 70\%\). Interpret clusters (endgame vs.\ middlegame, tactical vs.\ positional).}
+\subsection{Linear Model}\label{sec:res-linear}
 
-\section{Results: MoE Model}\label{sec:res-moe}
+\subsection{Single-layer FFNN}\label{sec:res-ffnn1}
 
-\draftnote{Test CE still TBD (goal: below the \(0.71\) baseline). Per-bucket improvement over the base head. Ablation on \(B \in \{4,8,16\}\).}
+\subsection{Double-layer FFNN}\label{sec:res-ffnn2}
 
-\section{Results: Playing Strength}\label{sec:res-strength}
+\subsection{Base NNUE}\label{sec:res-base}
 
-\draftnote{To compute: ACPL / Elo vs.\ baseline. Cfish on Wio: nps, depth, move time.}
+\subsection{MoE NNUE --- bucketing by L1 --- fixed \texorpdfstring{\(B\)}{B}}\label{sec:res-moe-l1-fixed}
 
-\section{Ablation Studies}\label{sec:ablations}
+\subsection{MoE NNUE --- bucketing by L1 --- variable \texorpdfstring{\(B\)}{B}}\label{sec:res-moe-l1-var}
 
-\draftnote{Optional: number of clusters \(B\); dispatcher architecture (linear vs.\ MLP); fine-tuning duration (1 vs.\ 5 epochs).}
+\subsection{MoE NNUE --- bucketing with sample-gradients --- fixed \texorpdfstring{\(B\)}{B}}\label{sec:res-moe-grad-fixed}
 
-\section{Visualisation}\label{sec:visualisation}
+\subsection{MoE NNUE --- bucketing with sample-gradients --- variable \texorpdfstring{\(B\)}{B}}\label{sec:res-moe-grad-var}
 
-\draftnote{t-SNE / PCA of sample gradients. Dispatcher decision boundaries. Expert activation distribution.}
+\section{Results: Comparison of the Models}\label{sec:res-comparison}
+
+\draftnote{ACPL / Elo vs.\ baselines, using the protocol of Section~\ref{sec:metrics}. Cfish on Wio: nps, depth, move time.}
+
+\section{Visualization: Clustering}\label{sec:visualisation}
+
+\draftnote{t-SNE / PCA of sample-gradients. Dispatcher decision boundaries. Expert activation / routing histograms.}
+
+\draftnote{Exploratory analysis of the clusters --- what type of position do they group together?}
