@@ -70,8 +70,6 @@ We introduce here the formal notation used throughout this chapter and the remai
 | $\text{softmax}(z)_k = \frac{e^{z_k}}{\sum_j e^{z_j}}$     | The softmax function over logits $z$.                                 |
 | $d_{\text{cos}}(u, v) = 1 - \frac{u \cdot v}{\|u\| \|v\|}$ | The cosine distance between two vectors $u$ and $v$.                  |
 
----
-
 ### 3.2.6 Relationship Between $\Delta_i$ and $\delta_i$
 
 A crucial distinction in this work is between **per-sample gradients** $\Delta_i$ and **task vectors** $\delta_i$:
@@ -130,13 +128,129 @@ Freezing the L1 layer is a deliberate design choice. The accumulator is the most
 
 ## 3.4 Step 2: Compute Sample Gradients
 
-#todo Per-sample gradients w.r.t.\ head parameters. Normalisation (L2 or standardisation). Storage and compute cost.
+With the base model trained, the second step is to compute, for each position in the dataset, the **sample gradient** of the loss with respect to the head parameters. These gradients encode the direction in which the head would need to move to improve the prediction for each individual position, providing a representation of the *learning signal* that we will use for bucketing.
+
+### 3.4.1 Definition
+
+For each position $s_i$ in the dataset $\mathcal{D} = \{(s_i, v_i)\}_{i=1}^N$, we compute the gradient:
+
+$$\Delta_i = \nabla_{w_{\text{head}}} \mathcal{L}(\hat{f}_{w^{\text{base}}}(s_i), v_i)$$
+
+where:
+
+- $w_{\text{head}} = \text{vec}(W_{L2}, W_{out})$ is the vector of all head parameters (the L2 weights and biases, and the output weights and biases)
+- $\hat{f}_{w_{\text{base}}}$ is the base model evaluated at the current weights
+- $\mathcal{L}$ is the soft cross-entropy loss on WDL probabilities
+- $v_i = (p_W, p_D, p_L)$ is the teacher label for position $s_i$
+
+The gradient is computed **at the base model** $w_{\text{base}}$, before any fine-tuning occurs. It represents the instantaneous direction in weight space that would reduce the loss on that specific position, independent of all other positions.
+
+### 3.4.2 Implementation
+
+In practice, we compute the sample gradients using PyTorch's `torch.autograd.grad` function, which efficiently computes gradients for a batch of inputs simultaneously. For a batch of positions, we:
+
+1. Forward-pass the positions through the base model to obtain WDL predictions
+2. Compute the cross-entropy loss between predictions and teacher labels
+3. Call `torch.autograd.grad(loss, head_parameters, retain_graph=False)` to obtain the gradients
+4. Detach and flatten the resulting gradient tensors into a single vector per position
+
+The computation is parallelised across the GPU and is performed in a single pass over the dataset. The gradients are stored on disk for later use in the clustering step.
+
+### 3.4.3 Which Parameters?
+
+We compute gradients **only with respect to the head parameters** $(W_{L2}, W_{out})$, not the L1 accumulator weights. This choice is deliberate:
+
+- **The head is the component that will be specialised**: Each expert will have its own head parameters, while L1 remains shared and frozen. The gradients with respect to the head parameters directly encode what each expert needs to learn.
+
+- **The L1 weights are frozen**: Since L1 is never updated during expert fine-tuning, its gradients are irrelevant for the bucketing objective.
+
+- **Computational efficiency**: The head contains only a fraction of the total parameters (approximately 17,000 vs. 54,000 in L1), making gradient computation significantly cheaper.
+
+### 3.4.4 Normalisation
+
+The raw gradients can have highly variable magnitudes depending on the position and the current state of the model. We therefore normalise each gradient vector before clustering. Two options are considered:
+
+**L2 normalisation** (our default choice):
+
+$$\Delta_i^{\text{norm}} = \frac{\Delta_i}{\|\Delta_i\| + \epsilon}$$
+
+This projects each gradient onto the unit hypersphere, preserving direction while removing magnitude information. This is appropriate because the *direction* of the gradient encodes the type of specialisation needed, while the magnitude is more sensitive to the current loss value and position difficulty.
+
+**Standardisation** (alternative):
+
+$$\Delta_i^{\text{std}} = \frac{\Delta_i - \mu}{\sigma}$$
+
+where $\mu$ and $\sigma$ are computed across the dataset. This centres the data and scales it to unit variance, but can be sensitive to outliers.
+
+In practice, we use L2 normalisation, as it has been shown to work well in gradient-clustering literature (ELREA, GradientSpace) and preserves the relative angular structure of the gradients.
+
+### 3.4.5 Storage and Compute Considerations
+
+Computing and storing sample gradients for 5 million positions presents practical challenges. Each gradient vector has dimension $P_{\text{head}} \approx 17,000$ (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
+
+$$5 \times 10^6 \times 17,000 \times 4 \text{ bytes} \approx 340 \text{ GB}$$
+
+To manage this, we:
+
+1. **Store in 16-bit half-precision**: Reducing precision to float16 halves the storage requirement to approximately 170 GB.
+
+2. **Use memory-mapped `.npy` files**: Storing the gradients in NumPy's `.npy` format allows efficient random access during clustering without loading the entire dataset into memory.
+
+3. **Compute in batches**: Gradients are computed in batches of 1024 positions and saved incrementally to disk.
+
+4. **Optional PCA compression**: For extremely large datasets, we can apply PCA to reduce the gradient dimension while preserving most of the variance. However, for our scale, we retain the full-dimensional gradients.
 
 ---
 
 ## 3.5 Step 3: Cluster Sample Gradients
 
-#todo K-Means and alternatives (DBSCAN, Density Peak; some choose $B$). How to pick $B$. Validation: inertia, silhouette, interpretability.
+With the normalised sample gradients $\{\Delta_i^{\text{norm}}\}_{i=1}^N$ computed for every position in the dataset, the third step is to partition the data into $B$ clusters (buckets) such that positions with similar learning signals are grouped together. This partition will define the assignment of positions to expert heads during fine-tuning.
+
+### 3.5.1 The Objective of Clustering
+
+Recall the central hypothesis of this work: clustering positions by their sample gradients $\Delta_i$ yields a partition $\mathcal{P} = \{\mathcal{D}_1, \dots, \mathcal{D}_B\}$ for which the resulting task vectors $\delta_i = \theta_i - \theta_{\text{base}}$ are maximally diverse. The role of the clustering algorithm is to discover a partition that approximates this objective. From a practical standpoint, we seek an efficient clustering algorithm that produces clusters that are cohesive, balanced, stable, and, hopefully, as separated as possible. Different clustering algorithms make different trade-offs with respect to these criteria. We consider two broad families: fixed-$B$ algorithms and density-based algorithms.
+
+### 3.5.2 Fixed-$B$ Algorithms: K-Means and Variants
+
+The most widely used clustering algorithm is **K-Means**, which partitions the data into $B$ clusters by minimising the within-cluster sum of squares. For a set of clusters $\{\mathcal{C}_1, \dots, \mathcal{C}_B\}$, K-Means minimises:
+
+$$\sum_{k=1}^B \sum_{i \in \mathcal{C}_k} \|\Delta_i - \mu_k\|^2$$
+
+where $\mu_k = \frac{1}{|\mathcal{C}_k|} \sum_{i \in \mathcal{C}_k} \Delta_i$ is the centroid of cluster $k$. This algorithm is fast and well-understood. Specifically, *Mini-Batch K-Means* is particularly attractive for our scale, as it efficiently handles large datasets by processing data in mini-batches, making it suitable for our dataset, that comprises of millions of chess positions. It reduces memory requirements and converges faster than standard K-Means, while producing nearly identical results.
+
+#todo Disadvantages:
+- **Sensitivity to initialisation**: While k-means++ mitigates this, K-Means can still converge to local optima.
+- **Assumption of spherical clusters**: K-Means performs best when clusters are roughly spherical and of similar size. Our gradient space may not satisfy this assumption.
+- **Fixed $B$ is a hyperparameter**: The choice of $B$ is critical and must be determined separately (see Section 3.5.4).
+- **Outlier sensitivity**: K-Means can be influenced by outliers, which may distort centroids.
+
+### 3.5.3 Density-Based Algorithms
+
+An alternative family of algorithms, **density-based clustering**, does not require a fixed number of clusters. Instead, these methods identify clusters as regions of high density separated by regions of low density.
+
+**Density Peak Clustering** (Rodriguez & Laio, 2014) is a particularly relevant algorithm for our setting. It works by identifying cluster centres as points that have high local density (many neighbours within a cutoff distance) and are far from points with higher density (suggesting they are local maxima).
+
+The number of clusters emerges naturally from the data: each point with density higher than all its neighbours and with large distance to the nearest higher-density point is a cluster centre. The remaining points are assigned to the same cluster as their nearest higher-density neighbour.
+
+We chose to use this algorithm because it automatically determines $B$, so it will be interesting to find out what the clusters of board positions actually represent. This algorithm is also notoriously robustness to outliers; points with low density and large distance to higher-density points are naturally identified as outliers.
+
+#todo Disadvantages:
+- **Parameter sensitivity**: The algorithm requires choosing a distance cutoff (for density estimation) and a threshold for the distance to higher-density points. These parameters can significantly affect the number of clusters.
+- **Computational cost**: Computing pairwise distances for 5 million points is prohibitive (O(N²)). We would need to use approximations (e.g., approximate nearest neighbours) or subsample the data.
+- **Cluster size imbalance**: Density-based methods may produce clusters of very different sizes, which can be problematic for expert fine-tuning (some experts would have too little data).
+- **Unstable number of clusters**: The number of clusters can vary with the parameters or with slight perturbations in the data, complicating the design of a fixed-architecture MoE.
+
+#todo **DBSCAN** is another density-based algorithm worth considering. It groups points that are closely packed together (high density) and marks points in low-density regions as noise. However, it shares similar challenges with Density Peak: parameter sensitivity (eps, min_samples) and computational cost for large datasets.
+
+### 3.5.4 Choosing $B$ and the Algorithm
+
+The choice between fixed-$B$ and density-based clustering depends on the relative importance of architectural efficiency and data-driven discovery. A density-based approach that automatically determines $B$ could reveal the natural structure in the gradient space, potentially identifying a number of clusters that better reflects the underlying distribution of learning signals. On the other hand, hardware constraints might impose a hard limit on how many expert heads our device is allowed to store based on our architecture of choice.
+
+#todo which approach we end on preferring based on some results
+
+### 3.5.5 Validation and Diagnostics
+
+#todo Once clustering is complete, we validate the quality of the partition using standard metrics: Cluster size distribution, Cosine distance between centroids, Inertia, Silhouette score.
 
 ---
 
