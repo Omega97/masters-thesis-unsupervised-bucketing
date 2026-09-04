@@ -2,6 +2,8 @@
 
 #idea The dispatcher needs only to be called on half of the activations of the dual *accumulator layer*, making it 128x3 parameters in size.
 
+#todo quantization and pruning 
+
 ---
 
 ## 3.1 Overview
@@ -60,13 +62,13 @@ We introduce here the formal notation used throughout this chapter and the remai
 
 ### 3.2.5 Key Operators
 
-| Symbol | Description |
-| :--- | :--- |
-| $\text{vec}(\cdot)$ | The vectorization operator, flattening a matrix into a column vector. |
-| $\nabla_w \mathcal{L}$ | The gradient of the loss with respect to the parameters $w$. |
-| $\| \cdot \|$ | The Euclidean (L2) norm. |
-| $\text{softmax}(z)_k = \frac{e^{z_k}}{\sum_j e^{z_j}}$ | The softmax function over logits $z$. |
-| $d_{\text{cos}}(u, v) = 1 - \frac{u \cdot v}{\|u\| \|v\|}$ | The cosine distance between two vectors $u$ and $v$. |
+| Symbol                                                     | Description                                                           |
+| :--------------------------------------------------------- | :-------------------------------------------------------------------- |
+| $\text{vec}(\cdot)$                                        | The vectorization operator, flattening a matrix into a column vector. |
+| $\nabla_w\,  \mathcal{L}$                                  | The gradient of the loss with respect to the parameters $w$.          |
+| $\| \cdot \|$                                              | The Euclidean (L2) norm.                                              |
+| $\text{softmax}(z)_k = \frac{e^{z_k}}{\sum_j e^{z_j}}$     | The softmax function over logits $z$.                                 |
+| $d_{\text{cos}}(u, v) = 1 - \frac{u \cdot v}{\|u\| \|v\|}$ | The cosine distance between two vectors $u$ and $v$.                  |
 
 ---
 
@@ -86,9 +88,46 @@ The central hypothesis of this work is that clustering positions by their $\Delt
 
 ## 3.3 Step 1: Train the Base Model
 
-#todo Shared dual-POV L1, L2, output head. Soft cross-entropy on WDL labels from a strong teacher (Lc0). This is the chosen loss (not MSE on centipawns or EV).
+The first step of our method is to train a **base evaluation model** that will serve as the foundation for all subsequent steps. This model provides two essential functions: it supplies the reference point from which we compute sample gradients, and it contributes the frozen L1 representation used by the dispatcher at inference time.
+
+### 3.3.1 Model Architecture
+
+The base model follows the NNUE architecture described in Section 2.1.3: a sparse accumulator layer $W_{L1}$ that maps a binary feature representation to a hidden state $h \in \mathbb{R}^h$, followed by a small fully-connected head $(W_{L2}, W_{out})$ that produces WDL logits. The architecture is kept deliberately small to reflect the resource constraints of the target hardware—specifically, a hidden dimension of $h = 64$ for the accumulator and $H = 128$ for the L2 layer, resulting in approximately 71,000 trainable parameters.
+
+### 3.3.2 Training Objective
+
+The model is trained to minimize the **soft cross-entropy loss** between its predicted WDL distribution and the teacher labels provided by Lc0 (see Section 4.1.4). For a batch of $N$ positions with teacher probabilities $\hat{p}_i = (\hat{P}_i(W), \hat{P}_i(D), \hat{P}_i(L))$ and model outputs $p_i = (P_i(W), P_i(D), P_i(L))$, the loss is:
+
+$$\mathcal{L} = -\frac{1}{N} \sum_{i=1}^N \left[ \hat{P}_i(W) \log P_i(W) + \hat{P}_i(D) \log P_i(D) + \hat{P}_i(L) \log P_i(L) \right]$$
+
+#note for me: Soft cross-entropy (or soft-target cross-entropy) is a generalized loss function in machine learning that uses full probability distributions instead of strict "hard" one-hot vectors for target labels
+
+This choice of loss is deliberate. Unlike mean squared error on a scalar value (centipawns or expected reward $v = P(W) - P(L)$), the cross-entropy loss encourages the model to match the **full outcome distribution** rather than just its mean. This provides a richer training signal and naturally handles the non-linear relationship between WDL probabilities and the scalar evaluation used during search.
+
+### 3.3.3 Training Protocol
+
+The base model is trained on the full dataset of approximately 5 million positions using the Adam optimiser with a learning rate of $10^{-2}$, linearly decayed to $10^{-3}$ over the course of training. We use a batch size of 1024 and train until convergence on the held-out test set (5% of the total dataset). All training is performed in PyTorch on a DGX Nvidia Spark GPU.
+
+#todo update hyperparameters like batch size
+
+### 3.3.4 The Role of the Base Model
+
+Once trained, the base model $w_{\text{base}} = (W_{L1}, W_{L2}^{\text{base}}, W_{out}^{\text{base}})$ serves three critical functions in our pipeline:
+
+1. **Reference point for gradients**: For each position $s_i$, we compute the gradient $\Delta_i = \nabla_{w_{\text{head}}} \mathcal{L}(\hat{f}_{w^{\text{base}}}(s_i), v_i)$ of the loss with respect to the head parameters, evaluated at the base model. This gradient represents the direction in which the head would need to move to better fit that specific position—the *learning signal* that drives our bucketing.
+
+2. **Frozen representation for routing**: The L1 weights $W_{L1}$ are **frozen** after base training and are never updated during expert fine-tuning. This ensures that all experts operate on the same shared representation, and that the dispatcher can rely on stable L1 activations $h = W_{L1} \cdot x$ as input features.
+
+3. **Starting point for expert fine-tuning**: Each expert head $(W_{L2}^{(i)}, W_{out}^{(i)})$ is initialised from the base head $(W_{L2}^{\text{base}}, W_{out}^{\text{base}})$ before being fine-tuned on its assigned bucket. This ensures that all experts start from the same well-trained foundation, and that the only difference between them is the data they see during fine-tuning.
+
+### 3.3.5 Why Freeze L1?
+
+Freezing the L1 layer is a deliberate design choice. The accumulator is the most expensive component of the NNUE architecture in terms of parameter count (over 54,000 weights), and updating it during fine-tuning would be computationally prohibitive. More importantly, freezing L1 ensures that the representation space remains stable across all experts: the dispatcher, trained on L1 activations, can reliably route positions without needing to account for different representations. This stability is essential for the lightweight inference pipeline, where the dispatcher must operate with negligible overhead.
+
+#todo make sure that we get across that the accumulator HAS to be the same for all expert, otherwise it doesn't work 
 
 ---
+
 ## 3.4 Step 2: Compute Sample Gradients
 
 #todo Per-sample gradients w.r.t.\ head parameters. Normalisation (L2 or standardisation). Storage and compute cost.
