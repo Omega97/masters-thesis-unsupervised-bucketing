@@ -1,8 +1,21 @@
 # Implementation: NNUE and MoE for Chess
 
----
+
+#idea can/should we focus the dataset on positions hard for the NNUE (eval flipped by 180°)? Is there a trick to let the NNUE figure out the steps ahead, like the solution to a tactic? **More layers but sparse connections**?
+
+#idea **certi algoritmi di clustering decidono $B$** 
+
+#idea U Map in 3D, DBScan, Density Peak Clustering
+  
+#idea PCA per aiutare il clustering?
+  
+#todo visualizzare i cluster; plot per la tesi
 
 #todo to specify why we use cross-entropy loss
+
+#todo estimate number of value function calls
+
+---
 
 ## 4.1 Dataset and Teacher
 
@@ -171,13 +184,13 @@ The base model is trained on the full training set (approximately 5 million posi
 
 ## 4.4 Clustering
 
-#todo Mini-Batch K-Means; Density Peak; other algorithms. Working \(B\) (e.g.\ 8, Stockfish-style — to check). t-SNE / PCA plots.
+#todo Mini-Batch K-Means; Density Peak; other algorithms. Working $B$ (e.g.\ 8, Stockfish-style — to check). t-SNE / PCA plots.
 
 ---
 
 ## 4.5 Dispatcher Training
 
-#todo Input \([\mathrm{own} \Vert \mathrm{opp}]\) vs.\ own side only. Linear \(2W \to B\) (or \(W \to B\)). CE, Adam, short training.
+#todo Input $[\mathrm{own} \Vert \mathrm{opp}]$ vs.\ own side only. Linear $2W \to B$ (or $W \to B$). CE, Adam, short training.
 
 ---
 
@@ -189,7 +202,7 @@ The base model is trained on the full training set (approximately 5 million posi
 
 ## 4.7 Final MoE Model
 
-#todo Shared L1 + dispatcher + expert heads. Inference: L1 \(\to\) dispatcher \(\to\) selected expert \(\to\) output.
+#todo Shared L1 + dispatcher + expert heads. Inference: L1 $\to$ dispatcher $\to$ selected expert $\to$ output.
 
 ---
 
@@ -205,7 +218,7 @@ The base model is trained on the full training set (approximately 5 million posi
 
 ---
 
-> **Note for AI**: *The parts marked with a #todo are yet to be completed. The #todo comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
+> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
 
 
 
