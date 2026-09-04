@@ -1,4 +1,6 @@
 
+#todo testare la performance di un modello (architettura fissa) in base alla dimensione del dataset!
+
 ---
 
 ### 5.1 Experimental Setup
@@ -70,5 +72,5 @@
 
 ---
 
-> **Note for AI**: *The parts marked with a #todo are yet to be completed. The #todo comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
+> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
 

@@ -5,7 +5,7 @@ These papers form the core methodological lineage for your approach.
 
 ---
 
-### 1. GradientSpace (Sridharan et al., 2025) ⭐⭐⭐⭐⭐
+### 1. GradientSpace (Sridharan et al., 2025)
 **Similar idea to mine, but applied on LLMs**
 
 - **Summary:** Clusters samples directly in full-dimensional gradient space (using LoRA gradients), trains a specialized LoRA expert per cluster, and deploys a lightweight encoder-based router for fast single-expert inference—all while keeping the base model frozen.
@@ -17,7 +17,7 @@ These papers form the core methodological lineage for your approach.
 
 ---
 
-### 2. ELREA (Li et al., ICLR 2025) ⭐⭐⭐⭐☆
+### 2. ELREA (Li et al., ICLR 2025) 
 **The direct precursor to GradientSpace; a strong methodological match.**
 Amazon, 🇨🇳
 
@@ -31,7 +31,7 @@ Amazon, 🇨🇳
 
 ---
 
-### 3. TAGCOS (Zhang et al., 2024) ⭐⭐⭐⭐½
+### 3. TAGCOS (Zhang et al., 2024) 
 **Methodologically very close, but for a different purpose.**
 
 - **Summary:** Leverages sample gradients as data representations, performs clustering to group similar data, and applies a greedy algorithm for coreset selection (selecting representative samples).
@@ -43,9 +43,9 @@ Amazon, 🇨🇳
 
 ---
 
-## 🧠 Theoretical & Adjacent Works
+## Theoretical & Adjacent Works
 
-### 4. Kawata et al. (ICML 2025) ⭐⭐⭐⭐
+### 4. Kawata et al. (ICML 2025) 
 **Provides theoretical backing for your core hypothesis.**
 
 - **Summary:** Proves that MoE trained with SGD can detect and exploit latent cluster structure that a single vanilla network cannot.
@@ -58,7 +58,7 @@ Amazon, 🇨🇳
 
 ---
 
-### 5. Gradient Atoms (2026) ⭐⭐⭐½
+### 5. Gradient Atoms (2026) 
 **Related work on unsupervised gradient decomposition.**
 
 - **Summary:** Decomposes per-document training gradients into sparse components ("atoms") via dictionary learning in a preconditioned eigenspace.
@@ -73,7 +73,7 @@ Amazon, 🇨🇳
 
 ## ♟️ Chess-Specific Context (Your Baseline)
 
-### 6. M2CTS (Helfenstein et al., 2024) ⭐⭐☆☆☆
+### 6. M2CTS (Helfenstein et al., 2024) 
 **The most relevant chess-domain paper, but methodologically different.**
 
 - **Summary:** Integrates MoE into an AlphaZero-style MCTS engine for chess, using **manual phase-based bucketing** (opening, middlegame, endgame).

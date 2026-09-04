@@ -10,7 +10,7 @@
 
 ### 6.2 Limitations
 
-#todo Clustering quality, dispatcher errors, Wio memory/compute, sensitivity to \(B\), dependence on Lc0 and on a single game.
+#todo Clustering quality, dispatcher errors, Wio memory/compute, sensitivity to $B$, dependence on Lc0 and on a single game.
 
 ---
 
@@ -26,5 +26,5 @@
 
 ---
 
-> **Note for AI**: *The parts marked with a #todo are yet to be completed. The #todo comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
+> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
 
