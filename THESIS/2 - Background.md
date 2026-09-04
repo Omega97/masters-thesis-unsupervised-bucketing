@@ -1,10 +1,14 @@
 # Background and Related Work
 
+#todo **AlphaZero vs. Cfish**: Clearly separate MCTS (AlphaZero/Lc0) from alpha-beta search (Stockfish/Cfish) to avoid confusion.
+
+#todo **WDL vs. EV vs. centipawns**: Clarify early that you use WDL + soft-CE, and why.
+
 ---
 
 ## 2.1 Chess Engines and Evaluation Functions
 
-At the core of every chess engine lies the **evaluation function**: a function \(f: \mathcal{S} \rightarrow \mathbb{R}\) that assigns a scalar value to a board position, indicating the expected outcome from that position (typically from the perspective of the player to move). This value guides the search algorithm—usually a variant of **alpha-beta search** with iterative deepening—by pruning unpromising branches and selecting the most promising moves.
+At the core of every chess engine lies an **evaluation function** $f: \mathcal{S} \rightarrow \mathbb{R}$ that assigns a scalar value to a board position, indicating the expected outcome from that position (typically from the perspective of the player to move). This value guides the search algorithm—usually a variant of **alpha-beta search** with iterative deepening—by pruning unpromising branches and selecting the most promising moves.
 
 ### 2.1.1 Classical Evaluation
 
@@ -12,33 +16,36 @@ For decades, chess evaluation functions were handcrafted. A classical evaluator 
 
 $$f(s) = \sum_{k} w_k \cdot \phi_k(s)$$
 where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *chess-specific* features include material balance, piece-square tables (PSTs), mobility, king safety, pawn structure. These features were carefully tuned by chess experts over decades, using a combination of intuition, empirical testing, and later, automated optimization techniques.
+
 #todo mention PeSTo?
 
-While classical evaluators are extremely fast, they suffer from fundamental limitations. The human-designed features encode the human intuition about chess, which may not align with the optimal understanding of the game. Moreover, this model does not take into account the positions as a whole; the same parameters give a positional bonus for a central knight whether the position is a quiet middlegame or a tactical melee, even though the knight's practical value may differ dramatically across phases.
+While classical evaluators are extremely fast, they suffer from fundamental limitations. The human-designed features encode the human intuition about chess, which may not align with the optimal understanding of the game. Moreover, these models do not take into account the positions as a whole; the same parameters give a positional bonus for a central knight whether the position is a quiet middlegame or a tactical melee, even though the knight's practical value may differ dramatically across phases.
+
+#todo even better example is a king or pawn
 
 ### 2.1.2 The Shift to Neural Evaluation
 
 The limitations of handcrafted features led to the adoption of neural networks as evaluation functions. **AlphaZero** (Silver et al., 2018) demonstrated that a deep convolutional network, trained via self-play reinforcement learning, could surpass the best classical engines. However, these networks are computationally expensive—requiring millions of operations per evaluation—making them unsuitable for resource-constrained devices or for engines that must evaluate millions of positions per second.
 
-#todo AlphaZero value function: scalar \(v \in [-1,1]\) (expected outcome), trained with MCTS (not α-β). Cost per node vs NNUE. Do not mix AZ's MCTS with Cfish search. Contrast with Lc0 as teacher in 4.1.
+#todo AlphaZero value function: scalar $v \in [-1,1]$ (expected outcome), trained with MCTS (not α-β). Cost per node vs NNUE. Do not mix AZ's MCTS with Cfish search. Contrast with Lc0 as teacher in 4.1. 
 
 ### 2.1.3 NNUE: A Hybrid Approach
 
-The **Efficiently Updatable Neural Network (NNUE)** architecture, first introduced in the shogi engine *YaneuraOu* and later adopted by *Stockfish*, strikes a pragmatic balance. NNUE combines the representational power of a neural network with the incremental efficiency of classical evaluators.
+The **Efficiently Updatable Neural Network (NNUE)** architecture, first introduced in the *shogi* engine *YaneuraOu* and later adopted by *Stockfish*, strikes a pragmatic balance. NNUE combines the representational power of a neural network with the incremental efficiency of classical evaluators.
 
 The architecture consists of two ingredients: a sparse first layer called the *accumulator*, and a small fully-connected head. 
 
-The accumulator layer maps a binary representation of the board to a hidden representation $h \in \mathbb{R}^{d}$ via $h = W_{L1} \cdot x$, where $x$ is a sparse binary vector (typically 768 or 1024 dimensions) indicating the presence of pieces on squares. The key insight is that a chess move changes only a few bits of $x$, so $h$ can be **updated incrementally** by adding and subtracting the corresponding columns of $W_{L1}$, rather than recomputing the entire matrix-vector product from scratch. This makes the computation of L1 essentially *free*.
+The accumulator layer maps a binary representation of the board to a hidden representation $h \in \mathbb{R}^{d}$ via $h = W_{L1} \cdot x$, where $x$ is a sparse binary vector (typically 768 or 1024 dimensions) indicating the presence of pieces on squares. The key insight is that a chess move changes only a few bits of $x$, so $h$ can be **updated incrementally** by adding and subtracting the corresponding columns of $W_{L1}$, rather than by recomputing the entire matrix-vector product from scratch. This makes the computation of L1 essentially *free*.
 
-The second ingredient, the fully connected head, is typically one or two hidden layers followed by a scalar output, mapping $h$ to the position value. In our case, we found easier to train a probability distribution across all the three possible game result for the player; win, draw, and loss (WDL).
+The second ingredient, the fully connected head, is typically one or two hidden layers followed by a scalar output, mapping $h$ to the position value. In our case, we found easier to train a probability distribution across all the three possible game result for the player; win, draw, and loss (WDL), by minimizing the cross-entropy between the output of the teacher and the student.
 
-A complete NNUE engine also leverages **alpha-beta search** with iterative deepening: starting from the root position, the engine searches deeper and deeper, using the NNUE evaluation at leaf nodes to guide the pruning and ordering of moves. At every node of this search tree, the evaluation function is called hundreds or thousands of times, making its speed critical. Also, being trained un enormous amounts of data, a NNUE doesn't suffer from the *horizon effect* as much as a PST does. #todo
+A complete NNUE engine also leverages **alpha-beta search** with iterative deepening: starting from the root position, the engine searches deeper and deeper, using the NNUE evaluation at leaf nodes to guide the pruning and ordering of moves. At every node of this search tree, the evaluation function is called hundreds or thousands of times, making its speed critical. Also, being trained on enormous amounts of data, a NNUE doesn't suffer from the *horizon problem* as much as a PST does. #todo explain further?
 
 #todo Keep this subsection conceptual (accumulator, head, incremental update). Own dims / CReLU / 3-way WDL belong in 4.2, not here.
 
 ## 2.1.4 Value targets: centipawns, EV, WDL
 
-#todo Conceptual comparison after NNUE / AlphaZero: scalar centipawns (classical / Stockfish-style NNUE), expected value \(v \in [-1,1]\) (AlphaZero), full WDL distribution. This is a representation choice, not only a metric. Loss choice (soft CE on WDL vs MSE on cp/EV) is fixed in 3.2–3.3 and 4.2.
+#todo Conceptual comparison after NNUE / AlphaZero: scalar centipawns (classical / Stockfish-style NNUE), expected value $v \in [-1,1]$ (AlphaZero), full WDL distribution. This is a representation choice, not only a metric. Loss choice (soft CE on WDL vs MSE on cp/EV) is fixed in 3.2–3.3 and 4.2.
 
 ### 2.1.5 Why Evaluation Must Be Cheap
 
@@ -46,9 +53,11 @@ The search tree explored by an **alpha-beta engine** grows exponentially with de
 
 This means that any overhead added to the evaluation function is directly subtracted from the engine's effective search depth. If the evaluator becomes slower, the engine must reduce its search depth to maintain the same response time—sacrificing playing strength in the process.
 
-On an embedded device such as the Wio Terminal, this constraint is even more severe. Memory is limited, floating-point operations are expensive, and every instruction counts. Any routing mechanism for a mixture-of-experts NNUE must add only a trivial cost—ideally, a handful of integer operations or a simple table look-up—to avoid degrading the engine's search performance.
+On an embedded device such as the Wio Terminal (192 KB RAM, 500 KB flash), this constraint is even more severe. Memory is limited, floating-point operations are expensive, and every instruction counts. Any routing mechanism for a mixture-of-experts NNUE must add only a trivial cost—ideally, a handful of integer operations or a simple table look-up—to avoid degrading the engine's search performance.
 
 In short, the evaluation function must be expressive enough to assess positions accurately, yet cheap enough to be called millions of times during a game. This trade-off is the central engineering challenge addressed by this thesis.
+
+#todo too long?
 
 #todo One sentence: playing strength is reported in Elo / ACPL; protocol in Chapter 5.
 
@@ -62,19 +71,31 @@ Cfish is particularly relevant to this thesis for two reasons. First, it demonst
 
 #todo Pointer: Cfish as host engine (evaluate(), α-β, ID, TT, Wio, MoE hook) is instantiated in 4.8–4.9. Keep 2.1 conceptual.
 
+#todo also too long?
+
+---
+
 ## 2.2 Mixture of Experts
 
 #todo Multiple expert networks over sub-domains. Learned vs.\ fixed routing. Uses in vision, NLP, and RL, and what carries over to a tiny chess eval.
 
 #todo LoRA: how ELREA / GradientSpace implement experts on LLMs. Contrast LoRA adapters vs a tiny NNUE head. Not used in this method.
 
+---
+
 ## 2.3 Sample Gradients
 
 #todo Per-example gradients w.r.t.\ head parameters as a representation of the learning signal. Why they differ from activations. Pointers to gradient-clustering literature.
 
+---
+
 ## 2.4 Bucketing in NNUE
 
 #todo Handcrafted buckets: piece count, king location, piece presence (queen, bishop pair, \ldots). Why they are cheap, and why they may not match what the model needs.
+
+#todo reference the Kaggle challenge: [FIDE & Google Efficient Chess AI Challenge](https://www.kaggle.com/competitions/fide-google-efficiency-chess-ai-challenge)
+
+---
 
 ## 2.5 Related Work
 
@@ -84,4 +105,4 @@ Cfish is particularly relevant to this thesis for two reasons. First, it demonst
 
 ---
 
-> **Note for AI**: *The parts marked with a #todo are yet to be completed. The #todo comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
+> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex.*
