@@ -119,4 +119,4 @@ The forward pass for the model is quite straightforward:
 
 ---
 
-#core
+#core 
