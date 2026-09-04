@@ -1,23 +1,56 @@
 \chapter{Background and Related Work}\label{ch:background}
 
-\draftnote{Give the reader the minimum chess, NNUE, MoE, and gradient background needed to follow the method, then situate the thesis against related work.}
-
 \section{Chess Engines and Evaluation Functions}\label{sec:engines}
 
-\draftnote{Classical evaluation (material, piece-square tables, mobility, king safety). NNUE: sparse, accumulator-based efficiently updatable networks. Search: alpha-beta, iterative deepening, move ordering.}
+At the core of every chess engine lies the \textbf{evaluation function}: a function \(f: \mathcal{S} \rightarrow \mathbb{R}\) that assigns a scalar value to a board position, indicating the expected outcome from that position (typically from the perspective of the player to move). This value guides the search algorithm---usually a variant of \textbf{alpha-beta search} with iterative deepening---by pruning unpromising branches and selecting the most promising moves.
+
+\subsection{Classical Evaluation}\label{sec:classical-eval}
+
+For decades, chess evaluation functions were handcrafted. A classical evaluator is a weighted linear combination of chess-specific features:
+\[
+f(s) = \sum_{k} w_k \cdot \phi_k(s)
+\]
+where \(\phi_k(s)\) are feature functions and \(w_k\) are scalar weights. Typical \emph{chess-specific} features include material balance, piece-square tables (PSTs), mobility, king safety, pawn structure. These features were carefully tuned by chess experts over decades, using a combination of intuition, empirical testing, and later, automated optimization techniques.
+% TODO: mention PeSTo?
+
+While classical evaluators are extremely fast, they suffer from fundamental limitations. The human-designed features encode the human intuition about chess, which may not align with the optimal understanding of the game. Moreover, this model does not take into account the positions as a whole; the same parameters give a positional bonus for a central knight whether the position is a quiet middlegame or a tactical melee, even though the knight's practical value may differ dramatically across phases.
+
+\subsection{The Shift to Neural Evaluation}\label{sec:neural-eval}
+
+The limitations of handcrafted features led to the adoption of neural networks as evaluation functions. \textbf{AlphaZero}~\cite{silver2018alphazero} demonstrated that a deep convolutional network, trained via self-play reinforcement learning, could surpass the best classical engines. However, these networks are computationally expensive---requiring millions of operations per evaluation---making them unsuitable for resource-constrained devices or for engines that must evaluate millions of positions per second.
+
+\subsection{NNUE: A Hybrid Approach}\label{sec:nnue}
+
+The \textbf{Efficiently Updatable Neural Network (NNUE)} architecture, first introduced in the shogi engine \emph{YaneuraOu} and later adopted by \emph{Stockfish}, strikes a pragmatic balance. NNUE combines the representational power of a neural network with the incremental efficiency of classical evaluators.
+
+The architecture consists of two ingredients: a sparse first layer called the \emph{accumulator}, and a small fully-connected head.
+
+The accumulator layer maps a binary representation of the board to a hidden representation \(h \in \mathbb{R}^{d}\) via \(h = W_{L1} \cdot x\), where \(x\) is a sparse binary vector (typically 768 or 1024 dimensions) indicating the presence of pieces on squares. The key insight is that a chess move changes only a few bits of \(x\), so \(h\) can be \textbf{updated incrementally} by adding and subtracting the corresponding columns of \(W_{L1}\), rather than recomputing the entire matrix-vector product from scratch. This makes the computation of L1 essentially \emph{free}.
+
+The second ingredient, the fully connected head, is typically one or two hidden layers followed by a scalar output, mapping \(h\) to the position value. In our case, we found it easier to train a probability distribution across all three possible game results for the player: win, draw, and loss (WDL).
+
+A complete NNUE engine also leverages \textbf{alpha-beta search} with iterative deepening: starting from the root position, the engine searches deeper and deeper, using the NNUE evaluation at leaf nodes to guide the pruning and ordering of moves. At every node of this search tree, the evaluation function is called hundreds or thousands of times, making its speed critical.
+
+A big advantage that NNUE holds over the simpler PST is that it is not as susceptible to the \emph{horizon effect}. Being trained on enormous amounts of data, it encodes a better understanding of how the situation will evolve, rather than just its current state.
+% TODO: rephrase?
+
+\subsection{Why Evaluation Must Be Cheap}\label{sec:eval-cheap}
+
+An alpha-beta search with iterative deepening explores a tree whose size grows exponentially with depth. A typical engine evaluates an exponential number of positions as the depth of the search increases.
+\draftnote{To complete this subsection.}
 
 \section{Mixture of Experts}\label{sec:moe}
 
-\draftnote{Multiple expert networks, each specialising in a sub-domain. Routing: learned vs.\ fixed. Applications in vision, NLP, and reinforcement learning.}
+\draftnote{Multiple expert networks over sub-domains. Learned vs.\ fixed routing. Uses in vision, NLP, and RL, and what carries over to a tiny chess eval.}
 
-\section{Sample-Gradients}\label{sec:sample-gradients}
+\section{Sample Gradients}\label{sec:sample-gradients}
 
-\draftnote{Define sample (per-example) gradients with respect to the output-head parameters, and why they are a useful similarity signal for partitioning the state space. Related literature on gradient clustering still needs a closer survey.}
+\draftnote{Per-example gradients w.r.t.\ head parameters as a representation of the learning signal. Why they differ from activations. Pointers to gradient-clustering literature.}
 
 \section{Bucketing in NNUE}\label{sec:nnue-bucketing}
 
-\draftnote{Default techniques: piece count, king location, piece presence (queen, bishop pair, etc.). Limitations: handcrafted rules may not align with what the model actually needs.}
+\draftnote{Handcrafted buckets: piece count, king location, piece presence (queen, bishop pair, \ldots). Why they are cheap, and why they may not match what the model needs.}
 
 \section{Related Work}\label{sec:related-work}
 
-\draftnote{Efficiency: EfficientNet, pruning, quantization. Distillation and teacher--student training. Reinforcement learning from self-play (AlphaZero, Lc0). Expand the survey of work related to sample-gradients.}
+\draftnote{Efficiency (pruning, quantization). Distillation / teacher--student. Self-play RL (AlphaZero, Lc0). Work closest to sample-gradient clustering and MoE routing.}
