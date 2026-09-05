@@ -1,5 +1,4 @@
 
-#todo testare la performance di un modello (architettura fissa) in base alla dimensione del dataset!
 
 ---
 
@@ -35,6 +34,21 @@
 #todo 
 
 #### Base NNUE
+
+#todo ...
+
+We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to 5M. The model has a 256-neuron accumulator layer (2x128), and a 256 neuron L2 layer, which lays on the larger side of the models we trained.
+
+```
+py -3.12 -u scripts/train_nnue.py --epochs 20 --lr 0.01 --hidden-dim 128 --hidden2-dim 256 --batches-per-epoch 50 --batch-size 1024 --run-name dual_h128_H256_fast_ft97 --plot plots/dual_nnue_ce_128_256_ft97.png --test-subset-size 5000 --train-val-subset-size 5000 --test-fraction 0.97 --fast
+```
+#todo maybe convert command to table of parameters
+
+<div align="center">
+    <img src="THESIS/thesis-plots/nnue_ce_vs_train_size.png" width="600">
+</div>
+
+We found that, below 2M positions, the model clearly overfits the training set. On the other hand, above 3M positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-model data should never exceed this threshold. 
 
 
 #### MoE NNUE - bucketing by L1 - fixed $B$
