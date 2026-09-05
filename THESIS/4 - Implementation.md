@@ -8,6 +8,8 @@
 #idea U Map in 3D, DBScan, Density Peak Clustering
   
 #idea PCA per aiutare il clustering?
+
+#todo we could emphasize the hardest to read positions, but with quiescent search we hardly ever have to evaluate those correctly
   
 #todo visualizzare i cluster; plot per la tesi
 
@@ -88,6 +90,10 @@ h_{\text{opp}} = W_{\text{L1}} \, x_{\text{opp}},
 $$
 
 where $x_{\text{own}}, x_{\text{opp}} \in \{0,1\}^{844}$ are the sparse feature vectors for the two perspectives, and $W_{\text{L1}} \in \mathbb{R}^{844 \times W}$ is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors $h_{\text{own}}, h_{\text{opp}} \in \mathbb{R}^W$, where $W$ is the hidden dimension of the accumulator, set to $W = 64$ in this work.
+
+<div align="center">
+    <img src="THESIS/thesis-plots/sardine_nnue_architecture.png" width="600">
+</div>
 
 ### 4.2.2 Shared L1 Accumulator
 
