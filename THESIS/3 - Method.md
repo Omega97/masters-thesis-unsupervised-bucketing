@@ -2,13 +2,19 @@
 
 #idea The dispatcher needs only to be called on half of the activations of the dual *accumulator layer*, making it 128x3 parameters in size.
 
+#idea it's not necessary to perform clustering on the whole training set
+
 #todo quantization and pruning 
+
+#todo remember that when we partition the dataset, each expert has less data, but it still has to be "enough" (performance vs number of data)
+
+#todo emphasize the fact that the clustering with sample gradients is not as easy to transpose to inference time as L1-based clustering could be, but with the dispatcher it becomes similarly fast.
 
 ---
 
 ## 3.1 Overview
 
-#todo Five-step pipeline: train a base model; compute sample-gradients; cluster them; train a dispatcher; fine-tune expert heads.
+#todo Five-step pipeline: train a base model; compute sample gradients; cluster them; train a dispatcher; fine-tune expert heads.
 
 ## 3.2 Notation and Definitions
 
@@ -16,25 +22,25 @@ We introduce here the formal notation used throughout this chapter and the remai
 
 ### 3.2.1 Sets
 
-| Symbol                                                    | Description                                                                                                                |
-| :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------- |
-| $\mathcal{S}$                                             | The space of all possible chess positions (states).                                                                        |
-| $\mathcal{D}$                                           | The training dataset of positions with labels: $\mathcal{D} = \{(s_i, v_i)\}_{i=1}^{N}$.                                 |
+| Symbol                                                  | Description                                                                                                            |
+| :------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------- |
+| $\mathcal{S}$                                           | The space of all possible chess positions (states).                                                                    |
+| $\mathcal{D}$                                           | The training dataset of positions with labels: $\mathcal{D} = \{(s_i, v_i)\}_{i=1}^{N}$.                               |
 | $\mathcal{P} = \{\mathcal{D}_1, \dots, \mathcal{D}_B\}$ | A partition of the state space into $B$ buckets, where each $\mathcal{D}_i \subset \mathcal{S}$ is a non-empty subset. |
-| $\Theta$                                                | The space of all model parameters (weights).                                                                               |
-| $\mathbb{R}$                                            | The set of real numbers.                                                                                                   |
+| $\Theta$                                                | The space of all model parameters (weights).                                                                           |
+
 
 ### 3.2.2 Scalars
 
-| Symbol | Description |
-| :--- | :--- |
-| $B$ | The number of experts (buckets). |
-| $N$ | The total number of positions in the training dataset. |
-| $N_i$ | The number of positions in bucket $\mathcal{D}_i$. |
-| $h$ | The hidden dimension of the NNUE accumulator. |
-| $d_{\text{in}}$ | The input dimension of the NNUE accumulator (844 in this work). |
-| $v_i \in \mathbb{R}$ | The scalar label (expected reward) for position $s_i$. |
-| $\eta$ | The learning rate used for gradient updates. |
+| Symbol               | Description                                                     |
+| :------------------- | :-------------------------------------------------------------- |
+| $B$                  | The number of experts (buckets).                                |
+| $N$                  | The total number of positions in the training dataset.          |
+| $N_i$                | The number of positions in bucket $\mathcal{D}_i$.              |
+| $h$                  | The hidden dimension of the NNUE accumulator.                   |
+| $d_{\text{in}}$      | The input dimension of the NNUE accumulator (844 in this work). |
+| $v_i \in \mathbb{R}$ | The scalar label (expected reward) for position $s_i$.          |
+| $\eta$               | The learning rate used for gradient updates.                    |
 
 ### 3.2.3 Vectors and Matrices
 
@@ -72,15 +78,11 @@ We introduce here the formal notation used throughout this chapter and the remai
 
 ### 3.2.6 Relationship Between $\Delta_i$ and $\delta_i$
 
-A crucial distinction in this work is between **per-sample gradients** $\Delta_i$ and **task vectors** $\delta_i$:
+A crucial distinction in this work is between **per-sample gradients** $\Delta_i$ and **task vectors** $\delta_i$. These two concepts are similar to each other, but it is worth emphasizing that the task vector $\delta_i = \theta_i - \theta_{\text{base}}$ is the difference in model parameters between before and after the fine-tuning, while the sample gradient $\Delta_i = \nabla_{w_{\text{head}}} \mathcal{L}(\hat{f}_{w_{\text{base}}}(s_i), v_i)$ is the gradient of the loss with respect to the head parameters, evaluated at a **single position** $s_i$ using the base model. 
 
-- $\Delta_i = \nabla_{w_{\text{head}}} \mathcal{L}(\hat{f}_{w_{\text{base}}}(s_i), v_i)$ is the gradient of the loss with respect to the head parameters, evaluated at a **single position** $s_i$ using the base model. It represents the direction in which the head would need to move to reduce the loss on that specific position.
+The central hypothesis of this work is that clustering positions by their $\Delta_i$ yields a partitioning for which the resulting $\delta_i$ are maximally diverse - each expert specializes in a distinct region of the state space - and that the dispatcher is able to approximate this partitioning with enough accuracy to preserve its general structure.
 
-- $\delta_i = \theta_i - \theta_{\text{base}}$ is the actual change in the head parameters after **fine-tuning** on all positions in bucket $\mathcal{D}_i$. It is the accumulated effect of the per-sample gradients over the bucket.
-
-The central hypothesis of this work is that clustering positions by their $\Delta_i$ yields a partition $\mathcal{P}$ for which the resulting $\delta_i$ are maximally diverse, meaning each expert specializes in a distinct region of the state space.
-
-#note this distinction is worth emphasizing 
+#todo rephrase
 
 ---
 
@@ -91,6 +93,8 @@ The first step of our method is to train a **base evaluation model** that will s
 ### 3.3.1 Model Architecture
 
 The base model follows the NNUE architecture described in Section 2.1.3: a sparse accumulator layer $W_{L1}$ that maps a binary feature representation to a hidden state $h \in \mathbb{R}^h$, followed by a small fully-connected head $(W_{L2}, W_{out})$ that produces WDL logits. The architecture is kept deliberately small to reflect the resource constraints of the target hardware—specifically, a hidden dimension of $h = 64$ for the accumulator and $H = 128$ for the L2 layer, resulting in approximately 71,000 trainable parameters.
+
+#todo remove hard numbers? 
 
 ### 3.3.2 Training Objective
 
@@ -110,17 +114,15 @@ The base model is trained on the full dataset of approximately 5 million positio
 
 ### 3.3.4 The Role of the Base Model
 
-Once trained, the base model $w_{\text{base}} = (W_{L1}, W_{L2}^{\text{base}}, W_{out}^{\text{base}})$ serves three critical functions in our pipeline:
+Once trained, the base model $w_{\text{base}} = (W_{L1}, W_{L2}^{\text{base}}, W_{out}^{\text{base}})$ serves several critical functions in our pipeline, one of which is as reference point for gradients: For each position $s_i$, we compute the sample gradient $\Delta_i$ evaluated at the base model. This gradient represents the direction in which the head would need to move to better fit that specific position—the *learning signal* that drives our bucketing.
 
-1. **Reference point for gradients**: For each position $s_i$, we compute the gradient $\Delta_i = \nabla_{w_{\text{head}}} \mathcal{L}(\hat{f}_{w^{\text{base}}}(s_i), v_i)$ of the loss with respect to the head parameters, evaluated at the base model. This gradient represents the direction in which the head would need to move to better fit that specific position—the *learning signal* that drives our bucketing.
+An other important role of the base model is as frozen representation for routing. The L1 weights $W_{L1}$ are **frozen** after base training and are never updated during expert fine-tuning. This ensures that all experts operate on the same shared representation, and that the dispatcher can rely on stable L1 activations $h = W_{L1} \cdot x$ as input features.
 
-2. **Frozen representation for routing**: The L1 weights $W_{L1}$ are **frozen** after base training and are never updated during expert fine-tuning. This ensures that all experts operate on the same shared representation, and that the dispatcher can rely on stable L1 activations $h = W_{L1} \cdot x$ as input features.
-
-3. **Starting point for expert fine-tuning**: Each expert head $(W_{L2}^{(i)}, W_{out}^{(i)})$ is initialised from the base head $(W_{L2}^{\text{base}}, W_{out}^{\text{base}})$ before being fine-tuned on its assigned bucket. This ensures that all experts start from the same well-trained foundation, and that the only difference between them is the data they see during fine-tuning.
+Finally, the base model is of course also the starting point for expert fine-tuning. Each expert head $(W_{L2}^{(i)}, W_{out}^{(i)})$ is initialised from the base head $(W_{L2}^{\text{base}}, W_{out}^{\text{base}})$ before being fine-tuned on its assigned bucket. 
 
 ### 3.3.5 Why Freeze L1?
 
-Freezing the L1 layer is a deliberate design choice. The accumulator is the most expensive component of the NNUE architecture in terms of parameter count (over 54,000 weights), and updating it during fine-tuning would be computationally prohibitive. More importantly, freezing L1 ensures that the representation space remains stable across all experts: the dispatcher, trained on L1 activations, can reliably route positions without needing to account for different representations. This stability is essential for the lightweight inference pipeline, where the dispatcher must operate with negligible overhead.
+Freezing the L1 layer is a deliberate design choice. The accumulator is the most expensive component of the NNUE architecture in terms of parameter count, and updating it during fine-tuning would be computationally prohibitive. More importantly, freezing L1 ensures that the representation space remains stable across all experts: the dispatcher, trained on L1 activations, can reliably route positions without needing to account for different representations. This stability is essential for the lightweight inference pipeline, where the dispatcher must operate with negligible overhead.
 
 #todo make sure that we get across that the accumulator HAS to be the same for all expert, otherwise it doesn't work 
 
@@ -130,7 +132,7 @@ Freezing the L1 layer is a deliberate design choice. The accumulator is the most
 
 With the base model trained, the second step is to compute, for each position in the dataset, the **sample gradient** of the loss with respect to the head parameters. These gradients encode the direction in which the head would need to move to improve the prediction for each individual position, providing a representation of the *learning signal* that we will use for bucketing.
 
-### 3.4.1 Definition
+### 3.4.1 Definition of Sample Gradient
 
 For each position $s_i$ in the dataset $\mathcal{D} = \{(s_i, v_i)\}_{i=1}^N$, we compute the gradient:
 
@@ -147,58 +149,38 @@ The gradient is computed **at the base model** $w_{\text{base}}$, before any fin
 
 ### 3.4.2 Implementation
 
-In practice, we compute the sample gradients using PyTorch's `torch.autograd.grad` function, which efficiently computes gradients for a batch of inputs simultaneously. For a batch of positions, we:
-
-1. Forward-pass the positions through the base model to obtain WDL predictions
-2. Compute the cross-entropy loss between predictions and teacher labels
-3. Call `torch.autograd.grad(loss, head_parameters, retain_graph=False)` to obtain the gradients
-4. Detach and flatten the resulting gradient tensors into a single vector per position
+In practice, we compute the sample gradients using PyTorch's `torch.autograd.grad` function, which efficiently computes gradients for a batch of inputs simultaneously. For a batch of positions, we first compute the forward-pass of the positions through the base model to obtain WDL predictions. Then, we compute the cross-entropy loss between predictions and teacher labels. To obtain the gradients, we call `torch.autograd.grad(loss, head_parameters, retain_graph=False)`. Finally, we detach and flatten the resulting gradient tensors into a single vector per position.
 
 The computation is parallelised across the GPU and is performed in a single pass over the dataset. The gradients are stored on disk for later use in the clustering step.
 
+#todo maybe it still sounds a bit like a list converted to prose...
+
+
 ### 3.4.3 Which Parameters?
 
-We compute gradients **only with respect to the head parameters** $(W_{L2}, W_{out})$, not the L1 accumulator weights. This choice is deliberate:
+We compute gradients **only with respect to the head parameters** $(W_{L2}, W_{out})$, not the L1 accumulator weights. This choice is forced, as the accumulator layer must be shared across all the experts ( #todo as we already discussed?). Each expert will have its own head parameters, while L1 remains shared and frozen. The gradients with respect to the head parameters directly encode what each expert needs to learn. The head contains only a fraction of the total parameters (approximately 17,000 vs. 54,000 in L1), making gradient computation significantly cheaper.
 
-- **The head is the component that will be specialised**: Each expert will have its own head parameters, while L1 remains shared and frozen. The gradients with respect to the head parameters directly encode what each expert needs to learn.
-
-- **The L1 weights are frozen**: Since L1 is never updated during expert fine-tuning, its gradients are irrelevant for the bucketing objective.
-
-- **Computational efficiency**: The head contains only a fraction of the total parameters (approximately 17,000 vs. 54,000 in L1), making gradient computation significantly cheaper.
+#todo did we already mention this?
 
 ### 3.4.4 Normalisation
 
-The raw gradients can have highly variable magnitudes depending on the position and the current state of the model. We therefore normalise each gradient vector before clustering. Two options are considered:
-
-**L2 normalisation** (our default choice):
+The raw gradients can have highly variable magnitudes, depending on the position, the current state of the model, and on weather we do or do not consider the multiplicity of the position. We therefore normalise each gradient vector before clustering by using the *L2 normalisation* (not to be confused with the L2 layer #todo maybe silly):
 
 $$\Delta_i^{\text{norm}} = \frac{\Delta_i}{\|\Delta_i\| + \epsilon}$$
 
 This projects each gradient onto the unit hypersphere, preserving direction while removing magnitude information. This is appropriate because the *direction* of the gradient encodes the type of specialisation needed, while the magnitude is more sensitive to the current loss value and position difficulty.
 
-**Standardisation** (alternative):
+In practice, we this step has been shown to work well in gradient-clustering literature (ELREA, GradientSpace) and preserves the relative angular structure of the gradients.
 
-$$\Delta_i^{\text{std}} = \frac{\Delta_i - \mu}{\sigma}$$
-
-where $\mu$ and $\sigma$ are computed across the dataset. This centres the data and scales it to unit variance, but can be sensitive to outliers.
-
-In practice, we use L2 normalisation, as it has been shown to work well in gradient-clustering literature (ELREA, GradientSpace) and preserves the relative angular structure of the gradients.
 
 ### 3.4.5 Storage and Compute Considerations
 
 Computing and storing sample gradients for 5 million positions presents practical challenges. Each gradient vector has dimension $P_{\text{head}} \approx 17,000$ (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
 
 $$5 \times 10^6 \times 17,000 \times 4 \text{ bytes} \approx 340 \text{ GB}$$
+#todo update numbers
 
-To manage this, we:
-
-1. **Store in 16-bit half-precision**: Reducing precision to float16 halves the storage requirement to approximately 170 GB.
-
-2. **Use memory-mapped `.npy` files**: Storing the gradients in NumPy's `.npy` format allows efficient random access during clustering without loading the entire dataset into memory.
-
-3. **Compute in batches**: Gradients are computed in batches of 1024 positions and saved incrementally to disk.
-
-4. **Optional PCA compression**: For extremely large datasets, we can apply PCA to reduce the gradient dimension while preserving most of the variance. However, for our scale, we retain the full-dimensional gradients.
+#todo considerations on whether to introduce rounding, and whether to use just part of the dataset
 
 ---
 
