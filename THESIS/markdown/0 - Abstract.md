@@ -2,9 +2,11 @@
 # Unsupervised State Bucketing for Mixture of Experts in Resource-Constrained Chess Engines
 
 
-# Abstract
+> *Note: This is the abstract of the Master's thesis in chess AI. This and all the subsequent documents are meant to be transposed to Latex in pdf form.*
 
 ---
+
+# Abstract
 
 <span style="color: #808080;">[Topic / Context]</span> In the context of board games, a common approach to increasing model performance is to partition the state space and allocate distinct experts to each region. While this is the central idea behind Mixture of Experts (MoE) architectures, the bucketing is almost always defined manually, requiring domain-specific expertise, and yielding potentially suboptimal partitions.
 
