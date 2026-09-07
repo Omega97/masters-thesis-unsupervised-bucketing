@@ -2,8 +2,6 @@
 # Unsupervised State Bucketing for Mixture of Experts in Resource-Constrained Chess Engines
 
 
-> *Note: This is the abstract of the Master's thesis in chess AI. This and all the subsequent documents are meant to be transposed to Latex in pdf form.*
-
 ---
 
 # Abstract
