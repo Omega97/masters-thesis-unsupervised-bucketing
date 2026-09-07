@@ -27,7 +27,10 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 
 <span style="color: #808080;">[Neural Eval]</span> The limitations of handcrafted features led to the adoption of neural networks as evaluation functions. **AlphaZero** (Silver et al., 2018) demonstrated that a deep convolutional network, trained via self-play reinforcement learning, could surpass the best classical engines. However, these networks are computationally expensive—requiring millions of operations per evaluation—making them unsuitable for resource-constrained devices or for engines that must evaluate millions of positions per second.
 
+<span style="color: #808080;">[AlphaZero value function]</span> AlphaZero's value head outputs a scalar $v\in[−1,+1]$, interpreted as the expected game outcome from the current player's perspective. This scalar is the training target for the value network. However, AlphaZero's training and inference rely on **Monte Carlo Tree Search (MCTS)**, which builds a search tree by repeatedly simulating trajectories and using the neural network to evaluate leaf nodes. This process requires many forward passes of the network per position, making it computationally expensive and poorly suited for engines that evaluate millions of positions per second with alpha-beta search. The AlphaZero network itself is a deep residual architecture with millions of parameters, requiring floating-point operations and substantial memory, which far exceeds the capacity of microcontrollers. In contrast, the NNUE architecture adopted in this work reduces the per-evaluation cost to a handful of integer operations while retaining the representational power of a neural network. We revisit AlphaZero's value formulation in Section 2.1.4, where we contrast its scalar expected value with the WDL distribution used in this work.
+
 #todo AlphaZero value function: scalar $v \in [-1,1]$ (expected outcome), trained with MCTS (not α-β). Cost per node vs NNUE. Do not mix AZ's MCTS with Cfish search. Contrast with Lc0 as teacher in 4.1. 
+
 
 ### 2.1.3 NNUE: A Hybrid Approach
 
@@ -89,6 +92,19 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 
 ## 2.3 Sample Gradients
 
+
+### 2.3.1 Per-Sample Gradients 
+
+#todo Per-Sample Gradients 
+
+### 2.3.2 Gradient Similarity and Specialization 
+
+#todo Gradient Similarity and Specialization 
+
+### 2.3.3 Gradient-Based Clustering
+
+#todo Gradient-Based Clustering
+
 <span style="color: #808080;">[Learning Signal]</span>
 #todo Per-example gradients w.r.t.\ head parameters as a representation of the learning signal. Why they differ from activations. Pointers to gradient-clustering literature.
 
@@ -96,8 +112,14 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 
 ## 2.4 Bucketing in NNUE
 
+
+### 2.4.1 Handcrafted Bucketing 
+
 <span style="color: #808080;">[Handcrafted Buckets]</span>
 #todo Handcrafted buckets: piece count, king location, piece presence (queen, bishop pair, \ldots). Why they are cheap, and why they may not match what the model needs.
+
+### 2.4.2 Learned Bucketing
+
 
 #todo reference the Kaggle challenge: [FIDE & Google Efficient Chess AI Challenge](https://www.kaggle.com/competitions/fide-google-efficiency-chess-ai-challenge)
 
@@ -105,10 +127,20 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 
 ## 2.5 Related Work
 
-<span style="color: #808080;">[Closest Work]</span>
-#todo Efficiency (pruning, quantization). Distillation / teacher–student. Self-play RL (AlphaZero, Lc0). Work closest to sample-gradient clustering and MoE routing (see `related-work.md`).
-
 #todo When covering ELREA / GradientSpace: LoRA experts vs NNUE heads (see 2.2).
+
+### 2.5.1 Efficient Chess Engines 
+
+#todo Efficient Chess Engines 
+
+### 2.5.2 Teacher–Student Evaluation 
+
+#todo Teacher–Student Evaluation 
+
+### 2.5.3 Gradient-Based Expert Specialization
+
+#todo Gradient-Based Expert Specialization
+
 
 ---
 
