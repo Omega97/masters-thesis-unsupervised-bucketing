@@ -21,7 +21,9 @@
 
 ## 4.1 Dataset and Teacher
 
-The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we construct a dataset of approximately **5 million chess positions** extracted from human games and labeled with high-quality value estimates from a strong teacher network, **Leela Chess Zero** (Lc0), the *spiritual* successor of *AlphaZero*.
+The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we constructed a dataset of approximately **5 million chess positions** extracted from human games and labeled with high-quality value estimates from a strong teacher network, **Leela Chess Zero** (Lc0), the *spiritual* successor of *AlphaZero*.
+
+#todo update figure
 
 ### 4.1.1 Dataset Construction
 
@@ -69,8 +71,11 @@ For this work, we label positions using Lc0's **latest best network** (e.g., `79
 
 ### 4.1.5 Labelling Pipeline
 
-The complete labelling pipeline consists of four steps. First, we parse Lichess PGNs and sample positions uniformly from each game, saving FEN strings and visit counts. Then, for each unique FEN, we invoke Lc0 in UCI mode to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities and the scalar expected reward alongside the FEN and visit counts in JSON format. Finally, in the encoding step we pre‑compute the 844‑dimensional sparse feature vectors (both STM and opponent POVs) and store them in `.npz` slices for efficient training.
-#note changed from list to prose
+The complete labelling pipeline is straightforward. We parse Lichess PGNs and sample positions uniformly at random from each game, saving FEN strings and visit counts. This reduces the correlation between the positions in the final dataset. For each unique FEN, we invoke Lc0 in *UCI mode* at **depth 1** to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities alongside the FEN and visit counts in JSON format. In the encoding step we pre‑compute the 844‑dimensional sparse feature vectors (both STM and opponent POVs) and store them in `.npz` slices for efficient training. The final result is a dataset of pairs of sparse input board positions and their relative WDL probabilities.
+
+#todo UCI mode? STM perspective?
+#todo specify WDL and depth 1?
+#todo ensure the prose around it is not just a list of bullet points in disguise.
 
 ---
 
