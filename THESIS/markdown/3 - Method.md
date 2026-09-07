@@ -1,6 +1,6 @@
 # Method: Unsupervised Bucketing via Sample Gradients
 
-#idea The dispatcher needs only to be called on half of the activations of the dual *accumulator layer*, making it 128x3 parameters in size.
+#idea The dispatcher needs only to be called on half of the activations of the dual *accumulator layer*, making it [W]x3 parameters in size.
 
 #idea it's not necessary to perform clustering on the whole training set
 
@@ -39,7 +39,7 @@
 | $N$                  | The total number of positions in the training dataset.          |
 | $N_i$                | The number of positions in bucket $\mathcal{D}_i$.              |
 | $h$                  | The hidden dimension of the NNUE accumulator.                   |
-| $d_{\text{in}}$      | The input dimension of the NNUE accumulator (844 in this work). |
+| $d_{\text{in}}$      | The input dimension of the NNUE accumulator ([d_in] in this work). |
 | $v_i \in \mathbb{R}$ | The scalar label (expected reward) for position $s_i$.          |
 | $\eta$               | The learning rate used for gradient updates.                    |
 
@@ -93,7 +93,7 @@
 
 ### 3.3.1 Model Architecture
 
-<span style="color: #808080;">[Architecture]</span> The base model follows the NNUE architecture described in Section 2.1.3: a sparse accumulator layer $W_{L1}$ that maps a binary feature representation to a hidden state $h \in \mathbb{R}^h$, followed by a small fully-connected head $(W_{L2}, W_{out})$ that produces WDL logits. The architecture is kept deliberately small to reflect the resource constraints of the target hardware—specifically, a hidden dimension of $h = 64$ for the accumulator and $H = 128$ for the L2 layer, resulting in approximately 71,000 trainable parameters.
+<span style="color: #808080;">[Architecture]</span> The base model follows the NNUE architecture described in Section 2.1.3: a sparse accumulator layer $W_{L1}$ that maps a binary feature representation to a hidden state $h \in \mathbb{R}^h$, followed by a small fully-connected head $(W_{L2}, W_{out})$ that produces WDL logits. The architecture is kept deliberately small to reflect the resource constraints of the target hardware—specifically, a hidden dimension of $h = [W]$ for the accumulator and $H = [H]$ for the L2 layer, resulting in approximately [n_params] trainable parameters.
 
 #todo remove hard numbers? 
 
@@ -109,7 +109,7 @@ $$\mathcal{L} = -\frac{1}{N} \sum_{i=1}^N \left[ \hat{P}_i(W) \log P_i(W) + \hat
 
 ### 3.3.3 Training Protocol
 
-<span style="color: #808080;">[Training Protocol]</span> The base model is trained on the full dataset of approximately 5 million positions using the Adam optimiser with a learning rate of $10^{-2}$, linearly decayed to $10^{-3}$ over the course of training. We use a batch size of 1024 and train until convergence on the held-out test set (5% of the total dataset). All training is performed in PyTorch on a DGX Nvidia Spark GPU.
+<span style="color: #808080;">[Training Protocol]</span> The base model is trained on the full dataset of approximately [dataset_size] positions using the Adam optimiser with a learning rate of [lr_start], linearly decayed to [lr_end] over the course of training. We use a batch size of [batch_size] and train until convergence on the held-out test set ([test_fraction] of the total dataset). All training is performed in PyTorch on a DGX Nvidia Spark GPU.
 
 #todo update hyperparameters like batch size
 
@@ -172,9 +172,9 @@ $$\Delta_i^{\text{norm}} = \frac{\Delta_i}{\|\Delta_i\| + \epsilon}$$
 
 ### 3.4.4 Storage and Compute Considerations
 
-<span style="color: #808080;">[Storage Cost]</span> Computing and storing sample gradients for 5 million positions presents practical challenges. Each gradient vector has dimension $P_{\text{head}} \approx 17,000$ (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
+<span style="color: #808080;">[Storage Cost]</span> Computing and storing sample gradients for [dataset_size] positions presents practical challenges. Each gradient vector has dimension $P_{\text{head}} \approx [P_head]$ (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
 
-$$5 \times 10^6 \times 17,000 \times 4 \text{ bytes} \approx 340 \text{ GB}$$
+$$[dataset_size] \times [P_head] \times 4 \text{ bytes}$$
 #todo update numbers
 
 #todo considerations on whether to introduce rounding, and whether to use just part of the dataset
@@ -215,7 +215,7 @@ where $\mu_k = \frac{1}{|\mathcal{C}_k|} \sum_{i \in \mathcal{C}_k} \Delta_i$ is
 
 #todo Disadvantages:
 - **Parameter sensitivity**: The algorithm requires choosing a distance cutoff (for density estimation) and a threshold for the distance to higher-density points. These parameters can significantly affect the number of clusters.
-- **Computational cost**: Computing pairwise distances for 5 million points is prohibitive (O(N²)). We would need to use approximations (e.g., approximate nearest neighbours) or subsample the data.
+- **Computational cost**: Computing pairwise distances for [dataset_size] points is prohibitive (O(N²)). We would need to use approximations (e.g., approximate nearest neighbours) or subsample the data.
 - **Cluster size imbalance**: Density-based methods may produce clusters of very different sizes, which can be problematic for expert fine-tuning (some experts would have too little data).
 - **Unstable number of clusters**: The number of clusters can vary with the parameters or with slight perturbations in the data, complicating the design of a fixed-architecture MoE.
 
@@ -255,4 +255,4 @@ where $\mu_k = \frac{1}{|\mathcal{C}_k|} \sum_{i \in \mathcal{C}_k} \Delta_i$ is
 
 ---
 
-> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex.*
+> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*

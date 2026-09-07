@@ -21,13 +21,13 @@
 
 ## 4.1 Dataset and Teacher
 
-<span style="color: #808080;">[Data Overview]</span> The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we constructed a dataset of approximately **5 million chess positions** extracted from human games and labeled with high-quality value estimates from a strong teacher network, **Leela Chess Zero** (Lc0), the *spiritual* successor of *AlphaZero*.
+<span style="color: #808080;">[Data Overview]</span> The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we constructed a dataset of approximately **[dataset_size] chess positions** extracted from human games and labeled with high-quality value estimates from a strong teacher network, **Leela Chess Zero** (Lc0), the *spiritual* successor of *AlphaZero*.
 
 #todo update hyperparameters
 
 ### 4.1.1 Dataset Construction
 
-<span style="color: #808080;">[Sources]</span> The raw positions are sourced from **Lichess** monthly PGN archives, containing standard-rated games played by humans across all time controls. We filter games to include only those with at least 16 moves, excluding very short games that often end in early blunders or resignations and would introduce noisy or uninformative positions into the training set ( #todo omit?). From each remaining game, we sample positions randomly (e.g., one every 20), ensuring a diverse and representative collection of states across all phases of play, and mostly avoiding highly correlated positions.
+<span style="color: #808080;">[Sources]</span> The raw positions are sourced from **Lichess** monthly PGN archives, containing standard-rated games played by humans across all time controls. We filter games to include only those with at least 16 moves, excluding very short games that often end in early blunders or resignations and would introduce noisy or uninformative positions into the training set ( #todo omit?). From each remaining game, we sample positions randomly with probability [keep_prob], ensuring a diverse and representative collection of states across all phases of play, and mostly avoiding highly correlated positions.
 
 <span style="color: #808080;">[Phase Mix]</span> The dataset retains the natural distribution of game phases found in human play: a majority of middlegame positions, with fewer openings and endgames. We intentionally avoid resampling to balance phases, as the natural distribution better reflects the positions the engine will encounter during actual play. Each position is stored as a FEN string along with the multiplicity of the position—a visit count that may be used for optional weighting during training.
 
@@ -35,11 +35,11 @@
 
 ### 4.1.2 Feature Encoding
 
-<span style="color: #808080;">[Encoding]</span> For the NNUE model, each FEN string is encoded as a **sparse binary feature vector** of length $d_{\text{in}}=844$. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
+<span style="color: #808080;">[Encoding]</span> For the NNUE model, each FEN string is encoded as a **sparse binary feature vector** of length $d_{\text{in}}=[d_in]$. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
 
 <span style="color: #808080;">[Feature Split]</span> The $d_{\text{in}}$ features are divided into two categories:
 
-- **716 base features**: These encode piece-square pairs, representing the presence of each piece type on each square. The feature set is pruned to remove impossible pawn ranks and compressed to reduce redundancy (e.g., the king plane is stored in a compact form). #todo explain better? In the **844‑dim SARDINE encoder**, the king plane is **compressed** from 64 squares to **32**, saving features.
+- **716 base features**: These encode piece-square pairs, representing the presence of each piece type on each square. The feature set is pruned to remove impossible pawn ranks and compressed to reduce redundancy (e.g., the king plane is stored in a compact form). #todo explain better? In the **[d_in]‑dim SARDINE encoder**, the king plane is **compressed** from 64 squares to **32**, saving features.
 
 - **128 tactical features**: These encode dynamic aspects of the position, specifically which pieces are under attack and which pieces are attacking the king. These features provide the network with explicit information about immediate tactical threats. #todo is it worth trying without these? I don't think so...
 
@@ -51,7 +51,7 @@
 
 ### 4.1.3 Data Splits
 
-<span style="color: #808080;">[Splits]</span> The dataset is partitioned into training and test splits. The **training set** consists of approximately 5 million positions, distributed across 165 slices for balanced I/O and stochastic sampling. The **test set** comprises a random portion of 5% of the position that are held out of the training set.
+<span style="color: #808080;">[Splits]</span> The dataset is partitioned into training and test splits. The **training set** consists of approximately [dataset_size] positions, distributed across 165 slices for balanced I/O and stochastic sampling. The **test set** comprises a random portion of [test_fraction] of the position that are held out of the training set.
 #todo remember to update numbers when they change...
 
 ### 4.1.4 Teacher Model: Lc0
@@ -73,7 +73,7 @@ which represents the expected outcome of the game from the current position. Thi
 
 ### 4.1.5 Labelling Pipeline
 
-<span style="color: #808080;">[Pipeline]</span> The complete labelling pipeline is straightforward. We parse Lichess PGNs and sample positions uniformly at random from each game, saving FEN strings and visit counts. This reduces the correlation between the positions in the final dataset. For each unique FEN, we invoke Lc0 in *UCI mode* at **depth 1** to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities alongside the FEN and visit counts in JSON format. In the encoding step we pre‑compute the 844‑dimensional sparse feature vectors (both STM and opponent POVs) and store them in `.npz` slices for efficient training. The final result is a dataset of pairs of sparse input board positions and their relative WDL probabilities.
+<span style="color: #808080;">[Pipeline]</span> The complete labelling pipeline is straightforward. We parse Lichess PGNs and sample positions uniformly at random from each game, saving FEN strings and visit counts. This reduces the correlation between the positions in the final dataset. For each unique FEN, we invoke Lc0 in *UCI mode* at **depth 1** to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities alongside the FEN and visit counts in JSON format. In the encoding step we pre‑compute the [d_in]‑dimensional sparse feature vectors (both STM and opponent POVs) and store them in `.npz` slices for efficient training. The final result is a dataset of pairs of sparse input board positions and their relative WDL probabilities.
 
 #todo UCI mode? STM perspective?
 #todo specify WDL and depth 1?
@@ -87,7 +87,7 @@ which represents the expected outcome of the game from the current position. Thi
 
 ### 4.2.1 Model Overview
 
-<span style="color: #808080;">[Overview]</span> The base model $f_\theta$ is a feed‑forward neural network with three parameterised layers: a shared sparse first layer (L1), a dense second layer (L2), and a linear output head, with *softmax* activations. The input to the model is the sparse binary feature representation described in Section 4.1.2, consisting of 844 active features per perspective. The model processes both the side‑to‑move (STM) and opponent perspectives through the same L1 layer, producing two accumulator vectors that are later concatenated and passed through the remaining layers.
+<span style="color: #808080;">[Overview]</span> The base model $f_\theta$ is a feed‑forward neural network with three parameterised layers: a shared sparse first layer (L1), a dense second layer (L2), and a linear output head, with *softmax* activations. The input to the model is the sparse binary feature representation described in Section 4.1.2, consisting of [d_in] active features per perspective. The model processes both the side‑to‑move (STM) and opponent perspectives through the same L1 layer, producing two accumulator vectors that are later concatenated and passed through the remaining layers.
 
 <span style="color: #808080;">[Forward Pass]</span> Formally, the model computes:
 
@@ -96,7 +96,7 @@ h_{\text{own}} = W_{\text{L1}} \, x_{\text{own}}, \qquad
 h_{\text{opp}} = W_{\text{L1}} \, x_{\text{opp}},
 $$
 
-where $x_{\text{own}}, x_{\text{opp}} \in \{0,1\}^{}$ are the sparse feature vectors for the two perspectives, and $W_{\text{L1}} \in \mathbb{R}^{d_{\text{in}} \times W}$ is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors $h_{\text{own}}, h_{\text{opp}} \in \mathbb{R}^W$, where $W$ is the hidden dimension of the accumulator, set to $W = 64$ in this work.
+where $x_{\text{own}}, x_{\text{opp}} \in \{0,1\}^{[d_in]}$ are the sparse feature vectors for the two perspectives, and $W_{\text{L1}} \in \mathbb{R}^{d_{\text{in}} \times W}$ is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors $h_{\text{own}}, h_{\text{opp}} \in \mathbb{R}^W$, where $W$ is the hidden dimension of the accumulator, set to $W = [W]$ in this work.
 
 <div align="center">
     <img src="THESIS/thesis-plots/sardine_nnue_architecture.png" width="600">
@@ -143,7 +143,7 @@ $$
 
 ### 4.2.4 L2 Layer and Output Head
 
-<span style="color: #808080;">[L2 Layer]</span> The concatenated vector $h$ is passed through a dense L2 layer with hidden dimension $H = 128$:
+<span style="color: #808080;">[L2 Layer]</span> The concatenated vector $h$ is passed through a dense L2 layer with hidden dimension $H = [H]$:
 
 $$
 z = \text{ReLU}(W_{\text{L2}} \, h + b_{\text{L2}}),
@@ -179,12 +179,12 @@ $$
 
 ### 4.2.6 Parameter Count and Model Size
 
-<span style="color: #808080;">[Model Size]</span> With $W = 64$ and $H = 128$, the total number of trainable parameters is approximately 70,979. This compact size is deliberately chosen to fit within the memory constraints of the target hardware: the L1 weights ($844 \times 64 = 54,016$ int8 values) dominate the parameter count, while the L2 and output layers contribute only a small fraction. The model is therefore both computationally efficient and storage‑friendly, with a footprint that can be further reduced through pruning and quantisation.
+<span style="color: #808080;">[Model Size]</span> With $W = [W]$ and $H = [H]$, the total number of trainable parameters is approximately [n_params]. This compact size is deliberately chosen to fit within the memory constraints of the target hardware: the L1 weights ($[d_in] \times [W]$ int8 values) dominate the parameter count, while the L2 and output layers contribute only a small fraction. The model is therefore both computationally efficient and storage‑friendly, with a footprint that can be further reduced through pruning and quantisation.
 #todo naming convention for the number of neurons per layer...
 
 ### 4.2.7 Training Protocol
 
-<span style="color: #808080;">[Training Protocol]</span> The base model is trained on the full training set (approximately 5 million positions) using the Adam optimiser with a learning rate of $10^{-2}$, linearly decayed to $10^{-3}$ over the course of training. We use a batch size of 1024 and train for up to 1000 epochs. The model's performance is evaluated on a held‑out test set of random positions, $5\%$ of the total dataset, ensuring that generalisation is measured on unseen data. The training is conducted on a *DGX Nvidia Spark GPU*.
+<span style="color: #808080;">[Training Protocol]</span> The base model is trained on the full training set (approximately [dataset_size] positions) using the Adam optimiser with a learning rate of [lr_start], linearly decayed to [lr_end] over the course of training. We use a batch size of [batch_size] and train for up to 1000 epochs. The model's performance is evaluated on a held‑out test set of random positions, [test_fraction] of the total dataset, ensuring that generalisation is measured on unseen data. The training is conducted on a *DGX Nvidia Spark GPU*.
 
 #todo update numbers: number of positions, batch size
 
@@ -239,4 +239,4 @@ $$
 
 ---
 
-> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex.*
+> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*

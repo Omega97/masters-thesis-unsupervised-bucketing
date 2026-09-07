@@ -5,14 +5,23 @@
 
 ## Hyperparameters
 
-> *Note for the AI: refer to this file for every hyperparameter and variable *
+> *Note for the AI: refer to this file for every hyperparameter and variable. When converting markdown to Latex, replace every square-bracket placeholder (e.g. `[dataset_size]`, `[W]`) with the **current value** from the table below. Do not leave placeholders in the Latex.*
 
-- Dataset size (FEN positions, with duplicates): 50M
-- Dataset size (unique FEN positions): 49.5M
-- Percentage test set: 1%
-- Batch size: 10k
-- Learning rate: decaying from $10^{-2}$ to $10^{-3}$
-- Target model architecture: $d_{\text{in}}=844$, dual NNUE, L1 accumulator layer 128x2 neurons, L2 256 neurons, output WDL for current player
-- Probability of keeping any position in the dataset: 5%
+| Placeholder | Meaning | Current value |
+| :--- | :--- | :--- |
+| `[dataset_size]` | Dataset size (FEN positions, with duplicates) | 50M |
+| `[dataset_size_unique]` | Dataset size (unique FEN positions) | 49.5M |
+| `[test_fraction]` | Percentage of the dataset held out as test set | 1% |
+| `[batch_size]` | Training batch size | 10k |
+| `[lr_start]` | Initial learning rate | $10^{-2}$ |
+| `[lr_end]` | Final (decayed) learning rate | $10^{-3}$ |
+| `[d_in]` | Input / sparse-feature dimension | 844 |
+| `[W]` | L1 accumulator width **per perspective** (dual NNUE: `[W]`×2) | 128 |
+| `[H]` | L2 hidden width | 256 |
+| `[keep_prob]` | Probability of keeping any sampled position in the dataset | 5% |
+| `[n_params]` | Total trainable parameters of the target architecture | *derive from `[d_in]`, `[W]`, `[H]` at export time* |
+| `[P_head]` | Flattened head-parameter dimension (L2 + output) | *derive from `[W]`, `[H]` at export time* |
+
+Target model architecture: $d_{\text{in}}=[d_in]$, dual NNUE, L1 accumulator layer $[W]\times 2$ neurons, L2 $[H]$ neurons, output WDL for the current player.
 
 ---

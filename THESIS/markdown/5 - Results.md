@@ -44,10 +44,10 @@
 <span style="color: #808080;">[Base NNUE]</span>
 #todo ...
 
-<span style="color: #808080;">[Dataset Size]</span> We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to 5M. The model has a 256-neuron accumulator layer (2x128), and a 256 neuron L2 layer, which lays on the larger side of the models we trained.
+<span style="color: #808080;">[Dataset Size]</span> We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to [dataset_size]. The model has a $2\times[W]$-neuron accumulator layer, and a [H]-neuron L2 layer, which lays on the larger side of the models we trained.
 
 ```
-py -3.12 -u scripts/train_nnue.py --epochs 20 --lr 0.01 --hidden-dim 128 --hidden2-dim 256 --batches-per-epoch 50 --batch-size 1024 --run-name dual_h128_H256_fast_ft97 --plot plots/dual_nnue_ce_128_256_ft97.png --test-subset-size 5000 --train-val-subset-size 5000 --test-fraction 0.97 --fast
+py -3.12 -u scripts/train_nnue.py --epochs 20 --lr [lr_start] --hidden-dim [W] --hidden2-dim [H] --batches-per-epoch 50 --batch-size [batch_size] --run-name dual_h[W]_H[H]_fast_ft97 --plot plots/dual_nnue_ce_[W]_[H]_ft97.png --test-subset-size 5000 --train-val-subset-size 5000 --test-fraction 0.97 --fast
 ```
 #todo maybe convert command to table of parameters
 
@@ -100,4 +100,4 @@ py -3.12 -u scripts/train_nnue.py --epochs 20 --lr 0.01 --hidden-dim 128 --hidde
 
 ---
 
-> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex.*
+> **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*
