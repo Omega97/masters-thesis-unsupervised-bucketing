@@ -23,7 +23,7 @@
 
 <span style="color: #808080;">[Data Overview]</span> The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we constructed a dataset of approximately **5 million chess positions** extracted from human games and labeled with high-quality value estimates from a strong teacher network, **Leela Chess Zero** (Lc0), the *spiritual* successor of *AlphaZero*.
 
-#todo update figure
+#todo update hyperparameters
 
 ### 4.1.1 Dataset Construction
 
@@ -35,9 +35,9 @@
 
 ### 4.1.2 Feature Encoding
 
-<span style="color: #808080;">[Encoding]</span> For the NNUE model, each FEN string is encoded as a **sparse binary feature vector** of length 844. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
+<span style="color: #808080;">[Encoding]</span> For the NNUE model, each FEN string is encoded as a **sparse binary feature vector** of length $d_{\text{in}}=844$. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
 
-<span style="color: #808080;">[Feature Split]</span> The 844 features are divided into two categories:
+<span style="color: #808080;">[Feature Split]</span> The $d_{\text{in}}$ features are divided into two categories:
 
 - **716 base features**: These encode piece-square pairs, representing the presence of each piece type on each square. The feature set is pruned to remove impossible pawn ranks and compressed to reduce redundancy (e.g., the king plane is stored in a compact form). #todo explain better? In the **844‑dim SARDINE encoder**, the king plane is **compressed** from 64 squares to **32**, saving features.
 
@@ -96,7 +96,7 @@ h_{\text{own}} = W_{\text{L1}} \, x_{\text{own}}, \qquad
 h_{\text{opp}} = W_{\text{L1}} \, x_{\text{opp}},
 $$
 
-where $x_{\text{own}}, x_{\text{opp}} \in \{0,1\}^{844}$ are the sparse feature vectors for the two perspectives, and $W_{\text{L1}} \in \mathbb{R}^{844 \times W}$ is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors $h_{\text{own}}, h_{\text{opp}} \in \mathbb{R}^W$, where $W$ is the hidden dimension of the accumulator, set to $W = 64$ in this work.
+where $x_{\text{own}}, x_{\text{opp}} \in \{0,1\}^{}$ are the sparse feature vectors for the two perspectives, and $W_{\text{L1}} \in \mathbb{R}^{d_{\text{in}} \times W}$ is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors $h_{\text{own}}, h_{\text{opp}} \in \mathbb{R}^W$, where $W$ is the hidden dimension of the accumulator, set to $W = 64$ in this work.
 
 <div align="center">
     <img src="THESIS/thesis-plots/sardine_nnue_architecture.png" width="600">
@@ -185,6 +185,7 @@ $$
 ### 4.2.7 Training Protocol
 
 <span style="color: #808080;">[Training Protocol]</span> The base model is trained on the full training set (approximately 5 million positions) using the Adam optimiser with a learning rate of $10^{-2}$, linearly decayed to $10^{-3}$ over the course of training. We use a batch size of 1024 and train for up to 1000 epochs. The model's performance is evaluated on a held‑out test set of random positions, $5\%$ of the total dataset, ensuring that generalisation is measured on unseen data. The training is conducted on a *DGX Nvidia Spark GPU*.
+
 #todo update numbers: number of positions, batch size
 
 ---
