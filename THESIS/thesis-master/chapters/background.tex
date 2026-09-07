@@ -18,6 +18,8 @@ While classical evaluators are extremely fast, they suffer from fundamental limi
 
 The limitations of handcrafted features led to the adoption of neural networks as evaluation functions. \textbf{AlphaZero}~\cite{silver2018alphazero} demonstrated that a deep convolutional network, trained via self-play reinforcement learning, could surpass the best classical engines. However, these networks are computationally expensive---requiring millions of operations per evaluation---making them unsuitable for resource-constrained devices or for engines that must evaluate millions of positions per second.
 
+AlphaZero's value head outputs a scalar \(v \in [-1,+1]\), interpreted as the expected game outcome from the current player's perspective. This scalar is the training target for the value network. However, AlphaZero's training and inference rely on \textbf{Monte Carlo Tree Search (MCTS)}, which builds a search tree by repeatedly simulating trajectories and using the neural network to evaluate leaf nodes. This process requires many forward passes of the network per position, making it computationally expensive and poorly suited for engines that evaluate millions of positions per second with alpha-beta search. The AlphaZero network itself is a deep residual architecture with millions of parameters, requiring floating-point operations and substantial memory, which far exceeds the capacity of microcontrollers. In contrast, the NNUE architecture adopted in this work reduces the per-evaluation cost to a handful of integer operations while retaining the representational power of a neural network. We revisit AlphaZero's value formulation in Section~\ref{sec:value-targets}, where we contrast its scalar expected value with the WDL distribution used in this work.
+
 \subsection{NNUE: A Hybrid Approach}\label{sec:nnue}
 
 The \textbf{Efficiently Updatable Neural Network (NNUE)} architecture, first introduced in the \emph{shogi} engine \emph{YaneuraOu} and later adopted by \emph{Stockfish}, strikes a pragmatic balance. NNUE combines the representational power of a neural network with the incremental efficiency of classical evaluators.
@@ -26,7 +28,7 @@ The architecture consists of two ingredients: a sparse first layer called the \e
 
 The accumulator layer maps a binary representation of the board to a hidden representation \(h \in \mathbb{R}^{d}\) via \(h = W_{L1} \cdot x\), where \(x\) is a sparse binary vector (typically 768 or 1024 dimensions) indicating the presence of pieces on squares. The key insight is that a chess move changes only a few bits of \(x\), so \(h\) can be \textbf{updated incrementally} by adding and subtracting the corresponding columns of \(W_{L1}\), rather than by recomputing the entire matrix-vector product from scratch. This makes the computation of L1 essentially \emph{free}.
 
-The second ingredient, the fully connected head, is typically one or two hidden layers followed by a scalar output, mapping \(h\) to the position value. In our case, we found easier to train a probability distribution across all the three possible game result for the player; win, draw, and loss (WDL), by minimizing the cross-entropy between the output of the teacher and the student.
+The second ingredient, the fully connected head, is typically one or two hidden layers followed by a scalar output, mapping \(h\) to the position value. In our case, we found it easier to train a probability distribution across all the three possible game result for the player; win, draw, and loss (WDL), by minimizing the cross-entropy between the output of the teacher and the student.
 
 A complete NNUE engine also leverages \textbf{alpha-beta search} with iterative deepening: starting from the root position, the engine searches deeper and deeper, using the NNUE evaluation at leaf nodes to guide the pruning and ordering of moves. At every node of this search tree, the evaluation function is called hundreds or thousands of times, making its speed critical. Also, being trained on enormous amounts of data, a NNUE doesn't suffer from the \emph{horizon problem} as much as a PST does.
 
@@ -40,7 +42,7 @@ The search tree explored by an \textbf{alpha-beta engine} grows exponentially wi
 
 This means that any overhead added to the evaluation function is directly subtracted from the engine's effective search depth. If the evaluator becomes slower, the engine must reduce its search depth to maintain the same response time---sacrificing playing strength in the process.
 
-On an embedded device such as the Wio Terminal, this constraint is even more severe. Memory is limited, floating-point operations are expensive, and every instruction counts. Any routing mechanism for a mixture-of-experts NNUE must add only a trivial cost---ideally, a handful of integer operations or a simple table look-up---to avoid degrading the engine's search performance.
+On an embedded device such as the Wio Terminal (192\,KB RAM, 500\,KB flash), this constraint is even more severe. Memory is limited, floating-point operations are expensive, and every instruction counts. Any routing mechanism for a mixture-of-experts NNUE must add only a trivial cost---ideally, a handful of integer operations or a simple table look-up---to avoid degrading the engine's search performance.
 
 In short, the evaluation function must be expressive enough to assess positions accurately, yet cheap enough to be called millions of times during a game. This trade-off is the central engineering challenge addressed by this thesis.
 
@@ -60,12 +62,38 @@ Cfish is particularly relevant to this thesis for two reasons. First, it demonst
 
 \section{Sample Gradients}\label{sec:sample-gradients}
 
-\draftnote{Per-example gradients w.r.t.\ head parameters as a representation of the learning signal. Why they differ from activations. Pointers to gradient-clustering literature.}
+\subsection{Per-Sample Gradients}\label{sec:per-sample-gradients}
+
+\draftnote{Per-example gradients w.r.t.\ head parameters as a representation of the learning signal. Why they differ from activations.}
+
+\subsection{Gradient Similarity and Specialization}\label{sec:gradient-similarity}
+
+\draftnote{Gradient similarity and specialization.}
+
+\subsection{Gradient-Based Clustering}\label{sec:gradient-clustering-bg}
+
+\draftnote{Pointers to gradient-clustering literature.}
 
 \section{Bucketing in NNUE}\label{sec:nnue-bucketing}
 
+\subsection{Handcrafted Bucketing}\label{sec:handcrafted-bucketing}
+
 \draftnote{Handcrafted buckets: piece count, king location, piece presence (queen, bishop pair, \ldots). Why they are cheap, and why they may not match what the model needs.}
+
+\subsection{Learned Bucketing}\label{sec:learned-bucketing}
+
+\draftnote{Learned alternatives to handcrafted NNUE buckets.}
 
 \section{Related Work}\label{sec:related-work}
 
-\draftnote{Efficiency (pruning, quantization). Distillation / teacher--student. Self-play RL (AlphaZero, Lc0). Work closest to sample-gradient clustering and MoE routing.}
+\subsection{Efficient Chess Engines}\label{sec:rw-efficient}
+
+\draftnote{Efficiency (pruning, quantization).}
+
+\subsection{Teacher--Student Evaluation}\label{sec:rw-teacher}
+
+\draftnote{Distillation / teacher--student. Self-play RL (AlphaZero, Lc0).}
+
+\subsection{Gradient-Based Expert Specialization}\label{sec:rw-grad-experts}
+
+\draftnote{Work closest to sample-gradient clustering and MoE routing. LoRA experts vs NNUE heads.}

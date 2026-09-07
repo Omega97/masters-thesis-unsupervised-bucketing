@@ -134,25 +134,115 @@ We introduce here the formal notation used throughout this chapter and the remai
 
 \subsection{Relationship Between \texorpdfstring{\(\Delta_i\) and \(\delta_i\)}{Delta i and delta i}}\label{sec:delta-vs-task}
 
-A crucial distinction in this work is between \textbf{per-sample gradients} \(\Delta_i\) and \textbf{task vectors} \(\delta_i\):
-\begin{itemize}
-    \item \(\Delta_i = \nabla_{w_{\mathrm{head}}} \mathcal{L}(\hat{f}_{w_{\mathrm{base}}}(s_i), v_i)\) is the gradient of the loss with respect to the head parameters, evaluated at a \textbf{single position} \(s_i\) using the base model. It represents the direction in which the head would need to move to reduce the loss on that specific position.
-    \item \(\delta_i = \theta_i - \theta_{\mathrm{base}}\) is the actual change in the head parameters after \textbf{fine-tuning} on all positions in bucket \(\mathcal{D}_i\). It is the accumulated effect of the per-sample gradients over the bucket.
-\end{itemize}
+A crucial distinction in this work is between \textbf{per-sample gradients} \(\Delta_i\) and \textbf{task vectors} \(\delta_i\). These two concepts are similar to each other, but it is worth emphasizing that the task vector \(\delta_i = \theta_i - \theta_{\mathrm{base}}\) is the difference in model parameters between before and after the fine-tuning, while the sample gradient \(\Delta_i = \nabla_{w_{\mathrm{head}}} \mathcal{L}(\hat{f}_{w_{\mathrm{base}}}(s_i), v_i)\) is the gradient of the loss with respect to the head parameters, evaluated at a \textbf{single position} \(s_i\) using the base model.
 
-The central hypothesis of this work is that clustering positions by their \(\Delta_i\) yields a partition \(\mathcal{P}\) for which the resulting \(\delta_i\) are maximally diverse, meaning each expert specializes in a distinct region of the state space.
+The central hypothesis of this work is that clustering positions by their \(\Delta_i\) yields a partitioning for which the resulting \(\delta_i\) are maximally diverse --- each expert specializes in a distinct region of the state space --- and that the dispatcher is able to approximate this partitioning with enough accuracy to preserve its general structure.
 
 \section{Step 1: Train the Base Model}\label{sec:step-base}
 
-\draftnote{Shared dual-POV L1, L2, output head. Soft cross-entropy on WDL labels from a strong teacher (Lc0). This is the chosen loss (not MSE on centipawns or EV).}
+The first step of our method is to train a \textbf{base evaluation model} that will serve as the foundation for all subsequent steps. This model provides two essential functions: it supplies the reference point from which the sample gradients are computed, and it provides the frozen L1 representation used by the dispatcher at inference time.
+
+\subsection{Model Architecture}\label{sec:method-arch}
+
+The base model follows the NNUE architecture described in Section~\ref{sec:nnue}: a sparse accumulator layer \(W_{L1}\) that maps a binary feature representation to a hidden state \(h \in \mathbb{R}^h\), followed by a small fully-connected head \((W_{L2}, W_{\mathrm{out}})\) that produces WDL logits. The architecture is kept deliberately small to reflect the resource constraints of the target hardware---specifically, a hidden dimension of \(h = 64\) for the accumulator and \(H = 128\) for the L2 layer, resulting in approximately 71,000 trainable parameters.
+
+\subsection{Training Objective}\label{sec:method-loss}
+
+The model is trained to minimize the \textbf{soft cross-entropy loss} between its predicted WDL distribution and the teacher labels provided by Lc0 (see Section~\ref{sec:teacher-lc0}). For a batch of \(N\) positions with teacher probabilities \(\hat{p}_i = (\hat{P}_i(W), \hat{P}_i(D), \hat{P}_i(L))\) and model outputs \(p_i = (P_i(W), P_i(D), P_i(L))\), the loss is:
+\[
+\mathcal{L} = -\frac{1}{N} \sum_{i=1}^N \left[ \hat{P}_i(W) \log P_i(W) + \hat{P}_i(D) \log P_i(D) + \hat{P}_i(L) \log P_i(L) \right]
+\]
+This choice of loss is deliberate. Unlike mean squared error on a scalar value (centipawns or expected reward \(v = P(W) - P(L)\)), the cross-entropy loss encourages the model to match the \textbf{full outcome distribution} rather than just its mean. This provides a richer training signal and naturally handles the non-linear relationship between WDL probabilities and the scalar evaluation used during search.
+
+\subsection{Training Protocol}\label{sec:method-protocol}
+
+The base model is trained on the full dataset of approximately 5 million positions using the Adam optimiser with a learning rate of \(10^{-2}\), linearly decayed to \(10^{-3}\) over the course of training. We use a batch size of 1024 and train until convergence on the held-out test set (5\% of the total dataset). All training is performed in PyTorch on a DGX Nvidia Spark GPU.
+
+\subsection{The Role of the Base Model}\label{sec:base-role}
+
+Once trained, the base model \(w_{\mathrm{base}} = (W_{L1}, W_{L2}^{\mathrm{base}}, W_{\mathrm{out}}^{\mathrm{base}})\) serves several critical functions in our pipeline, one of which is as reference point for gradients: For each position \(s_i\), we compute the sample gradient \(\Delta_i\) evaluated at the base model. This gradient represents the direction in which the head would need to move to better fit that specific position---the \emph{learning signal} that drives our bucketing.
+
+An other important role of the base model is as frozen representation for routing. The L1 weights \(W_{L1}\) are \textbf{frozen} after base training and are never updated during expert fine-tuning. This ensures that all experts operate on the same shared representation, and that the dispatcher can rely on stable L1 activations \(h = W_{L1} \cdot x\) as input features.
+
+Finally, the base model is of course also the starting point for expert fine-tuning. Each expert head \((W_{L2}^{(i)}, W_{\mathrm{out}}^{(i)})\) is initialised from the base head \((W_{L2}^{\mathrm{base}}, W_{\mathrm{out}}^{\mathrm{base}})\) before being fine-tuned on its assigned bucket.
+
+\subsection{Why Freeze L1?}\label{sec:why-freeze-l1}
+
+Freezing the L1 layer is a deliberate design choice. The accumulator is the most expensive component of the NNUE architecture in terms of parameter count, and updating it during fine-tuning would be computationally prohibitive. More importantly, freezing L1 ensures that the representation space remains stable across all experts: the dispatcher, trained on L1 activations, can reliably route positions without needing to account for different representations. This stability is essential for the lightweight inference pipeline, where the dispatcher must operate with negligible overhead.
 
 \section{Step 2: Compute Sample Gradients}\label{sec:step-gradients}
 
-\draftnote{Per-sample gradients w.r.t.\ head parameters. Normalisation (L2 or standardisation). Storage and compute cost.}
+With the base model trained, the second step is to compute, for each position in the dataset, the \textbf{sample gradient} of the loss with respect to the head parameters. These gradients encode the direction in which the head parameters would need to move to improve the prediction for each individual position. They represent the \emph{learning signal} that we will later use for bucketing.
+
+\subsection{Definition of Sample Gradient}\label{sec:sg-def}
+
+For each position \(s_i\) in the dataset \(\mathcal{D} = \{(s_i, v_i)\}_{i=1}^N\), the sample gradient is defined as:
+\[
+\Delta_i = \nabla_{w_{\mathrm{head}}} \mathcal{L}(\hat{f}_{w^{\mathrm{base}}}(s_i), v_i)
+\]
+where:
+\begin{itemize}
+    \item \(w_{\mathrm{head}} = \mathrm{vec}(W_{L2}, W_{\mathrm{out}})\) is the vector of all head parameters (the L2 weights and biases, and the output weights and biases)
+    \item \(\hat{f}_{w_{\mathrm{base}}}\) is the base model evaluated at the current weights
+    \item \(\mathcal{L}\) is the soft cross-entropy loss on WDL probabilities
+    \item \(v_i = (p_W, p_D, p_L)\) is the teacher label for position \(s_i\)
+\end{itemize}
+The gradient is computed \textbf{at the base model} \(w_{\mathrm{base}}\), before any fine-tuning occurs. It represents the instantaneous direction in weight space that would reduce the loss on that specific position, independent of all other positions.
+
+\subsection{Implementation}\label{sec:sg-impl}
+
+In practice, PyTorch's \texttt{torch.autograd.grad} function simultaneously and efficiently computes the sample gradients for a batch of inputs. As previously discussed, the gradients in question are relative only to the head parameters \((W_{L2}, W_{\mathrm{out}})\), not the L1 accumulator weights.
+
+For a batch of positions, we first compute the forward-pass of the model to obtain WDL predictions, and then the cross-entropy loss between predictions and teacher labels. The method \texttt{torch.autograd.grad(loss, head\_parameters, retain\_graph=False)} is called to obtain the gradients. Finally, the resulting gradient tensors are detach and flattened into a single vector per position. The computation is parallelised across the GPU and is performed in a single pass over the dataset. The gradients are stored on disk for later use in the clustering step.
+
+\subsection{Normalisation}\label{sec:sg-norm}
+
+The raw gradients can have highly variable magnitudes depending on the position, the current state of the model, and on weather the multiplicity of the state is considered or not. The \emph{L2 normalization} of each gradient vector has been shown to work well in gradient-clustering literature (ELREA, GradientSpace) and preserves the relative angular structure of the gradients.
+\[
+\Delta_i^{\mathrm{norm}} = \frac{\Delta_i}{\lVert\Delta_i\rVert + \epsilon}
+\]
+This projects each gradient onto the unit hypersphere, preserving direction while removing magnitude information. This is appropriate because the \emph{direction} of the gradient encodes the type of specialisation needed, while the magnitude is more sensitive to the current loss value and position difficulty.
+
+\subsection{Storage and Compute Considerations}\label{sec:sg-storage}
+
+Computing and storing sample gradients for 5 million positions presents practical challenges. Each gradient vector has dimension \(P_{\mathrm{head}} \approx 17{,}000\) (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
+\[
+5 \times 10^6 \times 17{,}000 \times 4 \text{ bytes} \approx 340 \text{ GB}
+\]
 
 \section{Step 3: Cluster Sample Gradients}\label{sec:step-cluster}
 
-\draftnote{K-Means and alternatives (DBSCAN, Density Peak; some choose \(B\)). How to pick \(B\). Validation: inertia, silhouette, interpretability.}
+With the normalised sample gradients \(\{\Delta_i^{\mathrm{norm}}\}_{i=1}^N\) computed for every position in the dataset, the third step is to partition the data into \(B\) clusters (buckets) such that positions with similar learning signals are grouped together. This partition will define the assignment of positions to expert heads during fine-tuning.
+
+\subsection{The Objective of Clustering}\label{sec:cluster-obj}
+
+Recall the central hypothesis of this work: clustering positions by their sample gradients \(\Delta_i\) yields a partition \(\mathcal{P} = \{\mathcal{D}_1, \dots, \mathcal{D}_B\}\) for which the resulting task vectors \(\delta_i = \theta_i - \theta_{\mathrm{base}}\) are maximally diverse. The role of the clustering algorithm is to discover a partition that approximates this objective. From a practical standpoint, we seek an efficient clustering algorithm that produces clusters that are cohesive, balanced, stable, and, hopefully, as separated as possible. Different clustering algorithms make different trade-offs with respect to these criteria. We consider two broad families: fixed-\(B\) algorithms and density-based algorithms.
+
+\subsection{Fixed-\texorpdfstring{\(B\)}{B} Algorithms: K-Means and Variants}\label{sec:kmeans}
+
+The most widely used clustering algorithm is \textbf{K-Means}, which partitions the data into \(B\) clusters by minimising the within-cluster sum of squares. For a set of clusters \(\{\mathcal{C}_1, \dots, \mathcal{C}_B\}\), K-Means minimises:
+\[
+\sum_{k=1}^B \sum_{i \in \mathcal{C}_k} \lVert\Delta_i - \mu_k\rVert^2
+\]
+where \(\mu_k = \frac{1}{|\mathcal{C}_k|} \sum_{i \in \mathcal{C}_k} \Delta_i\) is the centroid of cluster \(k\). This algorithm is fast and well-understood. Specifically, \emph{Mini-Batch K-Means} is particularly attractive for our scale, as it efficiently handles large datasets by processing data in mini-batches, making it suitable for our dataset, that comprises of millions of chess positions. It reduces memory requirements and converges faster than standard K-Means, while producing nearly identical results.
+
+\subsection{Density-Based Algorithms}\label{sec:density-cluster}
+
+An alternative family of algorithms, \textbf{density-based clustering}, does not require a fixed number of clusters. Instead, these methods identify clusters as regions of high density separated by regions of low density.
+
+\textbf{Density Peak Clustering} (Rodriguez \& Laio, 2014) is a particularly relevant algorithm for our setting. It works by identifying cluster centres as points that have high local density (many neighbours within a cutoff distance) and are far from points with higher density (suggesting they are local maxima).
+
+The number of clusters emerges naturally from the data: each point with density higher than all its neighbours and with large distance to the nearest higher-density point is a cluster centre. The remaining points are assigned to the same cluster as their nearest higher-density neighbour.
+
+We chose to use this algorithm because it automatically determines \(B\), so it will be interesting to find out what the clusters of board positions actually represent. This algorithm is also notoriously robustness to outliers; points with low density and large distance to higher-density points are naturally identified as outliers.
+
+\subsection{Choosing \texorpdfstring{\(B\)}{B} and the Algorithm}\label{sec:choose-b}
+
+The choice between fixed-\(B\) and density-based clustering depends on the relative importance of architectural efficiency and data-driven discovery. A density-based approach that automatically determines \(B\) could reveal the natural structure in the gradient space, potentially identifying a number of clusters that better reflects the underlying distribution of learning signals. On the other hand, hardware constraints might impose a hard limit on how many expert heads our device is allowed to store based on our architecture of choice.
+
+\subsection{Validation and Diagnostics}\label{sec:cluster-val}
+
+\draftnote{Once clustering is complete, we validate the quality of the partition using standard metrics: Cluster size distribution, Cosine distance between centroids, Inertia, Silhouette score.}
 
 \section{Step 4: Train the Dispatcher}\label{sec:step-dispatcher}
 

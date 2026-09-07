@@ -22,6 +22,21 @@
 
 \subsection{Base NNUE}\label{sec:res-base}
 
+We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to 5M. The model has a 256-neuron accumulator layer (\(2\times 128\)), and a 256 neuron L2 layer, which lays on the larger side of the models we trained.
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,breaklines=true]
+py -3.12 -u scripts/train_nnue.py --epochs 20 --lr 0.01 --hidden-dim 128 --hidden2-dim 256 --batches-per-epoch 50 --batch-size 1024 --run-name dual_h128_H256_fast_ft97 --plot plots/dual_nnue_ce_128_256_ft97.png --test-subset-size 5000 --train-val-subset-size 5000 --test-fraction 0.97 --fast
+\end{lstlisting}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{nnue_ce_vs_train_size.png}
+\caption{Soft cross-entropy of the base NNUE as a function of training-set size.}
+\label{fig:nnue-ce-vs-size}
+\end{figure}
+
+We found that, below 2M positions, the model clearly overfits the training set. On the other hand, above 3M positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-model data should never exceed this threshold.
+
 \subsection{MoE NNUE --- bucketing by L1 --- fixed \texorpdfstring{\(B\)}{B}}\label{sec:res-moe-l1-fixed}
 
 \subsection{MoE NNUE --- bucketing by L1 --- variable \texorpdfstring{\(B\)}{B}}\label{sec:res-moe-l1-var}

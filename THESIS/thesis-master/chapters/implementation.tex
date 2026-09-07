@@ -65,6 +65,13 @@ h_{\mathrm{opp}} = W_{\mathrm{L1}} \, x_{\mathrm{opp}},
 \]
 where \(x_{\mathrm{own}}, x_{\mathrm{opp}} \in \{0,1\}^{844}\) are the sparse feature vectors for the two perspectives, and \(W_{\mathrm{L1}} \in \mathbb{R}^{844 \times W}\) is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors \(h_{\mathrm{own}}, h_{\mathrm{opp}} \in \mathbb{R}^W\), where \(W\) is the hidden dimension of the accumulator, set to \(W = 64\) in this work.
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{sardine_nnue_architecture.png}
+\caption{Dual-perspective NNUE architecture used as the base model.}
+\label{fig:nnue-arch}
+\end{figure}
+
 \subsection{Shared L1 Accumulator}\label{sec:l1-accumulator}
 
 The L1 layer, often referred to as the accumulator, is the defining component of the NNUE architecture. Its weight matrix \(W_{\mathrm{L1}}\) is shared between the two perspectives, enabling the network to learn a common representation of board structure while retaining perspective-specific information through the different input features. The sparsity of the input features allows the accumulator to be updated efficiently: rather than recomputing the entire matrix-vector product for each new position, the network maintains the accumulator vector incrementally, adding or subtracting the contributions of features that change as pieces move.
