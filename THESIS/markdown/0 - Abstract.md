@@ -16,15 +16,5 @@
 
 ---
 
-## Scraps
-> Do not to include in the abstract! 
-
-#todo  important: dig deeper in literature to find a similar method
-
-#### Key Findings / Expected Results (if everything goes well... 🍀)
-Preliminary results indicate that the resulting MoE model achieves lower test cross‑entropy and mean absolute error than the single‑head baseline, with negligible runtime overhead. The sample‑gradient clusters reveal interpretable structure in the state space, and the dispatcher achieves high accuracy, enabling fast, deterministic routing at inference time.
-
----
-
 > Note for the AI: *In this abstract, the §Scraps section and gray text are for clarity only, and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*
 
