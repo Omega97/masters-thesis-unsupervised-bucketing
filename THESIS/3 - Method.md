@@ -88,7 +88,7 @@ The central hypothesis of this work is that clustering positions by their $\Delt
 
 ## 3.3 Step 1: Train the Base Model
 
-The first step of our method is to train a **base evaluation model** that will serve as the foundation for all subsequent steps. This model provides two essential functions: it supplies the reference point from which we compute sample gradients, and it contributes the frozen L1 representation used by the dispatcher at inference time.
+The first step of our method is to train a **base evaluation model** that will serve as the foundation for all subsequent steps. This model provides two essential functions: it supplies the reference point from which the sample gradients are computed, and it provides the frozen L1 representation used by the dispatcher at inference time.
 
 ### 3.3.1 Model Architecture
 
@@ -120,6 +120,8 @@ An other important role of the base model is as frozen representation for routin
 
 Finally, the base model is of course also the starting point for expert fine-tuning. Each expert head $(W_{L2}^{(i)}, W_{out}^{(i)})$ is initialised from the base head $(W_{L2}^{\text{base}}, W_{out}^{\text{base}})$ before being fine-tuned on its assigned bucket. 
 
+#note here is where the main talk about the "frozen weights" should happen
+
 ### 3.3.5 Why Freeze L1?
 
 Freezing the L1 layer is a deliberate design choice. The accumulator is the most expensive component of the NNUE architecture in terms of parameter count, and updating it during fine-tuning would be computationally prohibitive. More importantly, freezing L1 ensures that the representation space remains stable across all experts: the dispatcher, trained on L1 activations, can reliably route positions without needing to account for different representations. This stability is essential for the lightweight inference pipeline, where the dispatcher must operate with negligible overhead.
@@ -130,11 +132,11 @@ Freezing the L1 layer is a deliberate design choice. The accumulator is the most
 
 ## 3.4 Step 2: Compute Sample Gradients
 
-With the base model trained, the second step is to compute, for each position in the dataset, the **sample gradient** of the loss with respect to the head parameters. These gradients encode the direction in which the head would need to move to improve the prediction for each individual position, providing a representation of the *learning signal* that we will use for bucketing.
+With the base model trained, the second step is to compute, for each position in the dataset, the **sample gradient** of the loss with respect to the head parameters. These gradients encode the direction in which the head parameters would need to move to improve the prediction for each individual position. They represent the *learning signal* that we will later use for bucketing.
 
 ### 3.4.1 Definition of Sample Gradient
 
-For each position $s_i$ in the dataset $\mathcal{D} = \{(s_i, v_i)\}_{i=1}^N$, we compute the gradient:
+For each position $s_i$ in the dataset $\mathcal{D} = \{(s_i, v_i)\}_{i=1}^N$, the sample gradient is defined as:
 
 $$\Delta_i = \nabla_{w_{\text{head}}} \mathcal{L}(\hat{f}_{w^{\text{base}}}(s_i), v_i)$$
 
@@ -149,31 +151,25 @@ The gradient is computed **at the base model** $w_{\text{base}}$, before any fin
 
 ### 3.4.2 Implementation
 
-In practice, we compute the sample gradients using PyTorch's `torch.autograd.grad` function, which efficiently computes gradients for a batch of inputs simultaneously. For a batch of positions, we first compute the forward-pass of the positions through the base model to obtain WDL predictions. Then, we compute the cross-entropy loss between predictions and teacher labels. To obtain the gradients, we call `torch.autograd.grad(loss, head_parameters, retain_graph=False)`. Finally, we detach and flatten the resulting gradient tensors into a single vector per position.
+In practice, PyTorch's `torch.autograd.grad` function simultaneously and efficiently computes the sample gradients for a batch of inputs. As previously discussed, the gradients in question are relative only to the head parameters $(W_{L2}, W_{out})$, not the L1 accumulator weights.
 
-The computation is parallelised across the GPU and is performed in a single pass over the dataset. The gradients are stored on disk for later use in the clustering step.
+For a batch of positions, we first compute the forward-pass of the model to obtain WDL predictions, and then the cross-entropy loss between predictions and teacher labels. The method `torch.autograd.grad(loss, head_parameters, retain_graph=False)` is called to obtain the gradients. Finally, the resulting gradient tensors are detach and flattened into a single vector per position. The computation is parallelised across the GPU and is performed in a single pass over the dataset. The gradients are stored on disk for later use in the clustering step.
 
 #todo maybe it still sounds a bit like a list converted to prose...
 
 
-### 3.4.3 Which Parameters?
+### 3.4.3 Normalisation
 
-We compute gradients **only with respect to the head parameters** $(W_{L2}, W_{out})$, not the L1 accumulator weights. This choice is forced, as the accumulator layer must be shared across all the experts ( #todo as we already discussed?). Each expert will have its own head parameters, while L1 remains shared and frozen. The gradients with respect to the head parameters directly encode what each expert needs to learn. The head contains only a fraction of the total parameters (approximately 17,000 vs. 54,000 in L1), making gradient computation significantly cheaper.
-
-#todo did we already mention this?
-
-### 3.4.4 Normalisation
-
-The raw gradients can have highly variable magnitudes, depending on the position, the current state of the model, and on weather we do or do not consider the multiplicity of the position. We therefore normalise each gradient vector before clustering by using the *L2 normalisation* (not to be confused with the L2 layer #todo maybe silly):
+The raw gradients can have highly variable magnitudes depending on the position, the current state of the model, and on weather the multiplicity of the state is considered or not. The *L2 normalization* of each gradient vector has been shown to work well in gradient-clustering literature (ELREA, GradientSpace) and preserves the relative angular structure of the gradients.
 
 $$\Delta_i^{\text{norm}} = \frac{\Delta_i}{\|\Delta_i\| + \epsilon}$$
 
 This projects each gradient onto the unit hypersphere, preserving direction while removing magnitude information. This is appropriate because the *direction* of the gradient encodes the type of specialisation needed, while the magnitude is more sensitive to the current loss value and position difficulty.
 
-In practice, we this step has been shown to work well in gradient-clustering literature (ELREA, GradientSpace) and preserves the relative angular structure of the gradients.
+#todo distinction between L2 norm and layer? silly
 
 
-### 3.4.5 Storage and Compute Considerations
+### 3.4.4 Storage and Compute Considerations
 
 Computing and storing sample gradients for 5 million positions presents practical challenges. Each gradient vector has dimension $P_{\text{head}} \approx 17,000$ (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
 
