@@ -192,8 +192,70 @@ $$
 
 ## 4.3 Sample Gradient Computation
 
-<span style="color: #808080;">[Gradients]</span>
-#todo `torch.autograd.grad`, per-sample grads w.r.t.\ the head. Storage (`.npy` / `.parquet`).
+
+### 4.3.1 Implementation with PyTorch
+
+The sample gradients are computed using PyTorch's automatic differentiation engine. For each batch of positions, a forward pass through the base model is performed to obtain WDL logits. Then, the soft cross-entropy loss is computed against the teacher labels. Finally, `torch.autograd.grad` is called to obtain the gradients of the loss with respect to the head parameters.
+
+The computation proceeds as follows. For a batch of $M$ positions, the base model $f_{w_{\text{base}}}$ produces logits $\ell_i \in \mathbb{R}^3$ for each position. The loss is computed as the average soft cross-entropy over the batch:
+
+$$\mathcal{L}_{\text{batch}} = \frac{1}{M} \sum_{i=1}^M \mathcal{L}_{\text{CE}}(\text{softmax}(\ell_i), \hat{p}_i)$$
+
+where $\hat{p}_i$ are the teacher's WDL probabilities. We then call:
+
+```python
+grads = torch.autograd.grad(
+    loss,
+    head_parameters,
+    retain_graph=False,
+    create_graph=False
+)
+```
+
+The `head_parameters` list contains the trainable parameters of the L2 layer and the output head: $(W_{L2}, b_{L2}, W_{out}, b_{out})$. The L1 weights are excluded, as they remain frozen throughout the entire pipeline.
+
+#todo imply the bias?
+
+The resulting gradient tensors are detached from the computation graph to free memory, then flattened and concatenated into a single vector per position:
+
+$$\Delta_i = \text{concat}\left[\text{vec}(\nabla_{W_{L2}} \mathcal{L}_i),\; \nabla_{b_{L2}} \mathcal{L}_i,\; \text{vec}(\nabla_{W_{out}} \mathcal{L}_i),\; \nabla_{b_{out}} \mathcal{L}_i\right]$$
+
+The computation is parallelised across the GPU and performed in a single pass over the dataset. Gradients are computed in batches of 1024 positions, and the resulting vectors are accumulated on disk rather than held in memory, preventing memory exhaustion. The `retain_graph=False` option ensures that the computational graph is freed after each batch, further reducing memory usage.
+
+#todo check batch size
+
+### 4.3.2 Parameter Selection
+
+#todo skip?
+- Which parameters are included: `(W_{L2}, b_{L2}, W_{out}, b_{out})`
+- Why the L1 accumulator is excluded (frozen, shared, computationally expensive)
+- Vectorisation and flattening of gradients for clustering
+
+### 4.3.3 Normalisation
+
+#todo skip?
+- L2 normalisation of each gradient vector
+- Implementation details: `grad / (norm + eps)`
+- Whether the same normalisation is applied to all gradients
+
+### 4.3.4 Storage and Memory Management
+
+Computing and storing sample gradients for 5 million positions presents a significant practical challenge. Each gradient vector has dimension $P_{\text{head}} \approx 17,000$, corresponding to the flattened parameters of the L2 layer and output head. Storing the full set in 32-bit floating-point would require approximately 340 GB. We therefore adopt half-precision storage, reducing this to roughly 170 GB while preserving sufficient numerical precision for clustering, as the gradients are normalised and clustered based on their directions rather than their exact magnitudes.
+
+The gradients are stored in memory-mapped `.npy` files, which provide efficient random access without loading the entire dataset into memory. Computation proceeds in batches of 1024 positions, with each batch written to disk immediately after computation and the memory-mapped array pre-allocated to avoid accumulating gradients in GPU or CPU memory. For exploratory analysis, gradient computation can be performed on a subset of the dataset, but for the final MoE architecture we use the full dataset. 
+
+#todo considerations on dimensionality reduction?
+#todo replace hard numbers with variables 
+
+
+### 4.3.5 Computational Cost and Timing
+
+#todo
+- Time required to compute gradients for 5 million positions
+- GPU vs CPU considerations
+- Batching strategy and throughput
+
+
 
 ---
 
