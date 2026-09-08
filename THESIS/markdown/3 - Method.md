@@ -4,6 +4,8 @@
 
 #idea it's not necessary to perform clustering on the whole training set
 
+#idea to avoid splitting the data too much, train the expert also with data just outside the cluster.
+
 #todo quantization and pruning 
 
 #todo remember that when we partition the dataset, each expert has less data, but it still has to be "enough" (performance vs number of data)
@@ -174,7 +176,7 @@ $$\Delta_i^{\text{norm}} = \frac{\Delta_i}{\|\Delta_i\| + \epsilon}$$
 
 <span style="color: #808080;">[Storage Cost]</span> Computing and storing sample gradients for [dataset_size] positions presents practical challenges. Each gradient vector has dimension $P_{\text{head}} \approx [P_head]$ (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
 
-$$[dataset_size] \times [P_head] \times 4 \text{ bytes}$$
+$$[dataset_{size}] \times [P_{head}] \times 4 \text{ bytes}$$
 #todo update numbers
 
 #todo considerations on whether to introduce rounding, and whether to use just part of the dataset
@@ -213,13 +215,17 @@ where $\mu_k = \frac{1}{|\mathcal{C}_k|} \sum_{i \in \mathcal{C}_k} \Delta_i$ is
 
 <span style="color: #808080;">[Why This]</span> We chose to use this algorithm because it automatically determines $B$, so it will be interesting to find out what the clusters of board positions actually represent. This algorithm is also notoriously robustness to outliers; points with low density and large distance to higher-density points are naturally identified as outliers.
 
+#todo maybe we choose an other one (must test)
+
 #todo Disadvantages:
 - **Parameter sensitivity**: The algorithm requires choosing a distance cutoff (for density estimation) and a threshold for the distance to higher-density points. These parameters can significantly affect the number of clusters.
 - **Computational cost**: Computing pairwise distances for [dataset_size] points is prohibitive (O(N²)). We would need to use approximations (e.g., approximate nearest neighbours) or subsample the data.
 - **Cluster size imbalance**: Density-based methods may produce clusters of very different sizes, which can be problematic for expert fine-tuning (some experts would have too little data).
 - **Unstable number of clusters**: The number of clusters can vary with the parameters or with slight perturbations in the data, complicating the design of a fixed-architecture MoE.
 
-#todo **DBSCAN** is another density-based algorithm worth considering. It groups points that are closely packed together (high density) and marks points in low-density regions as noise. However, it shares similar challenges with Density Peak: parameter sensitivity (eps, min_samples) and computational cost for large datasets.
+<span style="color: #808080;">[DBSCAN]</span> DBSCAN (Density-Based Spatial Clustering of Applications with Noise) defines clusters as regions of high density separated by regions of low density, using two parameters: $\varepsilon$ (neighbourhood radius) and `min_samples` (minimum points to form a dense region). It does not require the number of clusters $B$ as an input and can label outliers as noise. It avoids the need to pre-specify $B$, which could be useful when the natural structure of the gradient space is unknown. It can detect clusters of arbitrary shapes and is robust to outliers, potentially identifying positions that yield uninformative gradients.
+
+#todo **Why no.** DBSCAN performs poorly on high-dimensional data due to the curse of dimensionality, where density estimates become unreliable. Its time complexity scales poorly with dataset size, making it infeasible for our 5 million positions in 17,000 dimensions. It is also sensitive to its hyperparameters and struggles with clusters of varying densities. We therefore adopt Mini-Batch K-Means as our default clustering algorithm.
 
 ### 3.5.4 Choosing $B$ and the Algorithm
 

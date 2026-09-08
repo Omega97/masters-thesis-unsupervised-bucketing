@@ -21,7 +21,7 @@ These papers form the core methodological lineage for your approach.
 **The direct precursor to GradientSpace; a strong methodological match.**
 Amazon, 🇨🇳
 
-- **Summary:** Clusters training instructions by their gradient directions, representing different areas of expertise, to reduce conflicts during optimization.
+- **Summary:** Clusters training instructions for LLMs by their gradient directions, representing different areas of expertise, to reduce conflicts during optimization.
 - **Similarity to your method:** Core idea of gradient-space partitioning as the basis for a mixture of experts.
 - **Key difference from your method:** (a) randomly projects gradients to lower dimensions (losing information); (b) routes to a *weighted ensemble* of experts at inference, requiring multiple forward passes and on-the-fly gradient computation. Your method improves on both points: full-dimensional clustering and a fast deterministic router.
 

@@ -47,12 +47,12 @@
 <span style="color: #808080;">[Dataset Size]</span> We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to [dataset_size]. The model has a $2\times[W]$-neuron accumulator layer, and a [H]-neuron L2 layer, which lays on the larger side of the models we trained.
 
 ```
-py -3.12 -u scripts/train_nnue.py --epochs 20 --lr [lr_start] --hidden-dim [W] --hidden2-dim [H] --batches-per-epoch 50 --batch-size [batch_size] --run-name dual_h[W]_H[H]_fast_ft97 --plot plots/dual_nnue_ce_[W]_[H]_ft97.png --test-subset-size 5000 --train-val-subset-size 5000 --test-fraction 0.97 --fast
+python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --hidden-dim 128 --hidden2-dim 256 --test-fraction 0.01 --batch-size 10000 --batches-per-epoch 512 --train-val-subset-size 10000 --run-name dual_h128_H256_e100_bpe512_bs10000 --plot plots/dual_h128_H256_e100_bpe512_bs10000.png
 ```
-#todo maybe convert command to table of parameters
+#note do NOT modify
 
 <div align="center">
-    <img src="THESIS/thesis-plots/nnue_ce_vs_train_size.png" width="600">
+    <img src="THESIS/thesis-plots/variable_dataset_size_ce.png" width="600">
 </div>
 
 <span style="color: #808080;">[Overfitting Threshold]</span> We found that, below 2M positions, the model clearly overfits the training set. On the other hand, above 3M positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-model data should never exceed this threshold. 
