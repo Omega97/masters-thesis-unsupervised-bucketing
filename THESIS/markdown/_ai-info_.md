@@ -3,6 +3,28 @@
 
 ---
 
+## Quote
+
+*Divide and conquer.*
+
+> I chose this one because it evokes a tactical situation, not unlike a chess position, and closely resembles the goal of MoE.
+
+#### Other Options
+
+One move at a time.
+Every move creates a new position.
+Trust the process.
+Think ahead.
+Stay curious.
+The more you learn, the more you realize how much you don't know
+Slow and steady wins the race.
+Keep your options open.
+Different problems call for different tools.
+Don’t put all your eggs in one basket.
+Know your position.
+
+---
+
 ## Hyperparameters
 
 > *Note for the AI: refer to this file for every hyperparameter and variable. When converting markdown to Latex, replace every square-bracket placeholder (e.g. `[dataset_size]`, `[W]`) with the **current value** from the table below. Do not leave placeholders in the Latex.*
@@ -37,3 +59,5 @@ Target model architecture: $d_{\text{in}}=[d_in]$, dual NNUE, L1 accumulator lay
 Preliminary results indicate that the resulting MoE model achieves lower test cross‑entropy and mean absolute error than the single‑head baseline, with negligible runtime overhead. The sample‑gradient clusters reveal interpretable structure in the state space, and the dispatcher achieves high accuracy, enabling fast, deterministic routing at inference time.
 
 #todo Lazy loading with memory mapping?
+
+---
