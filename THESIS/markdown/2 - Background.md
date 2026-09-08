@@ -17,20 +17,17 @@
 $$f(s) = \sum_{k} w_k \cdot \phi_k(s)$$
 where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *chess-specific* features include material balance, piece-square tables (PSTs), mobility, king safety, pawn structure. These features were carefully tuned by chess experts over decades, using a combination of intuition, empirical testing, and later, automated optimization techniques.
 
-#todo mention PeSTo?
+<span style="color: #808080;">[PeSTO]</span> A notable example is **PeSTO** (Piece-Square Tables Only), an evaluation function by Ronald Friederich that relies exclusively on piece-square tables. Its tables are optimized via *Texel*'s tuning method and use a *tapered evaluation* that interpolates between separate opening and endgame tables based on the game stage. Conceptually, PeSTO is equivalent to a linear feed‑forward network: both compute a weighted sum of piece‑square features, with no interaction terms between pieces. While still a handcrafted linear form, PeSTO demonstrates how far such classical approaches can be pushed through data-driven tuning.
 
 <span style="color: #808080;">[Limitations]</span> While classical evaluators are extremely fast, they suffer from fundamental limitations. The human-designed features encode the human intuition about chess, which may not align with the optimal understanding of the game. Moreover, these models do not take into account the positions as a whole; the same parameters give a positional bonus for a central knight whether the position is a quiet middlegame or a tactical melee, even though the knight's practical value may differ dramatically across phases.
 
-#todo even better example is a king or pawn
+<span style="color: #808080;">[Limitations II - Horizon Effect]</span> Classical evaluators are also vulnerable to the _horizon effect_. A search algorithm constrained to a fixed depth evaluates positions at the search frontier as if the game were stable at that point. If a tactical sequence begins at the horizon but extends one ply further, the engine cannot see the consequences and may assign an inaccurate evaluation. Classical evaluators, which rely on static features such as material balance and piece-square tables, are particularly susceptible: they treat a position at the horizon as if it were quiet, ignoring the tactical possibilities that would unfold if the search continued. In contrast, models trained on complete game outcomes can often encode patterns that extend beyond immediate material and positional features, making them less vulnerable to horizon-induced misevaluations.
 
 ### 2.1.2 The Shift to Neural Evaluation
 
 <span style="color: #808080;">[Neural Eval]</span> The limitations of handcrafted features led to the adoption of neural networks as evaluation functions. **AlphaZero** (Silver et al., 2018) demonstrated that a deep convolutional network, trained via self-play reinforcement learning, could surpass the best classical engines. However, these networks are computationally expensive—requiring millions of operations per evaluation—making them unsuitable for resource-constrained devices or for engines that must evaluate millions of positions per second.
 
 <span style="color: #808080;">[AlphaZero value function]</span> AlphaZero's value head outputs a scalar $v\in[−1,+1]$, interpreted as the expected game outcome from the current player's perspective. This scalar is the training target for the value network. However, AlphaZero's training and inference rely on **Monte Carlo Tree Search (MCTS)**, which builds a search tree by repeatedly simulating trajectories and using the neural network to evaluate leaf nodes. This process requires many forward passes of the network per position, making it computationally expensive and poorly suited for engines that evaluate millions of positions per second with alpha-beta search. The AlphaZero network itself is a deep residual architecture with millions of parameters, requiring floating-point operations and substantial memory, which far exceeds the capacity of microcontrollers. In contrast, the NNUE architecture adopted in this work reduces the per-evaluation cost to a handful of integer operations while retaining the representational power of a neural network. We revisit AlphaZero's value formulation in Section 2.1.4, where we contrast its scalar expected value with the WDL distribution used in this work.
-
-#todo AlphaZero value function: scalar $v \in [-1,1]$ (expected outcome), trained with MCTS (not α-β). Cost per node vs NNUE. Do not mix AZ's MCTS with Cfish search. Contrast with Lc0 as teacher in 4.1. 
-
 
 ### 2.1.3 NNUE: A Hybrid Approach
 
@@ -43,8 +40,6 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 <span style="color: #808080;">[Head / WDL]</span> The second ingredient, the fully connected head, is typically one or two hidden layers followed by a scalar output, mapping $h$ to the position value. In our case, we found it easier to train a probability distribution across all the three possible game result for the player; win, draw, and loss (WDL), by minimizing the cross-entropy between the output of the teacher and the student.
 
 <span style="color: #808080;">[Search / Horizon]</span> A complete NNUE engine also leverages **alpha-beta search** with iterative deepening: starting from the root position, the engine searches deeper and deeper, using the NNUE evaluation at leaf nodes to guide the pruning and ordering of moves. At every node of this search tree, the evaluation function is called hundreds or thousands of times, making its speed critical. Also, being trained on enormous amounts of data, a NNUE doesn't suffer from the *horizon problem* as much as a PST does. 
-
-#todo explain further?
 
 #todo Keep this subsection conceptual (accumulator, head, incremental update). Own dims / CReLU / 3-way WDL belong in 4.2, not here.
 
