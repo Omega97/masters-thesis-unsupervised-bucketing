@@ -22,15 +22,15 @@
 
 \subsection{Base NNUE}\label{sec:res-base}
 
-We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to 5M. The model has a 256-neuron accumulator layer (\(2\times 128\)), and a 256 neuron L2 layer, which lays on the larger side of the models we trained.
+We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to 50 million. The model has a \(2\times 128\)-neuron accumulator layer, and a 256-neuron L2 layer, which lays on the larger side of the models we trained.
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,breaklines=true]
-py -3.12 -u scripts/train_nnue.py --epochs 20 --lr 0.01 --hidden-dim 128 --hidden2-dim 256 --batches-per-epoch 50 --batch-size 1024 --run-name dual_h128_H256_fast_ft97 --plot plots/dual_nnue_ce_128_256_ft97.png --test-subset-size 5000 --train-val-subset-size 5000 --test-fraction 0.97 --fast
+python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --hidden-dim 128 --hidden2-dim 256 --test-fraction 0.01 --batch-size 10000 --batches-per-epoch 512 --train-val-subset-size 10000 --run-name dual_h128_H256_e100_bpe512_bs10000 --plot plots/dual_h128_H256_e100_bpe512_bs10000.png
 \end{lstlisting}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.85\textwidth]{nnue_ce_vs_train_size.png}
+\includegraphics[width=0.85\textwidth]{variable_dataset_size_ce.png}
 \caption{Soft cross-entropy of the base NNUE as a function of training-set size.}
 \label{fig:nnue-ce-vs-size}
 \end{figure}

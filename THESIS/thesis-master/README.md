@@ -44,7 +44,7 @@ apt install latexmk
 ```
 
 Eseguendo il seguente comando, il sistema di _build_ di `latexmk` si occuperà di gestire tutta la procedura
-di compilazione, facendo uso del [file di configurazione](.latexmkrc),
+di compilazione, facendo uso del file di configurazione `latexmkrc`,
 senza bisogno di specificare alcuna opzione aggiuntiva!
 ```shell
 cd thesis_template/

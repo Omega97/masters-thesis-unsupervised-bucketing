@@ -2,11 +2,11 @@
 
 \section{Dataset and Teacher}\label{sec:dataset}
 
-The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we construct a dataset of approximately \textbf{5 million chess positions} extracted from human games and labeled with high-quality value estimates from a strong teacher network, \textbf{Leela Chess Zero} (Lc0), the \emph{spiritual} successor of \emph{AlphaZero}.
+The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we constructed a dataset of approximately \textbf{50 million chess positions} extracted from human games and labeled with high-quality value estimates from a strong teacher network, \textbf{Leela Chess Zero} (Lc0), the \emph{spiritual} successor of \emph{AlphaZero}.
 
 \subsection{Dataset Construction}\label{sec:dataset-construction}
 
-The raw positions are sourced from \textbf{Lichess} monthly PGN archives, containing standard-rated games played by humans across all time controls. We filter games to include only those with at least 16 moves, excluding very short games that often end in early blunders or resignations and would introduce noisy or uninformative positions into the training set. From each remaining game, we sample positions randomly (e.g., one every 20), ensuring a diverse and representative collection of states across all phases of play, and mostly avoiding highly correlated positions.
+The raw positions are sourced from \textbf{Lichess} monthly PGN archives, containing standard-rated games played by humans across all time controls. We filter games to include only those with at least 16 moves, excluding very short games that often end in early blunders or resignations and would introduce noisy or uninformative positions into the training set. From each remaining game, we sample positions randomly with probability \(5\%\), ensuring a diverse and representative collection of states across all phases of play, and mostly avoiding highly correlated positions.
 
 The dataset retains the natural distribution of game phases found in human play: a majority of middlegame positions, with fewer openings and endgames. We intentionally avoid resampling to balance phases, as the natural distribution better reflects the positions the engine will encounter during actual play. Each position is stored as a FEN string along with the multiplicity of the position---a visit count that may be used for optional weighting during training.
 
@@ -14,9 +14,9 @@ A small fraction of the dataset is also a collection of interesting tactical pos
 
 \subsection{Feature Encoding}\label{sec:feature-encoding}
 
-For the NNUE model, each FEN string is encoded as a \textbf{sparse binary feature vector} of length 844. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
+For the NNUE model, each FEN string is encoded as a \textbf{sparse binary feature vector} of length \(d_{\mathrm{in}}=844\). This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
 
-The 844 features are divided into two categories:
+The \(844\) features are divided into two categories:
 \begin{itemize}
     \item \textbf{716 base features}: These encode piece-square pairs, representing the presence of each piece type on each square. The feature set is pruned to remove impossible pawn ranks and compressed to reduce redundancy (e.g., the king plane is stored in a compact form). In the \textbf{844-dim SARDINE encoder}, the king plane is \textbf{compressed} from 64 squares to \textbf{32}, saving features.
     \item \textbf{128 tactical features}: These encode dynamic aspects of the position, specifically which pieces are under attack and which pieces are attacking the king. These features provide the network with explicit information about immediate tactical threats.
@@ -28,7 +28,7 @@ The encoded features are pre-computed and stored in \texttt{.npz} slices for eff
 
 \subsection{Data Splits}\label{sec:data-splits}
 
-The dataset is partitioned into training and test splits. The \textbf{training set} consists of approximately 5 million positions, distributed across 165 slices for balanced I/O and stochastic sampling. The \textbf{test set} comprises a random portion of 5\% of the position that are held out of the training set.
+The dataset is partitioned into training and test splits. The \textbf{training set} consists of approximately 50 million positions, distributed across 165 slices for balanced I/O and stochastic sampling. The \textbf{test set} comprises a random portion of \(1\%\) of the position that are held out of the training set.
 
 \subsection{Teacher Model: Lc0}\label{sec:teacher-lc0}
 
@@ -48,7 +48,7 @@ For this work, we label positions using Lc0's \textbf{latest best network} (e.g.
 
 \subsection{Labelling Pipeline}\label{sec:labelling-pipeline}
 
-The complete labelling pipeline consists of four steps. First, we parse Lichess PGNs and sample positions uniformly from each game, saving FEN strings and visit counts. Then, for each unique FEN, we invoke Lc0 in UCI mode to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities and the scalar expected reward alongside the FEN and visit counts in JSON format. Finally, in the encoding step we pre-compute the 844-dimensional sparse feature vectors (both STM and opponent POVs) and store them in \texttt{.npz} slices for efficient training.
+The complete labelling pipeline is straightforward. We parse Lichess PGNs and sample positions uniformly at random from each game, saving FEN strings and visit counts. This reduces the correlation between the positions in the final dataset. For each unique FEN, we invoke Lc0 in \emph{UCI mode} at \textbf{depth 1} to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities alongside the FEN and visit counts in JSON format. In the encoding step we pre-compute the 844-dimensional sparse feature vectors (both STM and opponent POVs) and store them in \texttt{.npz} slices for efficient training. The final result is a dataset of pairs of sparse input board positions and their relative WDL probabilities.
 
 \section{Base NNUE Architecture}\label{sec:base-nnue}
 
@@ -63,7 +63,7 @@ Formally, the model computes:
 h_{\mathrm{own}} = W_{\mathrm{L1}} \, x_{\mathrm{own}}, \qquad
 h_{\mathrm{opp}} = W_{\mathrm{L1}} \, x_{\mathrm{opp}},
 \]
-where \(x_{\mathrm{own}}, x_{\mathrm{opp}} \in \{0,1\}^{844}\) are the sparse feature vectors for the two perspectives, and \(W_{\mathrm{L1}} \in \mathbb{R}^{844 \times W}\) is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors \(h_{\mathrm{own}}, h_{\mathrm{opp}} \in \mathbb{R}^W\), where \(W\) is the hidden dimension of the accumulator, set to \(W = 64\) in this work.
+where \(x_{\mathrm{own}}, x_{\mathrm{opp}} \in \{0,1\}^{844}\) are the sparse feature vectors for the two perspectives, and \(W_{\mathrm{L1}} \in \mathbb{R}^{d_{\mathrm{in}} \times W}\) is the shared weight matrix of the accumulator layer. The output of the L1 layer is a pair of vectors \(h_{\mathrm{own}}, h_{\mathrm{opp}} \in \mathbb{R}^W\), where \(W\) is the hidden dimension of the accumulator, set to \(W = 128\) in this work.
 
 \begin{figure}[ht]
 \centering
@@ -107,7 +107,7 @@ This reordering step is critical for making the evaluation perspective-invariant
 
 \subsection{L2 Layer and Output Head}\label{sec:l2-head}
 
-The concatenated vector \(h\) is passed through a dense L2 layer with hidden dimension \(H = 128\):
+The concatenated vector \(h\) is passed through a dense L2 layer with hidden dimension \(H = 256\):
 \[
 z = \mathrm{ReLU}(W_{\mathrm{L2}} \, h + b_{\mathrm{L2}}),
 \]
@@ -133,15 +133,56 @@ This loss is well-suited for the task because the teacher labels are probability
 
 \subsection{Parameter Count and Model Size}\label{sec:param-count}
 
-With \(W = 64\) and \(H = 128\), the total number of trainable parameters is approximately 70,979. This compact size is deliberately chosen to fit within the memory constraints of the target hardware: the L1 weights (\(844 \times 64 = 54{,}016\) int8 values) dominate the parameter count, while the L2 and output layers contribute only a small fraction. The model is therefore both computationally efficient and storage-friendly, with a footprint that can be further reduced through pruning and quantisation.
+With \(W = 128\) and \(H = 256\), the total number of trainable parameters is approximately \(175{,}000\). This compact size is deliberately chosen to fit within the memory constraints of the target hardware: the L1 weights (\(844 \times 128 = 108{,}032\) int8 values) dominate the parameter count, while the L2 and output layers contribute only a small fraction. The model is therefore both computationally efficient and storage-friendly, with a footprint that can be further reduced through pruning and quantisation.
 
 \subsection{Training Protocol}\label{sec:training-protocol}
 
-The base model is trained on the full training set (approximately 5 million positions) using the Adam optimiser with a learning rate of \(10^{-2}\), linearly decayed to \(10^{-3}\) over the course of training. We use a batch size of 1024 and train for up to 1000 epochs. The model's performance is evaluated on a held-out test set of random positions, \(5\%\) of the total dataset, ensuring that generalisation is measured on unseen data. The training is conducted on a \emph{DGX Nvidia Spark GPU}.
+The base model is trained on the full training set (approximately 50 million positions) using the Adam optimiser with a learning rate of \(10^{-2}\), linearly decayed to \(10^{-3}\) over the course of training. We use a batch size of \(10{,}000\) and train for up to 1000 epochs. The model's performance is evaluated on a held-out test set of random positions, \(1\%\) of the total dataset, ensuring that generalisation is measured on unseen data. The training is conducted on a \emph{DGX Nvidia Spark GPU}.
 
 \section{Sample Gradient Computation}\label{sec:grad-impl}
 
-\draftnote{Implementation: \texttt{torch.autograd.grad}, per-sample grads w.r.t.\ the head. Storage (\texttt{.npy} / \texttt{.parquet}).}
+\subsection{Implementation with PyTorch}\label{sec:grad-pytorch}
+
+The sample gradients are computed using PyTorch's automatic differentiation engine. For each batch of positions, a forward pass through the base model is performed to obtain WDL logits. Then, the soft cross-entropy loss is computed against the teacher labels. Finally, \texttt{torch.autograd.grad} is called to obtain the gradients of the loss with respect to the head parameters.
+
+The computation proceeds as follows. For a batch of \(M\) positions, the base model \(f_{w_{\mathrm{base}}}\) produces logits \(\ell_i \in \mathbb{R}^3\) for each position. The loss is computed as the average soft cross-entropy over the batch:
+\[
+\mathcal{L}_{\mathrm{batch}} = \frac{1}{M} \sum_{i=1}^M \mathcal{L}_{\mathrm{CE}}(\mathrm{softmax}(\ell_i), \hat{p}_i)
+\]
+where \(\hat{p}_i\) are the teacher's WDL probabilities. We then call:
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,breaklines=true]
+grads = torch.autograd.grad(
+    loss,
+    head_parameters,
+    retain_graph=False,
+    create_graph=False
+)
+\end{lstlisting}
+The \texttt{head\_parameters} list contains the trainable parameters of the L2 layer and the output head: \((W_{L2}, b_{L2}, W_{\mathrm{out}}, b_{\mathrm{out}})\). The L1 weights are excluded, as they remain frozen throughout the entire pipeline.
+
+The resulting gradient tensors are detached from the computation graph to free memory, then flattened and concatenated into a single vector per position:
+\[
+\Delta_i = \mathrm{concat}\left[\mathrm{vec}(\nabla_{W_{L2}} \mathcal{L}_i),\; \nabla_{b_{L2}} \mathcal{L}_i,\; \mathrm{vec}(\nabla_{W_{\mathrm{out}}} \mathcal{L}_i),\; \nabla_{b_{\mathrm{out}}} \mathcal{L}_i\right]
+\]
+The computation is parallelised across the GPU and performed in a single pass over the dataset. Gradients are computed in batches of 1024 positions, and the resulting vectors are accumulated on disk rather than held in memory, preventing memory exhaustion. The \texttt{retain\_graph=False} option ensures that the computational graph is freed after each batch, further reducing memory usage.
+
+\subsection{Parameter Selection}\label{sec:grad-params}
+
+\draftnote{Which parameters are included: \((W_{L2}, b_{L2}, W_{\mathrm{out}}, b_{\mathrm{out}})\). Why the L1 accumulator is excluded (frozen, shared, computationally expensive). Vectorisation and flattening of gradients for clustering.}
+
+\subsection{Normalisation}\label{sec:grad-norm}
+
+\draftnote{L2 normalisation of each gradient vector. Implementation details: \texttt{grad / (norm + eps)}. Whether the same normalisation is applied to all gradients.}
+
+\subsection{Storage and Memory Management}\label{sec:grad-storage}
+
+Computing and storing sample gradients for 50 million positions presents a significant practical challenge. Each gradient vector has dimension \(P_{\mathrm{head}} \approx 66{,}563\), corresponding to the flattened parameters of the L2 layer and output head. Storing the full set in 32-bit floating-point would require approximately \(13.3\)\,TB. We therefore adopt half-precision storage, reducing this to roughly \(6.7\)\,TB while preserving sufficient numerical precision for clustering, as the gradients are normalised and clustered based on their directions rather than their exact magnitudes.
+
+The gradients are stored in memory-mapped \texttt{.npy} files, which provide efficient random access without loading the entire dataset into memory. Computation proceeds in batches of 1024 positions, with each batch written to disk immediately after computation and the memory-mapped array pre-allocated to avoid accumulating gradients in GPU or CPU memory. For exploratory analysis, gradient computation can be performed on a subset of the dataset, but for the final MoE architecture we use the full dataset.
+
+\subsection{Computational Cost and Timing}\label{sec:grad-cost}
+
+\draftnote{Time required to compute gradients for 50 million positions. GPU vs CPU considerations. Batching strategy and throughput.}
 
 \section{Clustering}\label{sec:clustering-impl}
 

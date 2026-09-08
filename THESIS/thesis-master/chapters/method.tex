@@ -24,8 +24,6 @@ We introduce here the formal notation used throughout this chapter and the remai
   A partition of the state space into \(B\) buckets, where each \(\mathcal{D}_i \subset \mathcal{S}\) is a non-empty subset. \\
 \(\Theta\) &
   The space of all model parameters (weights). \\
-\(\mathbb{R}\) &
-  The set of real numbers. \\
 \hline
 \end{tabularx}
 \end{center}
@@ -144,7 +142,7 @@ The first step of our method is to train a \textbf{base evaluation model} that w
 
 \subsection{Model Architecture}\label{sec:method-arch}
 
-The base model follows the NNUE architecture described in Section~\ref{sec:nnue}: a sparse accumulator layer \(W_{L1}\) that maps a binary feature representation to a hidden state \(h \in \mathbb{R}^h\), followed by a small fully-connected head \((W_{L2}, W_{\mathrm{out}})\) that produces WDL logits. The architecture is kept deliberately small to reflect the resource constraints of the target hardware---specifically, a hidden dimension of \(h = 64\) for the accumulator and \(H = 128\) for the L2 layer, resulting in approximately 71,000 trainable parameters.
+The base model follows the NNUE architecture described in Section~\ref{sec:nnue}: a sparse accumulator layer \(W_{L1}\) that maps a binary feature representation to a hidden state \(h \in \mathbb{R}^h\), followed by a small fully-connected head \((W_{L2}, W_{\mathrm{out}})\) that produces WDL logits. The architecture is kept deliberately small to reflect the resource constraints of the target hardware---specifically, a hidden dimension of \(h = 128\) for the accumulator and \(H = 256\) for the L2 layer, resulting in approximately \(175{,}000\) trainable parameters.
 
 \subsection{Training Objective}\label{sec:method-loss}
 
@@ -156,7 +154,7 @@ This choice of loss is deliberate. Unlike mean squared error on a scalar value (
 
 \subsection{Training Protocol}\label{sec:method-protocol}
 
-The base model is trained on the full dataset of approximately 5 million positions using the Adam optimiser with a learning rate of \(10^{-2}\), linearly decayed to \(10^{-3}\) over the course of training. We use a batch size of 1024 and train until convergence on the held-out test set (5\% of the total dataset). All training is performed in PyTorch on a DGX Nvidia Spark GPU.
+The base model is trained on the full dataset of approximately 50 million positions using the Adam optimiser with a learning rate of \(10^{-2}\), linearly decayed to \(10^{-3}\) over the course of training. We use a batch size of \(10{,}000\) and train until convergence on the held-out test set (\(1\%\) of the total dataset). All training is performed in PyTorch on a DGX Nvidia Spark GPU.
 
 \subsection{The Role of the Base Model}\label{sec:base-role}
 
@@ -197,7 +195,7 @@ For a batch of positions, we first compute the forward-pass of the model to obta
 
 \subsection{Normalisation}\label{sec:sg-norm}
 
-The raw gradients can have highly variable magnitudes depending on the position, the current state of the model, and on weather the multiplicity of the state is considered or not. The \emph{L2 normalization} of each gradient vector has been shown to work well in gradient-clustering literature (ELREA, GradientSpace) and preserves the relative angular structure of the gradients.
+The raw gradients can have highly variable magnitudes depending on the position, the current state of the model, and on weather the multiplicity of the state is considered or not. The \emph{L2 normalization} of each gradient vector has been shown to work well in gradient-clustering literature~\cite{li2025elrea,sridharan2025gradientspace} and preserves the relative angular structure of the gradients.
 \[
 \Delta_i^{\mathrm{norm}} = \frac{\Delta_i}{\lVert\Delta_i\rVert + \epsilon}
 \]
@@ -205,9 +203,9 @@ This projects each gradient onto the unit hypersphere, preserving direction whil
 
 \subsection{Storage and Compute Considerations}\label{sec:sg-storage}
 
-Computing and storing sample gradients for 5 million positions presents practical challenges. Each gradient vector has dimension \(P_{\mathrm{head}} \approx 17{,}000\) (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
+Computing and storing sample gradients for 50 million positions presents practical challenges. Each gradient vector has dimension \(P_{\mathrm{head}} \approx 66{,}563\) (flattened L2 and output weights). Storing this as 32-bit floats would require approximately:
 \[
-5 \times 10^6 \times 17{,}000 \times 4 \text{ bytes} \approx 340 \text{ GB}
+50 \times 10^{6} \times 66{,}563 \times 4 \text{ bytes} \approx 13.3 \text{ TB}
 \]
 
 \section{Step 3: Cluster Sample Gradients}\label{sec:step-cluster}
@@ -230,11 +228,13 @@ where \(\mu_k = \frac{1}{|\mathcal{C}_k|} \sum_{i \in \mathcal{C}_k} \Delta_i\) 
 
 An alternative family of algorithms, \textbf{density-based clustering}, does not require a fixed number of clusters. Instead, these methods identify clusters as regions of high density separated by regions of low density.
 
-\textbf{Density Peak Clustering} (Rodriguez \& Laio, 2014) is a particularly relevant algorithm for our setting. It works by identifying cluster centres as points that have high local density (many neighbours within a cutoff distance) and are far from points with higher density (suggesting they are local maxima).
+\textbf{Density Peak Clustering}~\cite{rodriguez2014density} is a particularly relevant algorithm for our setting. It works by identifying cluster centres as points that have high local density (many neighbours within a cutoff distance) and are far from points with higher density (suggesting they are local maxima).
 
 The number of clusters emerges naturally from the data: each point with density higher than all its neighbours and with large distance to the nearest higher-density point is a cluster centre. The remaining points are assigned to the same cluster as their nearest higher-density neighbour.
 
 We chose to use this algorithm because it automatically determines \(B\), so it will be interesting to find out what the clusters of board positions actually represent. This algorithm is also notoriously robustness to outliers; points with low density and large distance to higher-density points are naturally identified as outliers.
+
+DBSCAN (Density-Based Spatial Clustering of Applications with Noise) defines clusters as regions of high density separated by regions of low density, using two parameters: \(\varepsilon\) (neighbourhood radius) and \texttt{min\_samples} (minimum points to form a dense region). It does not require the number of clusters \(B\) as an input and can label outliers as noise. It avoids the need to pre-specify \(B\), which could be useful when the natural structure of the gradient space is unknown. It can detect clusters of arbitrary shapes and is robust to outliers, potentially identifying positions that yield uninformative gradients.
 
 \subsection{Choosing \texorpdfstring{\(B\)}{B} and the Algorithm}\label{sec:choose-b}
 
