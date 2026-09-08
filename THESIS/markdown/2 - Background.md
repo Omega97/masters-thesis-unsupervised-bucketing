@@ -43,10 +43,25 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 
 #todo Keep this subsection conceptual (accumulator, head, incremental update). Own dims / CReLU / 3-way WDL belong in 4.2, not here.
 
-## 2.1.4 Value targets: centipawns, EV, WDL
+### 2.1.4 Value Targets: Centipawns, Expected Value, and WDL
 
-<span style="color: #808080;">[Value Targets]</span>
-#todo Conceptual comparison after NNUE / AlphaZero: scalar centipawns (classical / Stockfish-style NNUE), expected value $v \in [-1,1]$ (AlphaZero), full WDL distribution. This is a representation choice, not only a metric. Loss choice (soft CE on WDL vs MSE on cp/EV) is fixed in 3.2–3.3 and 4.2.
+<span style="color: #808080;">[Which Value Targets]</span> A fundamental design choice in any chess evaluation function is the representation of the target value. Different engines adopt different representations, each with implications for training, calibration, and search integration. Three main approaches have emerged in practice: scalar centipawns, scalar expected value, and full WDL distributions.
+
+#### 2.1.4.1 Scalar centipawns
+<span style="color: #808080;">[Centipawns]</span> Classical evaluators and Stockfish-style NNUEs output a scalar value in centipawns, representing the expected advantage from the current player's perspective. A positive value indicates an advantage for the side to move; a negative value indicates a disadvantage. This representation is simple, interpretable, and compatible with existing search algorithms. However, it compresses the uncertainty of the game outcome into a single number: a position with a 100 centipawn advantage might be a forced win, a quiet positional advantage, or a tactical trap, all of which require different handling during search. Moreover, training a network to predict centipawns typically uses mean squared error, which treats all deviations equally regardless of whether they lie near the decision boundary.
+
+#### 2.1.4.2 Scalar expected value (EV)
+<span style="color: #808080;">[EV]</span> AlphaZero (Silver et al., 2018) adopted a different scalar representation: $v \in [-1, +1]$, interpreted as the expected game outcome from the current player's perspective. This value is the difference between the probability of a win and the probability of a loss: $v = p_W - p_L$. A value of $+1$ indicates a certain win, $-1$ a certain loss, and $0$ a draw or perfectly balanced position. This representation is more naturally calibrated to game outcomes than centipawns and avoids the arbitrary scaling of classical evaluation. However, like centipawns, it compresses the full distribution into a single scalar, losing information about the probability of a draw. A position with $v = 0$ could be a balanced middlegame, a drawish endgame, or a position where the engine is equally uncertain about win and loss—all of which have different implications for search.
+
+#### 2.1.4.3 Full WDL distribution
+<span style="color: #808080;">[Full WDL distribution]</span> The approach adopted in this work is to train the NNUE to output a full probability distribution over the three possible game outcomes: Win, Draw, and Loss. The output head produces three logits, converted to probabilities via softmax:
+
+$$p_{\text{WDL}}(s) = (p_W, p_D, p_L), \qquad p_W + p_D + p_L = 1$$
+
+The scalar expected value used during search is then derived as $v = p_W - p_L$, but the network is trained to match the full distribution rather than just the scalar. This representation has several advantages. First, it preserves information about uncertainty: a position with $p_W = 0, p_D = 1, p_L = 0$ has the same scalar value as one with $p_W = 0.5, p_D = 0, p_L = 0.5$, but the two positions are fundamentally different. Second, it enables the use of **soft cross-entropy** as the loss function, which provides a richer training signal than mean squared error: the network is encouraged to match the full shape of the distribution, not just its mean. Third, the loss does not saturate at extreme values, as squared error on $v$ would. Finally, the softmax output is naturally calibrated as a probability distribution, which can be useful for downstream tasks such as move selection or search heuristics.
+
+#### 2.1.4.4 Choice of loss and its implications 
+<span style="color: #808080;">[Loss]</span> The choice of target representation determines the loss function. For scalar targets (centipawns or EV), mean squared error is the natural choice. For WDL distributions, soft cross-entropy is more appropriate. In this work we adopt the WDL representation with soft cross-entropy loss, as it provides the richest training signal while still yielding a scalar value compatible with alpha-beta search. This choice is reflected in the architecture (three output neurons instead of one) and in the teacher model (Lc0 natively outputs WDL probabilities). We revisit the practical implications of this choice in Chapter 4, where we describe the training procedure in detail.
 
 ### 2.1.5 Why Evaluation Must Be Cheap
 
@@ -57,8 +72,6 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 <span style="color: #808080;">[Embedded Constraint]</span> On an embedded device such as the Wio Terminal (192 KB RAM, 500 KB flash), this constraint is even more severe. Memory is limited, floating-point operations are expensive, and every instruction counts. Any routing mechanism for a mixture-of-experts NNUE must add only a trivial cost—ideally, a handful of integer operations or a simple table look-up—to avoid degrading the engine's search performance.
 
 <span style="color: #808080;">[Core Trade-off]</span> In short, the evaluation function must be expressive enough to assess positions accurately, yet cheap enough to be called millions of times during a game. This trade-off is the central engineering challenge addressed by this thesis.
-
-#todo too long?
 
 #todo One sentence: playing strength is reported in Elo / ACPL; protocol in Chapter 5.
 
