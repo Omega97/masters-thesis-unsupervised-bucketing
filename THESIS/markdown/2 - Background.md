@@ -52,7 +52,7 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical *c
 #### 2.1.4.1 Scalar centipawns
 <span style="color: #808080;">[Centipawns]</span> Classical evaluators and Stockfish-style NNUEs output a scalar value in centipawns, representing the expected advantage from the current player's perspective. A positive value indicates an advantage for the side to move; a negative value indicates a disadvantage. This representation is simple, interpretable, and compatible with existing search algorithms. However, it compresses the uncertainty of the game outcome into a single number: a position with a 100 centipawn advantage might be a forced win, a quiet positional advantage, or a tactical trap, all of which require different handling during search. Moreover, training a network to predict centipawns typically uses mean squared error, which treats all deviations equally regardless of whether they lie near the decision boundary.
 
-#todo problems: centipawns don't have a cap, don't represent probability of victory, are NOT 1% of the value of a pawn (the value of a pawn changes based on the position)
+#todo mention problems: centipawns don't have a cap, don't represent probability of victory, are NOT 1% of the value of a pawn (the value of a pawn changes based on the position)
 
 #### 2.1.4.2 Scalar expected value (EV)
 <span style="color: #808080;">[EV]</span> AlphaZero (Silver et al., 2018) adopted a different scalar representation: $v \in [-1, +1]$, interpreted as the expected game outcome from the current player's perspective. This value is the difference between the probability of a win and the probability of a loss: $v = p_W - p_L$. A value of $+1$ indicates a certain win, $-1$ a certain loss, and $0$ a draw or perfectly balanced position. This representation is more naturally calibrated to game outcomes than centipawns and avoids the arbitrary scaling of classical evaluation. However, like centipawns, it compresses the full distribution into a single scalar, losing information about the probability of a draw. A position with $v = 0$ could be a balanced middlegame, a drawish endgame, or a position where the engine is equally uncertain about win and loss—all of which have different implications for search.
@@ -89,16 +89,43 @@ The scalar expected value used during search is then derived as $v = p_W - p_L$,
 
 #todo Pointer: Cfish as host engine (evaluate(), α-β, ID, TT, Wio, MoE hook) is instantiated in 4.8–4.9. Keep 2.1 conceptual.
 
-#todo also too long?
-
 ---
 
 ## 2.2 Mixture of Experts
 
-<span style="color: #808080;">[MoE Primer]</span>
-#todo Multiple expert networks over sub-domains. Learned vs.\ fixed routing. Uses in vision, NLP, and RL, and what carries over to a tiny chess eval.
+<span style="color: #808080;">[What is MoE]</span> The **Mixture of Experts (MoE)** architecture is a neural network design pattern in which multiple specialized sub-networks, or *experts*, are combined through a routing mechanism that selects or weights their contributions based on the input. The central idea is that different regions of the input space may require different processing, and dedicating separate capacity to each region can improve overall performance without substantially increasing the cost of a single forward pass.
 
-#todo LoRA: how ELREA / GradientSpace implement experts on LLMs. Contrast LoRA adapters vs a tiny NNUE head. Not used in this method.
+### 2.2.1 Fixed vs. Learned Routing
+
+MoE architectures can be broadly divided into two categories based on how the routing is determined: *fixed routing* and *learned routing*.
+
+#### 2.2.1.1 Fixed routing
+In *fixed routing* schemes, the assignment of inputs to experts is determined by a predefined rule, often based on domain knowledge. In chess engines, this corresponds to handcrafted bucketing: positions are assigned to buckets based on material count, piece presence, or game phase. The routing is deterministic, interpretable, and computationally cheap, but it relies on human intuition about which regions of the state space are meaningfully distinct. The rule is fixed after design and cannot adapt to the data.
+
+#### 2.2.1.2 Learned routing 
+In *learned routing* schemes, a trainable *gating network* (or router) learns to assign inputs to experts based on the input features themselves. The gating network typically produces a probability distribution over experts, and the final output is a weighted combination of expert outputs, or a single expert selected by argmax. This approach is more flexible: the router can learn to assign inputs to experts in ways that may not align with human intuition, potentially discovering structure in the data that handcrafted rules would miss. However, learned routing introduces additional parameters and computational cost, and it may require careful design to avoid load imbalance or mode collapse.
+
+### 2.2.2 Applications in Vision, NLP, and Reinforcement Learning
+
+<span style="color: #808080;">[MoE Applicaitons]</span> Mixture of Experts has been successfully applied across a wide range of domains. In natural language processing, large-scale MoE models such as the Switch Transformer (Fedus et al., 2021) and GLaM (Du et al., 2022) achieve state-of-the-art performance by scaling the number of parameters while keeping per-token computation constant: only a subset of experts is activated for each token. In computer vision, MoE architectures have been used to efficiently scale convolutional networks and vision transformers, where different experts specialise in different visual patterns or object classes. In reinforcement learning, MoE has been applied to multi-task and multi-domain settings, where different experts specialise in different tasks or environments, and a gating network selects the appropriate expert for the current context.
+
+#note we are going really wide with the references
+
+<span style="color: #808080;">[MoE in Microcontrollers]</span> Despite their success in these domains, MoE architectures are rarely deployed in resource-constrained settings such as microcontrollers. The gating network and the multiple expert heads introduce memory and computational overhead that is acceptable on servers but prohibitive on embedded devices. Moreover, many MoE implementations rely on sparse activation (only a subset of experts is used per forward pass) and require specialised hardware support for efficient execution. These constraints are less severe in the chess domain, where the evaluation function must be simple and fast, but they still shape the design choices of this work.
+
+### 2.2.3 LoRA as a Lightweight Expert Implementation
+
+<span style="color: #808080;">[How does LoRA work?]</span> In the context of large language models, a common approach to implementing experts is **Low-Rank Adaptation (LoRA)** (Hu et al., 2021). LoRA freezes the base model's weights and injects trainable low-rank matrices into each layer, enabling efficient fine-tuning with a small number of additional parameters. Each expert can be represented by a set of LoRA adapters that modify the base model's behaviour in a task-specific or domain-specific way.
+
+<span style="color: #808080;">[ELREA = LoRA + MoE]</span> **ELREA** (Li et al., ICLR 2025) and **GradientSpace** (Sridharan et al., 2025) both adopt this paradigm. In ELREA, training instructions are partitioned by their gradient directions, and a LoRA expert is fine-tuned on each partition. In GradientSpace, LoRA gradients are clustered, and a lightweight encoder-based router selects the appropriate LoRA expert for each input. These approaches demonstrate that gradient-informed partitioning can be effective, and they provide the closest methodological precedent for the work presented in this thesis.
+
+<span style="color: #808080;">[Why LoRA is not a good fit?]</span> However, LoRA is designed for large transformer models where the base model has hundreds of millions or billions of parameters. In our setting, the base model is a tiny NNUE with approximately [model_size] parameters, and the head that we specialise is already small. LoRA is therefore neither necessary nor appropriate: the expert heads are implemented as separate instances of the L2 and output layers, initialised from the base head and fine-tuned on their assigned buckets. This is simpler, more memory-efficient, and better suited to the integer quantisation required for deployment on microcontrollers.
+
+#idea should we store the experts as corrections to base models? probably no, we would have to re-calculate too much...
+
+### 2.2.4 What Carries Over to a Tiny Chess Evaluation
+
+<span style="color: #808080;">[Gradient-based partitioning]</span> From the broader MoE literature, the key ideas that inform this work are: the principle of partitioning the input space to enable specialisation; the distinction between fixed and learned routing; and the observation that gradient-based clustering can be used to discover meaningful partitions. However, the specific constraints of embedded chess engines impose a different set of trade-offs. The routing mechanism must be nearly free, ruling out expensive gating networks; the expert heads must be small and integer-friendly, ruling out LoRA adapters; and the partition must be learned from value estimation targets rather than instruction-following data. This thesis adapts the **gradient-based partitioning** paradigm to these constraints, proposing a lightweight linear dispatcher that routes positions to specialised heads with negligible overhead, and validating the approach on a chess NNUE for resource-constrained devices.
 
 ---
 
