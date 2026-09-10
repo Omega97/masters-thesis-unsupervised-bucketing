@@ -55,7 +55,7 @@ python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --
     <img src="THESIS/thesis-plots/variable_dataset_size_ce.png" width="600">
 </div>
 
-<span style="color: #808080;">[Overfitting Threshold]</span> We found that, below 2M positions, the model clearly overfits the training set. On the other hand, above 3M positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-model data should never exceed this threshold. 
+<span style="color: #808080;">[Overfitting Threshold]</span> We found that, below 7M positions, the model clearly overfits the training set. On the other hand, above 7M positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-model data should never exceed this threshold. 
 
 
 #### MoE NNUE - bucketing by L1 - fixed $B$

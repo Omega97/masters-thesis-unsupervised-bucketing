@@ -21,7 +21,7 @@
 
 ## 4.1 Dataset and Teacher
 
-<span style="color: #808080;">[Data Overview]</span> The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we constructed a dataset of approximately **[dataset_size] chess positions** extracted from human games and labeled with high-quality value estimates from a strong teacher network, **Leela Chess Zero** (Lc0), the *spiritual* successor of *AlphaZero*.
+<span style="color: #808080;">[Data Overview]</span> The quality of an NNUE evaluation function depends critically on the dataset used for training. For this work, we constructed a dataset of approximately [dataset_size] chess positions extracted from human games and labeled with high-quality value estimates from a strong teacher network, **Leela Chess Zero** (Lc0), the *spiritual* successor of *AlphaZero*.
 
 #todo update hyperparameters
 
@@ -35,23 +35,23 @@
 
 ### 4.1.2 Feature Encoding
 
-<span style="color: #808080;">[Encoding]</span> For the NNUE model, each FEN string is encoded as a **sparse binary feature vector** of length $d_{\text{in}}=[d_in]$. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
+<span style="color: #808080;">[Encoding]</span> For the NNUE model, each FEN string is encoded as a sparse binary feature vector of length $d_{\text{in}}=[d_{in}]$. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
 
 <span style="color: #808080;">[Feature Split]</span> The $d_{\text{in}}$ features are divided into two categories:
 
-- **716 base features**: These encode piece-square pairs, representing the presence of each piece type on each square. The feature set is pruned to remove impossible pawn ranks and compressed to reduce redundancy (e.g., the king plane is stored in a compact form). #todo explain better? In the **[d_in]‑dim SARDINE encoder**, the king plane is **compressed** from 64 squares to **32**, saving features.
+- **716 base features**: These encode piece-square pairs, representing the presence of each piece type on each square. The feature set is pruned to remove impossible pawn ranks and compressed to reduce redundancy (e.g., the king plane is stored in a compact form). #todo explain better? In the [d_in]‑dim SARDINE encoder, the king plane is compressed from 64 squares to 32, saving features.
 
 - **128 tactical features**: These encode dynamic aspects of the position, specifically which pieces are under attack and which pieces are attacking the king. These features provide the network with explicit information about immediate tactical threats. #todo is it worth trying without these? I don't think so...
 
-#todo list to prose
+#todo list to prose?
 
-<span style="color: #808080;">[Dual POV]</span> A key design choice is the **dual‑POV** encoding: for each position, the encoder produces two sets of sparse indices—one from the perspective of the **side‑to‑move** (STM) and one from the **opponent's** perspective (obtained by flipping the board rank-wise and swapping colors). This dual representation allows the network to learn symmetric evaluations and is consistent with the NNUE architecture's ability to evaluate positions from either player's viewpoint.
+<span style="color: #808080;">[Dual POV]</span> A key design choice is the **dual‑POV** encoding: for each position, the encoder produces two sets of sparse indices—one from the perspective of the **side‑to‑move** (STM) and one from the opponent's perspective (obtained by flipping the board rank-wise and swapping colors). This dual representation allows the network to learn symmetric evaluations and is consistent with the NNUE architecture's ability to evaluate positions from either player's viewpoint.
 
 <span style="color: #808080;">[Storage]</span> The encoded features are pre‑computed and stored in `.npz` slices for efficient loading during training.
 
 ### 4.1.3 Data Splits
 
-<span style="color: #808080;">[Splits]</span> The dataset is partitioned into training and test splits. The **training set** consists of approximately [dataset_size] positions, distributed across 165 slices for balanced I/O and stochastic sampling. The **test set** comprises a random portion of [test_fraction] of the position that are held out of the training set.
+<span style="color: #808080;">[Splits]</span> The dataset is partitioned into training and test splits. The training set consists of approximately [dataset_size] positions, distributed across 165 slices for balanced I/O and stochastic sampling. The test set comprises a random portion of [test_fraction] of the position that are held out of the training set.
 #todo remember to update numbers when they change...
 
 ### 4.1.4 Teacher Model: Lc0
@@ -68,12 +68,12 @@ which represents the expected outcome of the game from the current position. Thi
 
 <span style="color: #808080;">[Why Lc0]</span> Lc0 is chosen as the teacher for several reasons. First, it natively outputs WDL probabilities, which align directly with the NNUE's output head. Second, its strength—rated well above 3500 Elo—makes it a highly reliable source of positional evaluations.  Finally, Lc0 is open‑source and provides pre‑trained networks, making the labelling pipeline reproducible.
 
-<span style="color: #808080;">[Labelling Setup]</span> For this work, we label positions using Lc0's **latest best network** (e.g., `791556.pb.gz` from the Lc0 training server). We run Lc0 in UCI mode with `--show-wdl` enabled and evaluate each position with a single MCTS search. While depth‑1 evaluations may occasionally miss short‑term tactics, the resulting label noise is acceptable given the target Elo range of the engine (approximately 1700). For a cleaner but more expensive relabelling, one could increase the search depth.
+<span style="color: #808080;">[Labelling Setup]</span> For this work, we label positions using Lc0's latest best network (e.g., `791556.pb.gz` from the Lc0 training server). We run Lc0 in UCI mode with `--show-wdl` enabled and evaluate each position with a single MCTS search. While depth‑1 evaluations may occasionally miss short‑term tactics, the resulting label noise is acceptable given the target Elo range of the engine (approximately 1700). For a cleaner but more expensive relabelling, one could increase the search depth.
 #todo part of the dataset is already at depth 2...
 
 ### 4.1.5 Labelling Pipeline
 
-<span style="color: #808080;">[Pipeline]</span> The complete labelling pipeline is straightforward. We parse Lichess PGNs and sample positions uniformly at random from each game, saving FEN strings and visit counts. This reduces the correlation between the positions in the final dataset. For each unique FEN, we invoke Lc0 in *UCI mode* at **depth 1** to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities alongside the FEN and visit counts in JSON format. In the encoding step we pre‑compute the [d_in]‑dimensional sparse feature vectors (both STM and opponent POVs) and store them in `.npz` slices for efficient training. The final result is a dataset of pairs of sparse input board positions and their relative WDL probabilities.
+<span style="color: #808080;">[Pipeline]</span> The complete labelling pipeline is straightforward. We parse Lichess PGNs and sample positions uniformly at random from each game, saving FEN strings and visit counts. This reduces the correlation between the positions in the final dataset. For each unique FEN, we invoke Lc0 in *UCI mode* at depth 1 to obtain WDL probabilities from the STM perspective. We then procede to save the WDL probabilities alongside the FEN and visit counts in JSON format. In the encoding step we pre‑compute the [d_in]‑dimensional sparse feature vectors (both STM and opponent POVs) and store them in `.npz` slices for efficient training. The final result is a dataset of pairs of sparse input board positions and their relative WDL probabilities.
 
 #todo UCI mode? STM perspective?
 #todo specify WDL and depth 1?
@@ -117,7 +117,8 @@ This clipping is essential for integer quantization, as it bounds the dynamic ra
 
 ### 4.2.3 Side‑to‑Move Reorder
 
-<span style="color: #808080;">[STM Reorder]</span> Before concatenating the two accumulator vectors, we apply a **side‑to‑move (STM) reorder** to ensure that the expert head always receives the perspective of the current player first. The reordering is governed by the binary flag $\text{stm\_white} \in \{0,1\}$, which indicates whether White is to move:
+<span style="color: #808080;">[STM Reorder]</span> Before concatenating the two accumulator vectors, we apply a 
+*side‑to‑move (STM) reorder* to ensure that the expert head always receives the perspective of the current player first. The reordering is governed by the binary flag $\text{stm\_white} \in \{0,1\}$, which indicates whether White is to move:
 
 $$
 h_{\text{first}} =
@@ -151,7 +152,7 @@ $$
 
 where $W_{\text{L2}} \in \mathbb{R}^{2W \times H}$ and $b_{\text{L2}} \in \mathbb{R}^H$ are the weight matrix and bias of the L2 layer. The ReLU activation introduces non‑linearity and has been shown to work well with the sparse accumulator features.
 
-<span style="color: #808080;">[Output Head]</span> Finally, the L2 activations are projected to a **three‑dimensional output** representing the logits for Win, Draw, and Loss probabilities:
+<span style="color: #808080;">[Output Head]</span> Finally, the L2 activations are projected to a three‑dimensional output representing the logits for Win, Draw, and Loss probabilities:
 
 $$
 \text{logits} = W_{\text{out}} \, z + b_{\text{out}},
@@ -254,8 +255,6 @@ The gradients are stored in memory-mapped `.npy` files, which provide efficient 
 - Time required to compute gradients for 5 million positions
 - GPU vs CPU considerations
 - Batching strategy and throughput
-
-
 
 ---
 
