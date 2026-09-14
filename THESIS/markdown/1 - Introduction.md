@@ -36,9 +36,14 @@
 
 ## 1.4 Thesis Outline
 
-<span style="color: #808080;">[Roadmap]</span>
-#todo maybe not necessary? blank for now 
+<span style="color: #808080;">[Next chapters]</span> The next chapter introduces the background and related work underlying the proposed approach. It reviews chess evaluation functions, with particular attention to NNUE architectures, value representations, and the computational constraints of embedded chess engines. It then introduces Mixture-of-Experts architectures, per-sample gradients, and existing approaches to state-space bucketing and gradient-based expert specialization. The discussion concludes by positioning the proposed method with respect to existing work in efficient chess evaluation, teacher-student training, and gradient-based expert specialization.
+
+<span style="color: #808080;">[The chapters after]</span> The following chapter presents the proposed method for unsupervised state-space bucketing via sample gradients. It describes the training of the base NNUE, the computation and clustering of normalized per-sample gradients, the construction of the buckets, and the training of a lightweight dispatcher for inference-time routing. The subsequent chapter describes the experimental setup and implementation, including the dataset and teacher model, network architecture, training procedure, quantization, and integration with the Cfish engine on the target embedded hardware. The experimental results are then presented and discussed, with particular attention to expert specialization, evaluation quality, computational cost, and comparison with the selected baselines. The thesis concludes by summarizing the main findings, discussing the limitations of the approach, and outlining possible directions for future work.
+
+#note summary of the following characters, but without referencing specifica chapter numbers.
 
 ---
 
 > **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*
+
+[[2 - Background]]
