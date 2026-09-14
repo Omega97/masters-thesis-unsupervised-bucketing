@@ -33,6 +33,8 @@
 
 <span style="color: #808080;">[Tactical Extra]</span> A small fraction of the dataset is also a collection of interesting tactical positions, and high level bot games. They capture a portion of the state space that may be outside of regular human play.
 
+#todo cosa fare con posizioni duplicate (3.4 e 4.1.1) *La loss è dominata dalle posizioni comuni. Il gradiente totale di una posizione comune è proporzionale alla sua frequenza. È statisticamente corretto se vogliamo che il modello sia calibrato sulla distribuzione reale del gioco, ma è inefficiente e rischia di sovrarappresentare posizioni banali come quella iniziale.*
+
 ### 4.1.2 Feature Encoding
 
 <span style="color: #808080;">[Encoding]</span> For the NNUE model, each FEN string is encoded as a sparse binary feature vector of length $d_{\text{in}}=[d_{in}]$. This encoding is designed to capture both the positional and tactical structure of the board in a form suitable for the accumulator layer.
@@ -168,15 +170,15 @@ $$
 
 ### 4.2.5 Training Objective
 
-<span style="color: #808080;">[Soft-CE]</span> The model is trained to minimise the **soft cross‑entropy** loss between the predicted WDL probabilities and the teacher labels provided by Lc0. For a batch of positions with targets $y_i = (\hat P_i(W), \hat P_i(D), \hat P_i(L))$ and model outputs $p_i = (P_i(W), P_i(D), P_i(L))$, the loss is:
+<span style="color: #808080;">[Soft-CE]</span> The model is trained to minimise the **soft cross-entropy** between its predicted WDL distribution and the teacher labels provided by the Lc0 value function. Let $\mathcal{O} = \{W, D, L\}$ denote the set of possible game outcomes. For a batch of $N$ positions with teacher probabilities $\hat{p}_i = (\hat{P}_i(o))_{o \in \mathcal{O}}$ and model outputs $p_i = (P_i(o))_{o \in \mathcal{O}}$, the loss is:
 
 $$
-\mathcal{L} = -\frac{1}{N} \sum_{i=1}^N \left[\hat P_i(W) \log P_i(W) + \hat P_i(D) \log P_i(D) + \hat P_i(L) \log P_i(L) \right].
+\mathcal{L} = -\frac{1}{N} \sum_{i=1}^N \sum_{o \in \mathcal{O}} \hat{P}_i(o) \log P_i(o)
 $$
-#todo soft-CE? better notation?
 
-<span style="color: #808080;">[Why This Loss]</span> This loss is well‑suited for the task because the teacher labels are probability distributions, not point estimates. Using soft cross‑entropy encourages the model to *match the full outcome distribution* rather than merely the scalar expected reward, providing a richer training signal. Additionally, the loss naturally handles the non‑linearity of the scalar evaluation via the softmax, and its gradient does not saturate at extreme values, unlike the squared error on $v$.
-#todo I have to think about it 
+The outer sum averages the loss over the batch, while the inner sum accumulates the contribution of each outcome for a given position.
+
+<span style="color: #808080;">[Why this loss]</span> This loss is well-suited to the task because the teacher labels are probability distributions rather than point estimates. Soft cross-entropy encourages the model to match the full outcome distribution, not merely its scalar expected reward, and therefore provides a richer training signal. The loss also handles the non-linearity introduced by the softmax in a principled way, and its gradient does not saturate at extreme values, unlike the squared error on the scalar evaluation $v = P(W) - P(L)$.
 
 ### 4.2.6 Parameter Count and Model Size
 
@@ -196,9 +198,9 @@ $$
 
 ### 4.3.1 Implementation with PyTorch
 
-The sample gradients are computed using PyTorch's automatic differentiation engine. For each batch of positions, a forward pass through the base model is performed to obtain WDL logits. Then, the soft cross-entropy loss is computed against the teacher labels. Finally, `torch.autograd.grad` is called to obtain the gradients of the loss with respect to the head parameters.
+<span style="color: #808080;">[Sample Gradients with PyTorch]</span> The sample gradients are computed using PyTorch's automatic differentiation engine. For each batch of positions, a forward pass through the base model is performed to obtain WDL logits. Then, the soft cross-entropy loss is computed against the teacher labels. Finally, `torch.autograd.grad` is called to obtain the gradients of the loss with respect to the head parameters.
 
-The computation proceeds as follows. For a batch of $M$ positions, the base model $f_{w_{\text{base}}}$ produces logits $\ell_i \in \mathbb{R}^3$ for each position. The loss is computed as the average soft cross-entropy over the batch:
+<span style="color: #808080;">[The implementation in practice]</span> The computation proceeds as follows. For a batch of $M$ positions, the base model $f_{w_{\text{base}}}$ produces logits $\ell_i \in \mathbb{R}^3$ for each position. The loss is computed as the average soft cross-entropy over the batch:
 
 $$\mathcal{L}_{\text{batch}} = \frac{1}{M} \sum_{i=1}^M \mathcal{L}_{\text{CE}}(\text{softmax}(\ell_i), \hat{p}_i)$$
 
@@ -215,7 +217,7 @@ grads = torch.autograd.grad(
 
 The `head_parameters` list contains the trainable parameters of the L2 layer and the output head: $(W_{L2}, b_{L2}, W_{out}, b_{out})$. The L1 weights are excluded, as they remain frozen throughout the entire pipeline.
 
-#todo imply the bias?
+#todo implicit or explicit bias?
 
 The resulting gradient tensors are detached from the computation graph to free memory, then flattened and concatenated into a single vector per position:
 
@@ -241,13 +243,13 @@ The computation is parallelised across the GPU and performed in a single pass ov
 
 ### 4.3.4 Storage and Memory Management
 
-Computing and storing sample gradients for 5 million positions presents a significant practical challenge. Each gradient vector has dimension $P_{\text{head}} \approx 17,000$, corresponding to the flattened parameters of the L2 layer and output head. Storing the full set in 32-bit floating-point would require approximately 340 GB. We therefore adopt half-precision storage, reducing this to roughly 170 GB while preserving sufficient numerical precision for clustering, as the gradients are normalised and clustered based on their directions rather than their exact magnitudes.
+<span style="color: #808080;">[Sample Gradients take a lot of memory]</span> Computing and storing sample gradients for [dataset_size] positions presents a significant practical challenge. Each gradient vector has dimension $P_{\text{head}} \approx 17,000$, corresponding to the flattened parameters of the L2 layer and output head. Storing the full set in 32-bit floating-point would require approximately 340 GB. We therefore adopt half-precision storage, reducing this to roughly 170 GB while preserving sufficient numerical precision for clustering, as the gradients are normalised and clustered based on their directions rather than their exact magnitudes.
 
-The gradients are stored in memory-mapped `.npy` files, which provide efficient random access without loading the entire dataset into memory. Computation proceeds in batches of 1024 positions, with each batch written to disk immediately after computation and the memory-mapped array pre-allocated to avoid accumulating gradients in GPU or CPU memory. For exploratory analysis, gradient computation can be performed on a subset of the dataset, but for the final MoE architecture we use the full dataset. 
+<span style="color: #808080;">[Memory Mapping]</span> The gradients are stored in memory-mapped `.npy` files, which provide efficient random access without loading the entire dataset into memory. Computation proceeds in batches of 1024 positions, with each batch written to disk immediately after computation and the memory-mapped array pre-allocated to avoid accumulating gradients in GPU or CPU memory. For exploratory analysis, gradient computation can be performed on a subset of the dataset, but for the final MoE architecture we use the full dataset. 
 
 #todo considerations on dimensionality reduction?
 #todo replace hard numbers with variables 
-
+#note clustering on a random subset mentioned 
 
 ### 4.3.5 Computational Cost and Timing
 
@@ -301,3 +303,5 @@ The gradients are stored in memory-mapped `.npy` files, which provide efficient 
 ---
 
 > **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*
+
+[[5 - Results]]
