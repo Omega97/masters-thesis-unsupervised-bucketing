@@ -18,7 +18,7 @@
 
 ---
 
-## 3.1 Overview
+## 3.1 Method Overview
 
 <span style="color: #808080;">[Proposed Method]</span> This chapter presents the proposed method for unsupervised state-space bucketing via sample gradients. The central idea is to use the learning signal itself—the per-sample gradients of the loss with respect to the head parameters—as the basis for partitioning the state space, rather than relying on handcrafted features or hidden-layer activations. 
 
@@ -176,6 +176,22 @@ $$[dataset_{size}] \times [P_{head}] \times 4 \text{ bytes}$$
 
 #todo considerations on whether to introduce rounding, and whether to use just part of the dataset
 
+### 3.4.5 Handling Duplicate Positions
+
+<span style="color: #808080;">[The problem of frequent positions]</span> In a dataset of chess positions extracted from human games, the same position can occur many times. Opening positions, in particular, are heavily overrepresented: the starting position appears in every game, and the first few moves are shared across a large fraction of the dataset. This multiplicity has two distinct effects on the pipeline, one on training and one on clustering, and they call for different treatments.
+
+<span style="color: #808080;">[Effects on training]</span> During training, the frequency of a position determines its contribution to the loss. If every occurrence is treated equally, the natural distribution of the data is preserved: common positions contribute more, rare positions contribute less. This is statistically appropriate if the goal is to match the distribution of positions encountered during play. However, extreme overrepresentation is wasteful, both computationally and statistically: the starting position carries no more information on its millionth occurrence than on its first, and it can dominate the gradient signal to the detriment of more informative positions. A common remedy is to cap the multiplicity of any position, so that no single state contributes more than a fixed number of times per epoch.
+
+#todo capping reduces the represented density in that spot
+
+<span style="color: #808080;">[Effects on clustering]</span> For clustering, the issue is different. The clustering operates on sample gradients, and duplicated positions produce identical gradient vectors. If duplicates are retained, they occupy a disproportionate volume in the gradient space, and cluster centroids are pulled toward common positions. This biases the partition toward regions of the state space that are frequent in the data, rather than regions that require distinct learning signals. Deduplicating before clustering avoids this bias, but it discards the information that some positions are more important than others.
+
+#todo decide what to do
+
+<span style="color: #808080;">[How we deal with it]</span> In this work we adopt a compromise. The dataset is constructed one slice at the time. Within each slice, the positions are counted, and the visit count is stored alongside each position...
+
+#todo finish
+ 
 ---
 
 ## 3.5 Step 3: Cluster Sample Gradients
@@ -230,8 +246,23 @@ where $\mu_k = \frac{1}{|\mathcal{C}_k|} \sum_{i \in \mathcal{C}_k} \Delta_i$ is
 
 ### 3.5.5 Validation and Diagnostics
 
-<span style="color: #808080;">[Diagnostics]</span>
-#todo Once clustering is complete, we validate the quality of the partition using standard metrics: Cluster size distribution, Cosine distance between centroids, Inertia, Silhouette score.
+<span style="color: #808080;">[Purpose of Validation]</span> Once the clustering is complete, the quality of the resulting partition is assessed using several complementary metrics. The purpose of this step is not to select a single best partition, but to understand the structure of the gradient space and to guide the choice of the number of experts $B$ used in the subsequent fine-tuning stage.
+
+<span style="color: #808080;">[Cluster Size Distribution]</span> The **cluster size distribution** provides a first diagnostic. We examine the number of positions assigned to each bucket to ensure that no cluster is too small to support stable fine-tuning. A bucket with very few positions may lead to an expert head that is poorly conditioned or that overfits its small training set. Conversely, a highly imbalanced distribution may indicate that the clustering algorithm has collapsed most of the data into a single region, which would defeat the purpose of partitioning. A perfectly balanced distribution is not required, but the sizes should be large enough to train each expert reliably.
+
+<span style="color: #808080;">[Inertia]</span> **Inertia**, the within-cluster sum of squared distances to the centroid, measures the compactness of the clusters. For a fixed value of $B$, lower inertia indicates tighter clusters. We compute inertia across a range of $B$ values and look for an elbow point, the value beyond which additional clusters yield diminishing reductions in inertia. This heuristic is not definitive, but it provides a useful indication of the natural structure of the gradient space and helps constrain the range of $B$ values worth exploring.
+
+#todo maybe not necessary?
+
+<span style="color: #808080;">[Silhouette Score]</span> The **silhouette score** (*Rousseeuw*, 1987) measures how similar each point is to its own cluster compared to the nearest neighbouring cluster. For a point $i$, the coefficient is defined as
+
+$$s_i=b_i−a_i \max⁡(a_i,b_i)$$​
+
+where $a_i$ is the mean distance to the other points in the same cluster and $b_i$​ is the mean distance to the points in the nearest other cluster. Values range from $−1$ to $+1$, with higher values indicating better-defined clusters. A score near zero suggests overlapping clusters, while negative values indicate that some points may be assigned to the wrong cluster. We report the average silhouette score over all positions, but interpret it with caution: the gradient space is high-dimensional, and silhouette scores tend to degrade as dimensionality increases even when the data exhibits meaningful structure.
+
+<span style="color: #808080;">[Centroid Separation]</span> Finally, the **cosine distance between cluster centroids** provides a direct measure of the diversity that is central to the method. The objective of the partition is to obtain task vectors $δ_i=θ_i−θ_{base}$​ that are maximally diverse, and the pairwise cosine distance between centroids serves as a proxy for this diversity. We compute the cosine distance between the centroid of clusters in the normalised gradient space. High average distances indicate that the clusters are well separated and likely to induce distinct task vectors. Low distances suggest that the clusters are redundant and may not yield meaningful specialisation. We report both the average and the minimum pairwise distance, since the presence of even one nearly collinear pair of centroids may indicate that two buckets could be merged without loss of diversity.
+
+<span style="color: #808080;">[Selecting B]</span> Together, these diagnostics provide a comprehensive view of the partition and inform the choice of $B$. In practice, the clustering pipeline is run for a range of values, such as $B∈\{2,4,8,16,32\}$, and the partition that offers the best balance between compactness, separation, and cluster size is selected. The chosen partition is then used for dispatcher training and expert fine-tuning in the subsequent steps.
 
 ---
 
@@ -310,33 +341,49 @@ where $c_i$ is the cluster index assigned to position $s_i$. We optimize this lo
 <span style="color: #808080;">[Training specs]</span> We use a short training schedule, typically one or two sweeps over the bucket, with early stopping based on the cross-entropy on a held-out portion of the bucket. Depending on the dataset size, one of two approaches is best. If the buckets are too small ( #todo reference overfitting plot), training for too long risks overfitting. In our specific case data is abundant, and the goal is to reach the best possible performance on each bucket in isolation, to produce a set of experts whose combined behaviour significantly improves upon the single base head. The learning rate is set lower than in base training, to avoid large deviations from the base head that could destabilise the shared L1 representation.
 
 #todo rephrase?
-#todo decide numbers like lr
+#todo decide numbers like `lr`
 
 ### 3.7.3 Data Availability per Expert
 
-Partitioning the dataset into BB buckets means that each expert sees only a fraction of the total data. If the partition is balanced, each expert is fine-tuned on approximately N/BN/B positions. For B=8B=8 and N=5N=5 million, this amounts to roughly 625,000 positions per expert, which is still a substantial training set. However, if the clustering produces imbalanced buckets, some experts may be trained on far fewer positions, which can lead to underfitting or unstable training.
+<span style="color: #808080;">[The problem of partitioning]</span> Partitioning the dataset into $B$ buckets means that each expert sees only a fraction of the total data. If the partition is balanced, each expert is fine-tuned on approximately $N/B$ positions. For $B=8$ and $N=5$ million, this amounts to roughly $625,000$ positions per expert, which is still a substantial training set. However, if the clustering produces imbalanced buckets, some experts may be trained on far fewer positions, which can lead to underfitting or unstable training.
 
-This is one of the reasons why we monitor the cluster size distribution as part of the validation diagnostics in Section 3.5.5. If a bucket is too small to support stable fine-tuning, several remedies are possible: merging it with a nearby bucket, reducing the number of experts, or allowing the expert to be trained on a slightly larger set that includes positions near the cluster boundary. The latter approach is particularly appealing because it acknowledges that the boundary between two buckets is not sharp in the original gradient space: positions near the boundary may share characteristics of both regions and can reasonably contribute to the training of either expert.
+#todo replace hard numbers
 
-We do not adopt this relaxation in the present work, but we note it as a natural extension that could improve the robustness of the method when the partition is uneven.
+<span style="color: #808080;">[How to deal with small buckets]</span> This is one of the reasons why we monitor the cluster size distribution as part of the validation diagnostics in Section 3.5.5. If a bucket is too small to support stable fine-tuning, several remedies are possible: ...
 
-#review
+#todo single sweep -> gradient -> optimize for magnitude
+#todo train also on nearby clusters?
+
+<span style="color: #808080;">[What we do]</span> We do not adopt this relaxation in the present work, but we note it as a natural extension that could improve the robustness of the method when the partition is uneven.
+
+#todo add reference to the plot that shows that we have plenty data
 
 ### 3.7.4 The Resulting MoE Model
 
-At the end of this step, we have a complete mixture-of-experts evaluation function. The model consists of three components: the frozen L1 accumulator, which is shared across all experts; the dispatcher, which maps L1 activations to a bucket index; and the BB expert heads, each containing its own L2 and output parameters. During inference, a position is encoded into its sparse feature representation, passed through L1 to obtain the accumulator vector, routed by the dispatcher to a single bucket, and finally evaluated by the corresponding expert head. The output is a WDL distribution from the side-to-move perspective, from which the scalar evaluation is derived as usual.
+<span style="color: #808080;">[The resulting model]</span> At the end of this step, we have a complete mixture-of-experts evaluation function. The model consists of three components: the frozen L1 accumulator, which is shared across all experts; the dispatcher, which maps L1 activations to a bucket index; and the $B$ expert heads, each containing its own L2 and output parameters. During inference, a position is encoded into its sparse feature representation, passed through L1 to obtain the accumulator vector, routed by the dispatcher to a single bucket, and finally evaluated by the corresponding expert head. The output is a WDL distribution from the side-to-move perspective, from which the scalar evaluation is derived as usual.
 
-The inference cost is therefore one L1 forward pass (which is incremental during search), one linear dispatcher operation, and one head forward pass. Compared to the single-head base model, the only additional cost is the dispatcher, which as we have seen adds a matrix-vector multiplication of negligible size. The experts themselves are not more expensive than the base head: they have the same architecture, and only one is evaluated per position. The memory cost is BB times the size of the head parameters, which remains small relative to the L1 accumulator. This is the essential trade-off of the method: we gain specialisation at the cost of additional head parameters, while keeping the inference path as lean as the base model.
-
-#review
+<span style="color: #808080;">[Comparing to single model]</span> The inference cost is therefore one L1 forward pass (which is incremental during search), one linear dispatcher operation, and one head forward pass. Compared to the single-head base model, the only additional cost is the dispatcher, which as we have seen adds a matrix-vector multiplication of negligible size. The experts themselves are not more expensive than the base head: they have the same architecture, and only one is evaluated per position. The memory cost is $B$ times the size of the head parameters, which remains small relative to the L1 accumulator. This is the essential trade-off of the method: we gain specialisation at the cost of additional head parameters, while keeping the inference path as lean as the base model.
 
 ---
 
 ## 3.8 Generalisation Beyond Chess
 
-<span style="color: #808080;">[Beyond Chess]</span>
-#todo The method needs only a state space, a model, a loss, and a target. Other games, robotics, world-model settings.
+<span style="color: #808080;">[The method is not game-specific]</span> The method presented in this chapter is not specific to chess. Its core ingredients are a state space, a parametric model that maps states to predictions, a differentiable loss, and a dataset of *state-target* pairs. Given these, the pipeline can be applied to a different domain without modification: train a base model, compute per-sample gradients with respect to the parameters of a head, cluster them, train a dispatcher on a frozen intermediate representation, and fine-tune specialised heads on the resulting buckets. Chess is an attractive testbed because it offers a large dataset of labelled positions, a well-established efficient architecture in NNUE, and clear resource constraints that make the efficiency of the dispatcher meaningful. But the underlying principle, that a partition of the state space can be discovered by clustering the learning signal rather than the input or the representation, is domain-agnostic.
+
+<span style="color: #808080;">[Shogi, Go, videogames, and robotics]</span> Several other settings share the structural properties that make the method applicable. In similar board games such as shogi, the same formulation carries over directly: shogi engines already use NNUE-style accumulators, and the position encoding and WDL labels can be adapted with minimal changes. In the ancient game of Go, the NNUE architecture should be swapped for a model of convolutional nature. In video game AI and simulated environments, where agents must evaluate states or select actions under tight latency budgets, a similar decomposition into a shared representation and a small routed head could reduce inference cost while preserving specialisation. In robotics, where control policies often operate on high-frequency sensor streams and must run on embedded hardware, the same pattern of a frozen feature extractor followed by a lightweight, routed head is a natural fit: the feature extractor runs continuously, while the head is selected by a dispatcher that observes the same features at negligible cost.
+
+#note we mention videogames and robotics
+
+<span style="color: #808080;">[World Models]</span> The method also connects to recent work on world models, where a learned representation of the environment is used to predict future states or plan actions. World models typically maintain a latent state that is updated incrementally as the environment evolves, much like the NNUE accumulator is updated as pieces move. This parallel suggests that the gradient-based bucketing idea could be extended to world models, where different regions of the latent state space may require different dynamics or reward predictors. In such a setting, the "head" would be the component that predicts the next latent state or the reward, and the dispatcher would route to a specialised predictor based on the current latent representation. The efficiency argument carries over: a dispatcher that operates on the shared latent state adds minimal cost compared to evaluating multiple full predictors.
+
+#note could be an important connection, maybe elaborate in an other chapter
+
+<span style="color: #808080;">[What is domain-specific]</span> What must change across domains is not the algorithmic structure but the concrete choices within it. The feature encoding, the architecture of the base model, the loss function, and the definition of the target all depend on the domain. In chess, we use a sparse binary encoding and a WDL target from a strong teacher; in another domain, the encoding might be dense and continuous, the loss might be a regression or a contrastive objective, and the target might come from human demonstrations, simulation, or self-play. The dispatcher's input features would likewise be domain-specific: in chess they are the L1 activations, but in another model they could be any intermediate representation that is cheap to compute and informative about the learning signal. These choices affect performance but do not alter the underlying method. The central claim, that per-sample gradients provide a useful signal for partitioning a state space in a way that supports efficient mixture-of-experts inference, is independent of the domain in which it is tested.
+
+#todo rephrase "domain-specific"
 
 ---
 
 > **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*
+
+[[4 - Implementation]]
