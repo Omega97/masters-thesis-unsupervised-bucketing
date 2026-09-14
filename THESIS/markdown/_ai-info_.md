@@ -3,25 +3,24 @@
 
 ---
 
+## Notes for the AI agents
+
+- professional, scientific tone
+- no lists or bullet points unless necessary
+- watch out for duplicate information and redundancy
+- not too many "we", "our", and "us"
+- not too many em dashes
+- watch out for formula glitches ("BB" instead of "$B$")
+- check for inconsistencies: chapters in the wrong place, wrong summary title
+- check "thesis-writer" skill if available
+
+---
+
 ## Quote
 
 *Divide and conquer.*
 
 > I chose this one because it evokes a tactical situation, not unlike a chess position, and closely resembles the goal of MoE.
-
-#### Other Options
-
-One move at a time.
-Every move creates a new position.
-Trust the process.
-Think ahead.
-Stay curious.
-The more you learn, the more you realize how much you don't know
-Slow and steady wins the race.
-Keep your options open.
-Different problems call for different tools.
-Don’t put all your eggs in one basket.
-Know your position.
 
 ---
 
@@ -31,8 +30,8 @@ Know your position.
 
 | Placeholder             | Meaning                                                       | Current value                                       |
 | :---------------------- | :------------------------------------------------------------ | :-------------------------------------------------- |
-| `[dataset_size]`        | Dataset size (FEN positions, with duplicates)                 | 50M                                                 |
-| `[dataset_size_unique]` | Dataset size (unique FEN positions)                           | 49.5M                                               |
+| `[dataset_size]`        | Dataset size (FEN positions, with duplicates)                 | 105M                                                |
+| `[dataset_size_unique]` | Dataset size (unique FEN positions)                           | 104M                                                |
 | `[test_fraction]`       | Percentage of the dataset held out as test set                | 1%                                                  |
 | `[batch_size]`          | Training batch size                                           | 10k                                                 |
 | `[lr_start]`            | Initial learning rate                                         | $10^{-2}$                                           |
