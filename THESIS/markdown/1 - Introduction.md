@@ -1,6 +1,8 @@
 
 # Introduction
 
+#todo signal that we aim to prove that we were training NNUE MoE suboptimally
+
 ---
 
 ## 1.1 Motivation
@@ -17,7 +19,7 @@
 
 <span style="color: #808080;">[Problem]</span> The central problem addressed in this thesis is the design of an efficient, *data-driven* method for partitioning the state space of a chess engine into regions of specialist expertise, within the tight *inference-time* resource constraints of embedded devices.
 
-<span style="color: #808080;">[Formal Setup]</span> More specifically, consider a standard NNUE evaluation function composed of a frozen shared representation $W_{L1}$ and a trainable head $(W_{L2}, W_{out})$. Given a dataset of positions $\mathcal{D} = \{(s_i, v_i)\}$, we can train a base model $w_{\text{base}}$. To improve upon this base model via expert specialization, we seek an algorithm that can effectively partition  the state space into $B$ buckets $\{\mathcal{D}_1, \dots, \mathcal{D}_B\}$ such that fine-tuning a separate head on each bucket yields a set of specialized models with *distinct parameter updates*. We refer to the parameter difference $\delta_i = \theta_i-\theta_{\mathrm{base}}$ as a _task vector_, following the terminology commonly used for parameter-space representations of model specialization.
+<span style="color: #808080;">[Formal Setup]</span> More specifically, consider a standard NNUE evaluation function composed of a frozen shared representation $W_{L1}$ and a trainable head $(W_{L2}, W_{out})$. Given a dataset of positions $\mathcal{D} = \{(s_i, v_i)\}$, we can train a base model $w_{\text{base}}$. To improve upon this base model via expert specialization, we seek an algorithm that can effectively partition the state space into $B$ buckets $\{\mathcal{D}_1, \dots, \mathcal{D}_B\}$ such that fine-tuning a separate head on each bucket yields a set of specialized models with *distinct parameter updates*. We refer to the parameter difference $\delta_i = \theta_i-\theta_{\mathrm{base}}$ as a _task vector_, following the terminology commonly used for parameter-space representations of model specialization.
 
 <span style="color: #808080;">[Key Difficulty]</span> This objective is complicated by the fact that the partition must be discovered from the training data, yet the criterion for effective specialization is expressed in parameter space through the diversity of task vectors, rather than directly in the input space. At the same time, the resulting routing mechanism must be *lightweight* enough to run on a microcontroller at every node of an alpha-beta search, ruling out expensive computations such as evaluating multiple full networks. Current heuristic bucketing strategies (e.g., based on piece count or king position) are computationally cheap but encode arbitrary *game-specific* assumptions about which positions are similar, which may not align with the learning signal relevant to head specialization.
 
