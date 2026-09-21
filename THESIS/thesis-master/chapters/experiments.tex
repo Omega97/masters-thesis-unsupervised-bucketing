@@ -2,17 +2,9 @@
 
 \section{Experimental Setup}\label{sec:setup}
 
-\draftnote{Splits (train / test sizes). Training on CPU, inference on Wio Terminal. Baselines: single-head NNUE; dense FFNN; handcrafted bucketing (piece count + queen presence).}
-
 \section{Evaluation Metrics}\label{sec:metrics}
 
-\draftnote{Centipawn-based probabilistic Elo estimator. Test CE on WDL; MAE on expected value (even if the model is trained with CE, not MSE on EV); dispatcher accuracy; per-bucket CE vs.\ the base head.}
-
-\draftnote{Elo protocol (not just the name): matches, time control, opponent, BayesElo or SPRT, ACPL. Playing-strength numbers go in Section~\ref{sec:res-comparison}.}
-
 \section{Results}\label{sec:results}
-
-\draftnote{We will list the CE of the models, and the Elo estimates.}
 
 \subsection{Linear Model}\label{sec:res-linear}
 
@@ -22,7 +14,7 @@
 
 \subsection{Base NNUE}\label{sec:res-base}
 
-We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples, all the way to 50 million. The model has a \(2\times 128\)-neuron accumulator layer, and a 256-neuron L2 layer, which lays on the larger side of the models we trained.
+We also tested the soft cross-entropy of the base NNUE model as a function of the size of the dataset, from 50k samples all the way to 105 million. The model has a \(2\times 128\)-neuron accumulator layer and a 256-neuron L2 layer, which lies on the larger side of the models we trained.
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,breaklines=true]
 python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --hidden-dim 128 --hidden2-dim 256 --test-fraction 0.01 --batch-size 10000 --batches-per-epoch 512 --train-val-subset-size 10000 --run-name dual_h128_H256_e100_bpe512_bs10000 --plot plots/dual_h128_H256_e100_bpe512_bs10000.png
@@ -30,12 +22,19 @@ python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.85\textwidth]{variable_dataset_size_ce.png}
-\caption{Soft cross-entropy of the base NNUE as a function of training-set size.}
-\label{fig:nnue-ce-vs-size}
+\includegraphics[width=0.85\textwidth]{variable_dataset_size_ce_64.png}
+\caption{Soft cross-entropy of a smaller base NNUE as a function of training-set size.}
+\label{fig:nnue-ce-vs-size-64}
 \end{figure}
 
-We found that, below 2M positions, the model clearly overfits the training set. On the other hand, above 3M positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-model data should never exceed this threshold.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{variable_dataset_size_ce_256.png}
+\caption{Soft cross-entropy of the \(W=128\), \(H=256\) base NNUE as a function of training-set size.}
+\label{fig:nnue-ce-vs-size-256}
+\end{figure}
+
+We found that, below 7 million positions, the model clearly overfits the training set. On the other hand, above 7 million positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-expert data should never fall below this threshold.
 
 \subsection{MoE NNUE --- bucketing by L1 --- fixed \texorpdfstring{\(B\)}{B}}\label{sec:res-moe-l1-fixed}
 
@@ -47,10 +46,4 @@ We found that, below 2M positions, the model clearly overfits the training set. 
 
 \section{Results: Comparison of the Models}\label{sec:res-comparison}
 
-\draftnote{ACPL / Elo vs.\ baselines, using the protocol of Section~\ref{sec:metrics}. Cfish on Wio: nps, depth, move time.}
-
 \section{Visualization: Clustering}\label{sec:visualisation}
-
-\draftnote{t-SNE / PCA of sample-gradients. Dispatcher decision boundaries. Expert activation / routing histograms.}
-
-\draftnote{Exploratory analysis of the clusters --- what type of position do they group together?}
