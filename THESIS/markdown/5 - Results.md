@@ -51,8 +51,13 @@ python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --
 ```
 #note do NOT modify
 
+
 <div align="center">
-    <img src="THESIS/thesis-plots/variable_dataset_size_ce.png" width="600">
+    <img src="THESIS/thesis-plots/variable_dataset_size_ce_64.png" width="600">
+</div>
+
+<div align="center">
+    <img src="THESIS/thesis-plots/variable_dataset_size_ce_256.png" width="600">
 </div>
 
 <span style="color: #808080;">[Overfitting Threshold]</span> We found that, below 7M positions, the model clearly overfits the training set. On the other hand, above 7M positions no overfitting is visible. These figures are to be kept in mind when partitioning a dataset for the MoE, as the per-model data should never exceed this threshold. 
@@ -101,3 +106,5 @@ python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --
 ---
 
 > **Note for AI**: *The parts marked with a #todo are yet to be completed. The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. The gray labels are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.*
+
+[[6 - Discussion]]
