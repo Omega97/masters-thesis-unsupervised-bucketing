@@ -83,6 +83,71 @@ python3.12 -u scripts/train_nnue-gpu.py --epochs 100 --lr 0.01 --lr-end 0.001 --
 <span style="color: #808080;">[Gradients, Fixed B]</span>
 #todo 
 
+
+<div align="center">
+    <img src="THESIS/thesis-plots/mini-k-means_isomap_4-clusters.jpg" width="600">
+</div>
+
+<span style="color: #808080;">4-cluster Mini-batch, 2D ISOMAP: </span> 
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/mini-k-means_PCA_5-clusters.jpg" width="600">
+</div>
+
+
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/yellow - player should decrease L.jpg" width="600">
+</div>
+
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/blue - player should increase W.jpg" width="600">
+</div>
+
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/red - player should increase L.jpg" width="600">
+</div>
+
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/green - player should decrease W.jpg" width="600">
+</div>
+
+
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/t-sne_yellow.png" width="600">
+</div>
+<span style="color: #808080;">4-cluster Mini-batch, 2D k-Means, t-SNE: the yellow cluster appears to contain positions where the model is overestimating the current player's losing chances.</span> 
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/t-sne_blue.png" width="600">
+</div>
+<span style="color: #808080;">4-cluster Mini-batch, 2D k-Means, t-SNE: the blue cluster contains positions where the model is underestimating the current player's winning chances.</span> 
+
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/t-sne_red.png" width="600">
+</div>
+<span style="color: #808080;">4-cluster Mini-batch, 2D k-Means, t-SNE: the red cluster contains positions where the model is underestimating the current player's probability of losing.</span> 
+
+
+<div align="center">
+    <img src="THESIS/thesis-plots/t-sne_green.png" width="600">
+</div>
+<span style="color: #808080;">4-cluster Mini-batch, 2D k-Means, t-SNE: the green cluster contains positions where the model is overestimating the current player's winning chances.</span> 
+
+
 #### MoE NNUE - bucketing with sample-gradients - variable $B$
 
 <span style="color: #808080;">[Gradients, Variable B]</span>
