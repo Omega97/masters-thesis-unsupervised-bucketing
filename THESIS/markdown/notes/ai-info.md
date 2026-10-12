@@ -5,7 +5,18 @@
 
 ---
 
-## Notes for the AI agents
+## Notes for the conversion to LaTeX and PDF
+
+The content of the `markdown` folder is to be processed into a professional LaTeX document, and rendered as PDF. Follow these guidelines:
+
+- The parts marked with a #todo are yet to be completed. 
+- The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. 
+- The gray labels (in square brackets) are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.
+- at the end, export the LaTeX document to `main.pdf` in root.
+
+---
+
+## Notes for the AI copilot
 
 - professional, scientific tone
 - mind the sources!
