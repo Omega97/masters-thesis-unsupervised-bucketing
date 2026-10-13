@@ -1,0 +1,27 @@
+\babel@toc {english}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Incremental update of the NNUE accumulator.}}{1}{figure.caption.5}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Positions clustered by L1 activations and projected to two dimensions.}}{2}{figure.caption.6}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces PeSTO middlegame pawn table, in centipawns.}}{7}{figure.caption.7}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces The four steps of Monte Carlo tree search.}}{8}{figure.caption.8}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces AlphaZero playing strength during training.}}{9}{figure.caption.9}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Alpha-beta search and pruning.}}{11}{figure.caption.10}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces NNUE with a mixture-of-experts head.}}{13}{figure.caption.11}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Opening, middlegame, and endgame positions.}}{20}{figure.caption.12}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces NNUE with a mixture-of-experts head.}}{36}{figure.caption.13}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Silhouette of the gradient partition against the number of clusters.}}{56}{figure.caption.18}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces PCA projection of the gradient representation.}}{57}{figure.caption.19}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces t-SNE projection of the gradient representation.}}{57}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Dispatcher accuracy for the plots routers.}}{60}{figure.caption.22}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Dispatcher accuracy for the plots routers.}}{63}{figure.caption.24}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Accuracy gradient.}}{65}{figure.caption.26}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Alignment of the piece-count router with the learned partitions.}}{67}{figure.caption.28}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Test cross-entropy of the base NNUE against training-set size.}}{70}{figure.caption.30}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

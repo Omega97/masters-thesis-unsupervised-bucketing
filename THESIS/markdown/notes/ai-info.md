@@ -7,12 +7,18 @@
 
 ## Notes for the conversion to LaTeX and PDF
 
-The content of the `markdown` folder is to be processed into a professional LaTeX document, and rendered as PDF. Follow these guidelines:
+The content of the `markdown` folder is to be processed into a professional LaTeX document, and rendered as PDF. Follow strictly these guidelines:
 
+- The main content of the thesis is in the `markdown` folder.
+- Follow the thesis template in `thesis-template`
 - The parts marked with a #todo are yet to be completed. 
 - The tagged comments are NOT to be exported to the Latex document, and are not meant to be implemented while exporting this document to Latex. 
 - The gray labels (in square brackets) are for clarity only and must not be transferred to the Latex. Placeholders in square brackets (e.g. `[dataset_size]`, `[W]`) must be replaced with the current values from `_ai-info_.md` when converting this document to Latex.
 - at the end, export the LaTeX document to `main.pdf` in root.
+- The tables can be found in the folder `thesis-tables`
+- The tag #reference below a chapter marks places where there should be a link in 
+- ~~strikethrough~~ text is not meant to be exported to the LaTeX file!
+- **bald** and *italic* are meant to be transposed to the LaTeX, unless stated otherwise
 
 ---
 
@@ -20,16 +26,13 @@ The content of the `markdown` folder is to be processed into a professional LaTe
 
 - professional, scientific tone
 - mind the sources!
+- watch out for formula glitches ("BB" instead of "$B$", "\(a+b\)" instead of "$a+b$")
 - no lists or bullet points unless absolutely necessary
 - watch out for duplicate information and redundancy - do not state the same exact thing in two different chapters
 - not too many "we", "our", and "us" - sometimes you can just refer to the algorithm/method instead
 - not too many em dashes (option: en dashes among spaces)
-- watch out for formula glitches ("BB" instead of "$B$", "\(a+b\)" instead of "$a+b$")
 - check for inconsistencies: chapters in the wrong place, wrong summary title
-- check "thesis-writer" skill if available
-- ~~strikethrough~~ text is not meant to be exported to the LaTex file
 - <span style="color: #808080;">[Each paragraph must have a clear point]</span>, marked in brackets in gray at the beginning like this
-- **bald** and *italic* are meant to be transposed to the LaTex, unless stated otherwise
 
 ---
 

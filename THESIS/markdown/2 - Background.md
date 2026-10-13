@@ -1,14 +1,10 @@
 # Background and Related Work
 
-#todo **AlphaZero vs. Cfish**: Clearly separate MCTS (AlphaZero/Lc0) from alpha-beta search (Stockfish/Cfish) to avoid confusion. 🟡
-
-#idea frozen world model encoder for L1, trained on predicting the next board position given the current one - this gives the L1 layer a spatial understanding of the board...
-
 ---
 
 ## 2.1 Chess Engines and Evaluation Functions
 
-<span style="color: #808080;">[Role of Eval]</span> At the core of every chess engine lies an evaluation function $f: \mathcal{S} \rightarrow \mathbb{R}$ that assigns a scalar value to a board position, indicating the expected outcome from that position (typically from the perspective of the player to move). This value guides the search algorithm—usually a variant of **alpha-beta search** with iterative deepening—by pruning unpromising branches and selecting the most promising moves.
+<span style="color: #808080;">[Role of Eval]</span> At the core of every chess engine lies an evaluation function $f: \mathcal{S} \rightarrow \mathbb{R}$ that assigns a scalar value to a board position $s \in \mathcal{S}$, indicating the expected outcome from that position (typically from the perspective of the player to move). This value guides the search algorithm—usually a variant of **alpha-beta search** with iterative deepening—by pruning unpromising branches and selecting the most promising moves.
 
 ### 2.1.1 Classical Evaluation
 
@@ -22,12 +18,16 @@
 
 <span style="color: #808080;">[WDL]</span> An evaluation metric better-suited for AI is the WDL (win-draw-lose) probability. As the name suggest, it represents the probability distribution across all three results, according to the value function. In other words, if we run an infinite number of self-play games with a chess model, the outcomes should eventually converge to those given by the value function. WDL predictions also offer a useful degree of robustness during training, and provide a rich representation that can be trained naturally with cross-entropy. In this work, they are used as the output representation of the NNUE evaluator.
 
+#todo #nic NNUE troppo presto
+
 #### 2.1.1.3 Evaluation 
 
 <span style="color: #808080;">[Classical Form]</span> For decades, chess evaluation functions were handcrafted. A classical evaluator is a weighted linear combination of chess-specific features:
 
 $$f(s) = \sum_{k} w_k \cdot \phi_k(s)$$
 where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical chess-specific features include material balance, piece-square tables (PSTs), mobility, king safety, and pawn structure. Chess experts carefully tuned these features over decades, using a combination of intuition, empirical testing, and later automated optimization techniques.
+
+#todo #nic citare handcrafted
 
 <span style="color: #808080;">[PeSTO]</span> A notable example is **PeSTO** (Piece-Square Tables Only), an evaluation function by Ronald Friederich that relies exclusively on piece-square tables. Its tables are optimized via *Texel*'s tuning method and use a *tapered evaluation* that interpolates between separate opening and endgame tables based on the game stage. Conceptually, PeSTO is equivalent to a linear feed‑forward network: both compute a weighted sum of piece‑square features, with no interaction terms between pieces. While still a handcrafted linear form, PeSTO demonstrates how far such classical approaches can be pushed through data-driven tuning.
 
@@ -38,8 +38,7 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical ch
     <img src="THESIS/thesis-plots/pesto_pawn_mg.png" width="600">
 </div>
 
-<span style="color: #808080;">[Example of the PeSTO table for the pawn middlegame, expressed as centipawns. All the values of the square with pawns have to be added up. The same operation must be performed on every table, and all the values have to be added up.]</span>
-
+#description <span style="color: #808080;">[Example of the PeSTO table for the pawn middlegame, expressed as centipawns. All the values of the square with pawns have to be added up. The same operation must be performed on every table, and all the values have to be added up.]</span>
 
 <span style="color: #808080;">[Limitations of HCE]</span> While classical evaluators are extremely fast, they suffer from fundamental limitations. Human-designed features encode human intuition about chess, which may not align with the optimal understanding of the game. Moreover, these models do not take into account the positions as a whole; the same parameters give a positional bonus for a central knight whether the position is a quiet middlegame or a tactical melee, even though the knight’s practical value may differ dramatically across phases.
 
@@ -51,9 +50,12 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical ch
 
 <span style="color: #808080;">[Neural Eval]</span> The limitations of handcrafted features led to the adoption of neural networks as evaluation functions. **AlphaZero** (Silver et al., 2018) demonstrated that a deep convolutional network, trained via self-play reinforcement learning, could surpass the best classical engines. However, these networks are computationally expensive—requiring millions of operations per evaluation—making them unsuitable for resource-constrained devices or for engines that must evaluate millions of positions per second.
 
+#todo maybe postpone "however"?
 #reference AlphaZero 
 
 <span style="color: #808080;">[AlphaZero value function]</span> AlphaZero's value head outputs a scalar $v\in[−1,+1]$, interpreted as the expected game outcome from the current player's perspective. This scalar is the training target for the value network. However, AlphaZero's training and inference rely on **Monte Carlo Tree Search (MCTS)**, which builds a search tree by repeatedly simulating trajectories and using the neural network to evaluate leaf nodes. This process requires many forward passes of the network per position, making it computationally expensive and poorly suited for engines that evaluate millions of positions per second with alpha-beta search. The AlphaZero network itself is a deep residual architecture with millions of parameters, requiring floating-point operations and substantial memory, which far exceeds the capacity of microcontrollers. In contrast, the NNUE architecture adopted in this work reduces the per-evaluation cost to a handful of integer operations while retaining the representational power of a neural network. We revisit *AlphaZero*'s value formulation in Section 2.1.4, where we contrast its scalar expected value with the WDL distribution used in this work.
+
+#todo #nic NNUE troppo presto, metti a fine frase 
 
 #reference  MCTS
 
@@ -61,8 +63,7 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical ch
     <img src="THESIS/thesis-plots/mcts_wiki.png" width="600">
 </div>
 
-#todo description
-
+#description <span style="color: #808080;">[MCTS iteratively repeats four steps: selecting a branch to explore, creating a new node, performing a rollout (or just calling the value function), and propagating the result backwards throughout the tree.]</span> 
 
 ### 2.1.3 NNUE: A Hybrid Approach
 
@@ -79,23 +80,26 @@ where $\phi_k(s)$ are feature functions and $w_k$ are scalar weights. Typical ch
 
 #description <span style="color: #808080;">[Basic structure of a vanilla NNUE. The Accumulator layer is split into two so that the rest of the network can always see the board from the POV of the current player, and saving the activations allows for fast computation for subsequent moves.]</span> 
 
-
-<span style="color: #808080;">[Accumulator]</span> The accumulator layer maps a binary representation of the board to a hidden representation $h \in \mathbb{R}^{d}$ via $h = W_{L1} \cdot x$, where $x$ is a sparse binary vector (typically 768 or 1024 dimensions) indicating the presence of pieces on squares. The key insight is that a chess move changes only a few bits of $x$, so $h$ can be updated incrementally by adding and subtracting the corresponding columns of $W_{L1}$, rather than by recomputing the entire matrix-vector product from scratch. This makes the computation of L1 essentially *free*.
+<span style="color: #808080;">[Accumulator]</span> The accumulator layer maps a binary representation of the board to a hidden representation $h \in \mathbb{R}^{d}$ via $h = W_{L1} \cdot x$, where $x$ is a sparse binary vector (typically 768 or 1024 dimensions) indicating the presence of pieces on squares. The key insight is that a chess move changes only a few bits of $x$, so $h$ can be updated incrementally by adding and subtracting the corresponding columns of $W_{L1}$, rather than by recomputing the entire matrix-vector product from scratch. This makes the cost of the computation of L1 negligible.
 
 <span style="color: #808080;">[Head / WDL]</span> The second ingredient, the fully connected head, is typically one or two hidden layers followed by a scalar output, mapping $h$ to the position value. In our case, we found it easier to train a probability distribution across all three possible game results for the player: win, draw, and loss (WDL), by minimizing the cross-entropy between the output of the teacher and the student.
+
+#todo #nic normally... we
 
 <span style="color: #808080;">[Search / Horizon]</span> A complete NNUE engine also leverages alpha-beta search with iterative deepening: starting from the root position, the engine searches deeper and deeper, using the NNUE evaluation at leaf nodes to guide the pruning and ordering of moves. At every node of this search tree, the evaluation function is called hundreds or thousands of times, making its speed critical. Also, being trained on enormous amounts of data, a NNUE doesn't suffer from the *horizon problem* as much as a PST does. 
 
 
 ### 2.1.4 Value Targets: Centipawns, Expected Value, and WDL
 
-<span style="color: #808080;">[Which Value Targets]</span> A fundamental design choice in any chess evaluation function is the representation of the target value. Different engines adopt different representations, each with implications for training, calibration, and search integration. Three main approaches have emerged in practice: scalar centipawns, scalar expected value, and full WDL distributions.
+<span style="color: #808080;">[Which Value Targets]</span> A fundamental design choice in any chess evaluation function is the representation of the target value. Distinct engines adopt separate representations, each with implications for training, calibration, and search integration. Three main approaches have emerged in practice: scalar centipawns, scalar expected value, and full WDL distributions.
 
 #### 2.1.4.1 Scalar centipawns
-<span style="color: #808080;">[Centipawns]</span> Classical evaluators and Stockfish-style NNUEs output a scalar value in centipawns, representing the expected advantage from the current player's perspective. A positive value indicates an advantage for the side to move; a negative value indicates a disadvantage. This representation is simple, interpretable, and compatible with existing search algorithms. However, it compresses the uncertainty of the game outcome into a single number: a position with a 100 centipawn advantage might be a forced win, a quiet positional advantage, or a tactical trap, all of which require different handling during search. Moreover, training a network to predict centipawns typically uses mean squared error, which treats all deviations equally regardless of whether they lie near the decision boundary.
+<span style="color: #808080;">[Centipawns]</span> Classical evaluators and Stockfish-style NNUEs output a scalar value in centipawns, representing the expected advantage from the current player's perspective. A positive value indicates an advantage for the side to move; a negative value indicates a disadvantage. This representation is simple, interpretable, and compatible with existing search algorithms. However, it compresses the uncertainty of the game outcome into a single number: a position with a 100 centipawn advantage might be a forced win, a quiet positional advantage, or a tactical trap, all of which may require different handling during search. Moreover, training a network to predict centipawns typically uses mean squared error, which treats all deviations equally regardless of whether they lie near the decision boundary.
 
 #### 2.1.4.2 Scalar expected value (EV)
-<span style="color: #808080;">[EV]</span> AlphaZero adopted a different scalar representation: $v \in [-1, +1]$, interpreted as the expected game outcome from the current player's perspective. This value is the difference between the probability of a win and the probability of a loss: $v = p_W - p_L$. A value of $+1$ indicates a certain win, $-1$ a certain loss, and $0$ a draw or perfectly balanced position. This representation is more naturally calibrated to game outcomes than centipawns and avoids the arbitrary scaling of classical evaluation. However, like centipawns, it compresses the full distribution into a single scalar, losing information about the probability of a draw. A position with $v = 0$ could be a balanced middlegame, a drawish endgame, or a position where the engine is equally uncertain about win and loss—all of which have different implications for search.
+<span style="color: #808080;">[EV]</span> AlphaZero adopted a different scalar representation: $v \in [-1, +1]$, interpreted as the expected game outcome from the current player's perspective. This value is the difference between the probability of a win and the probability of a loss: $v = p_W - p_L$. A value of $+1$ indicates a certain win, $-1$ a certain loss, and $0$ a draw or perfectly balanced position. This representation is more naturally calibrated to game outcomes than centipawns and avoids the arbitrary scaling of classical evaluation. However, like centipawns, it compresses the full distribution into a single scalar, losing information about the probability of a draw. A position with $v = 0$ could be a balanced middlegame, a *drawish* endgame, or a position where the engine is equally uncertain about win and loss—all of which have different implications for search.
+
+#todo #nic sources on WDL >> EV
 
 #### 2.1.4.3 Full WDL distribution
 <span style="color: #808080;">[Full WDL distribution]</span> The approach adopted in this work is to train the NNUE to output a full probability distribution over the three possible game outcomes: Win, Draw, and Loss. The output head produces three logits, converted to probabilities via softmax:
@@ -128,6 +132,8 @@ The scalar expected value used during search is then derived as $v = p_W - p_L$,
 
 <span style="color: #808080;">[Embedded Constraint]</span> On an embedded device, this constraint is even more severe. Memory is limited, floating-point operations are expensive, and every instruction counts. Any routing mechanism for a mixture-of-experts NNUE must add only a trivial cost—ideally, a handful of integer operations or a simple table look-up—to avoid degrading the engine's search performance.
 
+#todo #nic remove reference to integer operations
+
 <span style="color: #808080;">[Core Trade-off]</span> In short, the evaluation function must be expressive enough to assess positions accurately, yet cheap enough to be called millions of times during a game. This trade-off is the central engineering challenge addressed by this thesis.
 
 #note One sentence: playing strength is reported in Elo / ACPL; protocol in Chapter 5.
@@ -142,13 +148,15 @@ The scalar expected value used during search is then derived as $v = p_W - p_L$,
 
 <span style="color: #808080;">[Why Relevant]</span> Cfish is particularly relevant to this thesis for two reasons. First, it demonstrates that a full-featured NNUE engine _can_ be made to run on constrained hardware, provided the implementation is careful about memory layout and avoids C++ overhead. Second, it serves as a practical baseline: any Mixture-of-Experts NNUE architecture proposed for tiny devices should be at least as fast and compact as Cfish in its pure NNUE mode, while offering improved evaluation accuracy through expert specialization. In this sense, Cfish represents both the _state of the art_ and the _performance target_ for the embedded chess engine developed in this work.
 
+#todo #nic no performance target
+
 #todo Pointer: Cfish as host engine (evaluate(), α-β, ID, TT, Wio, MoE hook) is instantiated in 4.8–4.9. Keep 2.1 conceptual.
 
 ---
 
 ## 2.2 Mixture of Experts
 
-<span style="color: #808080;">[What is MoE]</span> The **Mixture of Experts (MoE)** architecture is a neural network design pattern in which multiple specialized sub-networks, or *experts*, are combined through a routing mechanism that selects or weights their contributions based on the input. The central idea is that different regions of the input space may require different processing, and dedicating separate capacity to each region can improve overall performance without substantially increasing the cost of a single forward pass.
+<span style="color: #808080;">[What is MoE]</span> The **Mixture of Experts (MoE)** architecture is a neural network design pattern in which multiple specialized sub-networks, or *experts*, are combined through a routing mechanism that selects or weights their contributions based on the input. The central idea is that distinct regions of the input space may require different processing, and dedicating separate capacity to each region can improve overall performance without substantially increasing the cost of a single forward pass.
 
 
 <div align="center">
@@ -169,30 +177,31 @@ The scalar expected value used during search is then derived as $v = p_W - p_L$,
 
 ### 2.2.2 Applications in Vision, NLP, and Reinforcement Learning
 
-<span style="color: #808080;">[MoE Applicaitons]</span> Mixture of Experts has been successfully applied across a wide range of domains. In natural language processing, large-scale MoE models such as the Switch Transformer (Fedus et al., 2021) and GLaM (Du et al., 2022) achieve state-of-the-art performance by scaling the number of parameters while keeping per-token computation constant: only a subset of experts is activated for each token. In computer vision, MoE architectures have been used to efficiently scale convolutional networks and vision transformers, where different experts specialise in different visual patterns or object classes. In reinforcement learning, MoE has been applied to multi-task and multi-domain settings, where different experts specialise in different tasks or environments, and a gating network selects the appropriate expert for the current context.
+<span style="color: #808080;">[MoE Applicaitons]</span> Mixture of Experts has been successfully applied across a wide range of domains. In natural language processing, large-scale MoE models such as the Switch Transformer (Fedus et al., 2021) and GLaM (Du et al., 2022) achieve state-of-the-art performance by scaling the number of parameters while keeping per-token computation constant: only a subset of experts is activated for each token. In computer vision, MoE architectures have been used to efficiently scale convolutional networks and vision transformers, where all experts specialise in various visual patterns or object classes. In reinforcement learning, MoE has been applied to multi-task and multi-domain settings, where the experts specialise in different tasks or environments, and a gating network selects the appropriate expert for the current context.
 
 #note we are going really wide with the references
 
 <span style="color: #808080;">[MoE in Microcontrollers]</span> Despite their success in these domains, MoE architectures are rarely deployed in resource-constrained settings such as microcontrollers. The gating network and the multiple expert heads introduce memory and computational overhead that is acceptable on servers but prohibitive on embedded devices. Moreover, many MoE implementations rely on sparse activation (only a subset of experts is used per forward pass) and require specialised hardware support for efficient execution. These constraints are less severe in the chess domain, where the evaluation function must be simple and fast, but they still shape the design choices of this work.
 
-### 2.2.3 LoRA as a Lightweight Expert Implementation
+#todo #nic specialized hardware??
 
-<span style="color: #808080;">[How does LoRA work?]</span> In the context of large language models, a common approach to implementing experts is **Low-Rank Adaptation (LoRA)** (Hu et al., 2021). LoRA freezes the base model's weights and injects trainable low-rank matrices into each layer, enabling efficient fine-tuning with a small number of additional parameters. Each expert can be represented by a set of LoRA adapters that modify the base model's behaviour in a task-specific or domain-specific way.
+### 2.2.3 Parameter-Efficient Specialization: From LoRA to NNUE Heads
 
-#reference to LoRA
+<span style="color: #808080;">[The core concept]</span> A fundamental challenge in Mixture-of-Experts architectures is how to allocate specialized capacity without incurring the massive memory and computational costs of duplicating the entire network. The solution, widely adopted in modern deep learning, is to freeze a large, shared representation and restrict the specialized parameters to a small, adaptable subset. 
 
-<span style="color: #808080;">[ELREA = LoRA + MoE]</span> **ELREA** (Li et al., 2025) and **GradientSpace** (Sridharan et al., 2025) both adopt this paradigm. In ELREA, training instructions are partitioned by their gradient directions, and a LoRA expert is fine-tuned on each partition. In GradientSpace, LoRA gradients are clustered, and a lightweight encoder-based router selects the appropriate LoRA expert for each input. These approaches demonstrate that gradient-informed partitioning can be effective, and they provide the closest methodological precedent for the work presented in this thesis.
+<span style="color: #808080;">[LoRA in LLMs]</span> In the context of large language models, this paradigm is best exemplified by **Low-Rank Adaptation (LoRA)** (Hu et al., 2021). LoRA freezes the base model's weights and injects trainable low-rank matrices into specific layers, enabling efficient fine-tuning with a tiny fraction of the original parameters. Recent works have successfully combined this parameter-efficient specialization with gradient-informed routing. **ELREA** (Li et al., 2025) partitions training data by gradient directions and fine-tunes a separate LoRA expert on each partition, while **GradientSpace** (Sridharan et al., 2025) clusters LoRA gradients and uses a lightweight router to select the appropriate adapter at inference. These approaches demonstrate that isolating the learning signal into a small set of adaptable parameters is a highly effective way to manage optimization conflicts and enable expert specialization.
 
-#reference to ELREA and GradientSpace
+<span style="color: #808080;">[Adapting the philosophy to NNUE]</span> While the exact mathematical mechanism of LoRA (low-rank matrix decomposition) is tailored for the massive transformer layers of LLMs, the underlying *philosophy* is directly applicable to the resource-constrained NNUE setting. In our architecture, the shared representation (the L1 accumulator) is already the most memory-intensive component, while the specialized evaluation head (the L2 and output layers) comprises only a few thousand parameters. Applying low-rank adapters to such a small head would introduce unnecessary computational overhead and complicate the integer quantization required for microcontroller deployment.
 
-<span style="color: #808080;">[Why LoRA is not a good fit?]</span> However, LoRA is designed for large transformer models where the base model has hundreds of millions or billions of parameters. In our setting, the base model is a tiny NNUE with approximately [model_size] parameters, and the head that we specialise is already small. LoRA is therefore neither necessary nor appropriate: the expert heads are implemented as separate instances of the L2 and output layers, initialised from the base head and fine-tuned on their assigned buckets. This is simpler, more memory-efficient, and better suited to the integer quantisation required for deployment on microcontrollers.
-
-#todo change it so that the focus is on what we keep about LoRA (rather than on considering it and then just discarding it)
-#idea should we store the experts as corrections to base models? probably no, we would have to re-calculate too much...
+<span style="color: #808080;">[What we keep and why it is important]</span> Instead of low-rank matrices, this thesis adopts the core structural principle of LoRA: freezing the shared trunk and duplicating only the small, task-specific head. Each expert is implemented as a separate, full-rank instance of the L2 and output layers, initialized from the base head and fine-tuned on its assigned bucket. By keeping the L1 accumulator frozen and shared, the architecture preserves the exact benefits of the LoRA paradigm—massive parameter efficiency, isolated specialization, and a shared foundational representation—while remaining strictly compatible with the extreme memory and latency constraints of embedded chess engines.
 
 ### 2.2.4 What Carries Over to a Tiny Chess Evaluation
 
-<span style="color: #808080;">[Gradient-based partitioning]</span> From the broader MoE literature, the key ideas that inform this work are: the principle of partitioning the input space to enable specialisation; the distinction between fixed and learned routing; and the observation that gradient-based clustering can be used to discover meaningful partitions. However, the specific constraints of embedded chess engines impose a different set of trade-offs. The routing mechanism must be nearly free, ruling out expensive gating networks; the expert heads must be small and integer-friendly, ruling out LoRA adapters; and the partition must be learned from value estimation targets rather than instruction-following data. This thesis adapts the gradient-based partitioning paradigm to these constraints, proposing a lightweight linear dispatcher that routes positions to specialised heads with negligible overhead, and validating the approach on a chess NNUE for resource-constrained devices.
+<span style="color: #808080;">[Gradient-based partitioning]</span> From the broader MoE literature, the key ideas that inform this work are: the principle of partitioning the input space to enable specialisation; the distinction between fixed and learned routing; and the observation that gradient-based clustering can be used to discover meaningful partitions. However, the specific constraints of embedded chess engines impose another set of trade-offs. The routing mechanism must be nearly free, ruling out expensive gating networks; the expert heads must be small and integer-friendly, ruling out LoRA adapters; and the partition must be learned from value estimation targets rather than instruction-following data. This thesis adapts the gradient-based partitioning paradigm to these constraints, proposing a lightweight linear dispatcher that routes positions to specialised heads with negligible overhead, and validating the approach on a chess NNUE for resource-constrained devices.
+
+#todo #nic Non usiamo LoRA perché abbiamo già pochi parametri
+
+#todo #nic nearly free, integer-friendly
 
 #todo explain instruction-following?
 
@@ -239,8 +248,6 @@ specifies a direction in the same space in which the model’s weights reside. T
 
 <span style="color: #808080;">[Theoretical and Empirical Evidence]</span> The relationship between gradient similarity and specialization is supported by both theory and experiment. Kawata et al. (2025) show that under mild assumptions, a Mixture of Experts trained with stochastic gradient descent can detect latent cluster structure in the data and exploit it to reduce sample complexity, effectively solving a harder problem by decomposing it into easier subproblems. This result is significant because it establishes that the benefit of MoE is not merely architectural but statistical: partitioning the data by its learning structure yields provable gains. On the empirical side, ELREA demonstrates that clustering instruction-tuning data by gradient direction reduces optimization conflicts and improves downstream performance. GradientSpace shows that clustering LoRA gradients and routing to specialized adapters yields improvements over a single fine-tuned model, with the router selecting the appropriate expert based on input features. TAGCOS uses a similar idea for coreset selection, confirming that gradient similarity is a meaningful signal for identifying groups of examples that should be treated together.
 
-<span style="color: #808080;">[Gradient Similarity Depends on the Model State]</span> ~~An important nuance is that gradient similarity is a property of the model at a particular point in training. The gradients are computed with respect to a base model, and the clusters they induce reflect the structure of the loss landscape around that base model. As the experts are fine-tuned, the gradients change, and the partition that was optimal at the base model may no longer be optimal afterward. This is why the method fixes the partition before fine-tuning and does not attempt to update it iteratively: the base model provides a stable reference point, and the partition derived from it is used consistently across all subsequent steps. The validity of this choice rests on the assumption that the structure of the gradient space is sufficiently stable that a partition learned at the base model remains meaningful after specialization, an assumption that is tested empirically in Chapter 5.~~
-
 <span style="color: #808080;">[The Dual Role of Gradient Similarity]</span> In the context of this thesis, gradient similarity plays a dual role. It defines the objective of the clustering step, which is to maximize the similarity of gradients within each bucket and their dissimilarity across buckets. And it justifies the use of a lightweight dispatcher, which approximates the partition by learning to map input states to the clusters that their gradients would induce. The dispatcher does not need to reproduce the clustering exactly, because what matters is not the precise boundary between buckets but the alignment of learning signals within them. 
 
 #todo tough read, the point is not so clear
@@ -267,6 +274,8 @@ specifies a direction in the same space in which the model’s weights reside. T
 
 #todo remove reference to instruction-tuning
 
+#todo #nic 2.3.2 e 2.3.3 ripete due volte le stesse cose, con le stesse punchlines... è da fare trimming
+
 ---
 
 ## 2.4 Bucketing in NNUE
@@ -274,9 +283,13 @@ specifies a direction in the same space in which the model’s weights reside. T
 
 ### 2.4.1 Handcrafted Bucketing 
 
-<span style="color: #808080;">[Phase-Based Bucketing]</span> In NNUE-based chess engines, the state space is often partitioned into discrete buckets using manually designed rules. Each bucket corresponds to a region of the state space where positions are assumed to share similar characteristics, and a separate set of output weights is trained for each bucket. This approach, sometimes referred to as _phase-based bucketing_, is a pragmatic compromise: it allows the evaluation function to adapt to different types of positions while keeping the per‑head network small and fast.
+<span style="color: #808080;">[Phase-Based Bucketing]</span> In NNUE-based chess engines, the state space is often partitioned into discrete buckets using manually designed rules. Each bucket corresponds to a region of the state space where positions are assumed to share similar characteristics, and a separate set of output weights is trained for each bucket. This approach, sometimes referred to as _phase-based bucketing_, is a pragmatic compromise: it allows the evaluation function to adapt to various types of positions while keeping the per‑head network small and fast.
 
-#todo figure about bucketing (chess positions divided by move count)
+<div align="center">
+    <img src="THESIS/thesis-plots/opening_middlegame_endgame.png" width="600">
+</div>
+
+#description Classical bucketing techniques group positions in arbitrary partitions, like opening (left), middlegame (center), and endgame (right). 
 
 <span style="color: #808080;">[Features]</span> Common features used for bucketing include the total material count (the number of pieces remaining on the board), the presence or absence of specific pieces such as queens or bishops, the location of the kings, and the overall game phase derived from material. For example, Stockfish historically used a phase classification that interpolates between opening and endgame evaluations based on material remaining: positions with many pieces are treated as openings or middlegames, while positions with few pieces are treated as endgames. The Kaggle FIDE & Google Efficient Chess AI Challenge popularised a variant where the game is divided into three phases—opening, middlegame, endgame—based on material thresholds, with separate evaluation heads for each phase.
 
@@ -285,13 +298,16 @@ specifies a direction in the same space in which the model’s weights reside. T
 
 <span style="color: #808080;">[Cheap and Interpretable]</span> These handcrafted bucketing schemes are computationally cheap: the features required for routing are simple integer counts and bitwise operations that add negligible overhead to the evaluation function. They are also interpretable: a chess programmer can inspect the buckets and understand why a position is assigned to a particular region.
 
-<span style="color: #808080;">[Limitations of HCB]</span> However, handcrafted bucketing suffers from fundamental limitations. The features are designed based on human intuition about chess, which may not align with the actual structure of the learning signal. A position in the middlegame with a queen on the board may require a very different adjustment to the evaluation head depending on whether it is a quiet positional struggle or a tactical melee—yet both are assigned to the same bucket based on material count. Conversely, two positions that appear superficially different (e.g., an endgame with a rook vs. a middlegame with heavy pieces) may require similar adjustments to the head, but are placed in different buckets. In other words, handcrafted features encode what a programmer _thinks_ are distinct regimes, not what the model _needs_ in order to specialise. This limitation motivates the exploration of data-driven alternatives, where the partition is learned directly from the training signal rather than prescribed by chess expertise.
+<span style="color: #808080;">[Limitations of HCB]</span> However, handcrafted bucketing suffers from fundamental limitations. The features are designed based on human intuition about chess, which may not align with the actual structure of the learning signal. A position in the middlegame with a queen on the board may require a very different adjustment to the evaluation head depending on whether it is a quiet positional struggle or a tactical melee—yet both are assigned to the same bucket based on material count. Conversely, two positions that appear superficially distinct (e.g., an endgame with a rook vs. a middlegame with heavy pieces) may require similar adjustments to the head, but are placed in different buckets. In other words, handcrafted features encode what a programmer _thinks_ are distinct regimes, not what the model _needs_ in order to specialise. This limitation motivates the exploration of data-driven alternatives, where the partition is learned directly from the training signal rather than prescribed by chess expertise.
 
 #nota discussione _specifica_ sulle limitazioni del bucketing (regole di partizionamento euristiche, discrepanza tra fase di gioco e segnale di apprendimento, etc.).
 
 ### 2.4.2 Learned Bucketing
 
 <span style="color: #808080;">[Motivation]</span> The limitations of handcrafted bucketing have motivated research into data-driven alternatives, where the partition of the state space is learned directly from the training data rather than prescribed by human intuition. These approaches can be broadly divided into two categories: those that learn the partition from the model's internal representations, and those that learn a routing policy that selects among experts based on the input state.
+
+#todo #nic eliminare la prima volta che lo spiego
+#todo #nic "human intuition" x5
 
 #### 2.4.2.1 Clustering hidden-layer activations
 <span style="color: #808080;">[Limitations of clustering by activations]</span> One natural approach is to cluster the activations of the network's hidden layers, grouping positions that the model already represents similarly. For example, unsupervised concept discovery methods have been applied to decompose the activation space of chess networks such as AlphaZero. The intuition is that positions that produce similar hidden representations are likely to require similar processing from the subsequent layers, making them natural candidates for the same expert head. This approach has the advantage of being fully data-driven and requiring no chess-specific feature engineering. However, it suffers from a fundamental limitation: activations capture what the model *knows*, not what it *needs* to adjust. Two positions may produce similar hidden representations because the model already evaluates them correctly, yet require very different updates to the head; conversely, positions with dissimilar activations may require similar adjustments. The partition is defined by the model's current state, not by the learning signal that drives specialisation. This limitation is precisely what motivates the gradient-based approach proposed in this thesis.
@@ -305,11 +321,13 @@ specifies a direction in the same space in which the model’s weights reside. T
 #### 2.4.2.3 The gap addressed by this thesis
 <span style="color: #808080;">[Learning from the Signal]</span> Existing learned bucketing methods for chess either rely on activations (which capture representation, not learning signal) or require computationally expensive routing that is unsuitable for embedded inference. This thesis addresses this gap by proposing a method that learns the partition from sample gradients—the learning signal itself—and then distills this partition into a lightweight linear dispatcher that adds negligible overhead at inference time. This combines the data-driven advantages of learned bucketing with the efficiency requirements of on-device evaluation, providing a practical alternative to both handcrafted rules and computationally expensive routing policies.
 
+#todo #nic mettere dove?
+
 ---
 
 ## 2.5 Related Work
 
-<span style="color: #808080;">[Intro to related work]</span> The preceding sections have established the conceptual foundations of this thesis: the architecture of NNUE evaluation, the principles of Mixture of Experts, the role of per-sample gradients as a learning signal, and the landscape of bucketing strategies in chess engines. This final section situates the proposed method within the broader body of work on efficient chess engines, teacher-student evaluation, and gradient-based expert specialization. The goal is not to provide an exhaustive survey, but to clarify how the method presented in Chapter 3 differs from existing approaches and where it inherits from them.
+<span style="color: #808080;">[Intro to related work]</span> The preceding sections have established the conceptual foundations of this thesis: the architecture of NNUE evaluation, the principles of Mixture of Experts, the role of per-sample gradients as a learning signal, and the landscape of bucketing strategies in chess engines. This final section places the proposed method within the broader body of work on efficient chess engines, teacher-student evaluation, and gradient-based expert specialization. The goal is not to provide an exhaustive survey, but to clarify how the method presented in Chapter 3 differs from existing approaches and where it inherits from them.
 
 #todo When to cover ELREA / GradientSpace: LoRA experts vs NNUE heads (see 2.2).
 
@@ -325,8 +343,8 @@ specifies a direction in the same space in which the model’s weights reside. T
 
 <span style="color: #808080;">[How does this thesis differ?]</span> What distinguishes this thesis from the efficient-engine literature is not the quest for raw speed, but the question of how to allocate a fixed parameter budget more effectively. The engines discussed above use a single head to evaluate all positions; the MoE architecture distributes the head parameters across multiple experts and adds a dispatcher to route each position to the appropriate expert. The dispatcher is designed to cost almost nothing at inference time, so the efficiency of the evaluation function is preserved. Whether the specialization gained from this partition outweighs the additional memory footprint is the central empirical question of Chapter 5.
 
+#todo remove last phrase
 #todo make it more about how to effectively partition the data for MoE. remove?
-
 
 ### 2.5.2 Teacher–Student Evaluation 
 
@@ -349,10 +367,14 @@ specifies a direction in the same space in which the model’s weights reside. T
 
 ### 2.5.3 Gradient-Based Expert Specialization
 
+#todo #nic muovere tutto in literature review
+#todo #nic 
+
 <span style="color: #808080;">[Related gradient-based works]</span> The works most directly related to this thesis are those that use gradient information to partition training data and train specialized experts on the resulting groups. These approaches share a common pipeline: compute per-sample gradients, cluster them, train an expert on each cluster, and deploy a routing mechanism to select the appropriate expert at inference. The differences lie in the domain, the type of expert, and the routing strategy.
 
 <span style="color: #808080;">[ELREA - grouping examples with aligned gradients]</span> ELREA partitions instruction-tuning data by gradient direction and trains a separate LoRA expert on each partition. The motivation is to reduce optimization conflicts: when examples in a batch demand opposing parameter updates, the resulting gradient is a compromise that benefits none of them. By grouping examples with aligned gradients, ELREA ensures that each expert sees a coherent learning signal. At inference, the method routes to a weighted ensemble of experts based on gradient similarity, requiring on-the-fly gradient computation for the input. This makes inference expensive and unsuitable for latency-critical applications.
 
+#todo #nic cite applications?
 #todo check if double
 #todo explain instruction-tuning data?
 

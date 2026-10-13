@@ -1,0 +1,25 @@
+
+## Abstract
+
+<span style="color: #808080;">[Gap / Problem / Research Question]</span> ~~While unsupervised bucketing using hidden layer activations has been explored, this approach may not yield partitions that _maximise expert specialisation_. Activations capture what the model _knows_, not what it _needs_ to adjust. In this work, we ask whether the model's learning dynamics can be used to create a partition that is more effective. Our hypothesis is that clustering gradients (which encode the direction of desired weight updates) will produce buckets that are inherently better suited for expert fine‑tuning, leading to more specialised experts.~~ 
+
+<span style="color: #808080;">[Contribution]</span> ~~We propose a novel unsupervised bucketing method based on sample-gradients — the gradients of the loss with respect to the head parameters of a base model. These vectors encode the direction in weight space that would improve the model's prediction for each individual data point. We apply the method to chess, using a standard NNUE (Efficiently Updatable Neural Network) as the base model trained on [dataset_size] positions labelled with outcome probabilities (WDL) by a strong value function (Lc0).~~ 
+
+<span style="color: #808080;">[Methods]</span> ~~For each position, we compute the normalised sample-gradient with respect to the head parameters, and apply a clustering algorithm to define the buckets. We then train a lightweight linear dispatcher to predict the bucket from the L1 activations, enabling fast, deterministic routing at inference time. Finally, we fine‑tune the expert heads on each bucket, starting from the base model, while keeping the L1 weights frozen. This yields a set of fast, specialised experts, each adapted to a distinct region of the state space, without requiring handcrafted bucketing.~~
+
+---
+
+## 1 - Introduction
+
+<span style="color: #808080;">[Formal Setup]</span> ~~More specifically, consider a standard NNUE evaluation function composed of a frozen shared representation $W_{L1}$ and a trainable head $(W_{L2}, W_{out})$. Given a dataset of positions $\mathcal{D} = \{(s_i, v_i)\}$, we can train a base model $w_{\text{base}}$. To improve upon this base model via expert specialization, we seek an algorithm that can effectively partition the state space into $B$ buckets $\{\mathcal{D}_1, \dots, \mathcal{D}_B\}$ such that fine-tuning a separate head on each bucket yields a set of specialized models with *distinct parameter updates*. We refer to the parameter difference $\delta_i = \theta_i-\theta_{\mathrm{base}}$ as a _task vector_, following the terminology commonly used for parameter-space representations of model specialization.~~
+
+<span style="color: #808080;">[Key Difficulty]</span> ~~This objective is complicated by the fact that the partition must be discovered from the training data, yet the criterion for effective specialization is expressed in parameter space through the diversity of task vectors, rather than directly in the input space. At the same time, the resulting routing mechanism must be *lightweight* enough to run on a microcontroller at every node of an alpha-beta search, ruling out expensive computations such as evaluating multiple full networks. Current heuristic bucketing strategies (e.g., based on piece count or king position) are computationally cheap but encode arbitrary *game-specific* assumptions about which positions are similar, which may not align with the learning signal relevant to head specialization.~~
+
+<span style="color: #808080;">[Research Question]</span> ~~This work, therefore, investigates whether it is possible to learn an unsupervised partition directly from instance-specific gradients—using them as a proxy for the direction in which each head should specialize—and whether such a partition can be deployed via a lightweight dispatcher that respects the memory and computational constraints of an embedded device, without sacrificing the quality of the resulting mixture-of-experts evaluation.~~
+
+---
+
+## 2 - Background
+
+<span style="color: #808080;">[Gradient Similarity Depends on the Model State]</span> ~~An important nuance is that gradient similarity is a property of the model at a particular point in training. The gradients are computed with respect to a base model, and the clusters they induce reflect the structure of the loss landscape around that base model. As the experts are fine-tuned, the gradients change, and the partition that was optimal at the base model may no longer be optimal afterward. This is why the method fixes the partition before fine-tuning and does not attempt to update it iteratively: the base model provides a stable reference point, and the partition derived from it is used consistently across all subsequent steps. The validity of this choice rests on the assumption that the structure of the gradient space is sufficiently stable that a partition learned at the base model remains meaningful after specialization, an assumption that is tested empirically in Chapter 5.~~
+

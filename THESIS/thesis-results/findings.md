@@ -17,14 +17,19 @@
 - The gradient partition is nearly orthogonal to the piece-count and activation
   partitions (ARI 0.04–0.08), i.e. it captures a genuinely different structure.
 
-## Dispatchers
+## Dispatchers: L1 clustering
 
 - ✅ L1 clusters are near-trivially recoverable by a linear router (top-1 accuracy
   ≈ 0.97–0.99); MLP, XGBoost. 
+
+## Dispatchers: sample gradients
+
 - 🔴 Predicting gradient clusters from L1 activations is hard (top-1 ≈ 0.48–0.64,
   ARI ≤ 0.37): L1 activations are a weak proxy for gradient direction. The mapping `L1 → gradient bucket` is a bottleneck (not feasible)
 
 ## Mixture of Experts - piece-count clustering
+
+- ✅ Baseline reference method - it works, but we show that it can be improved with unsupervised methods
 
 
 ## Mixture of Experts - L1 clustering
