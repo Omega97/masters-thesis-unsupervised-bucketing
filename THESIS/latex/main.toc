@@ -1,0 +1,117 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{Abstract}{i}{chapter*.1}%
+\contentsline {chapter}{Contents}{ii}{chapter*.2}%
+\contentsline {chapter}{List of Figures}{vii}{chapter*.3}%
+\contentsline {chapter}{List of Tables}{viii}{chapter*.4}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Scope of the Thesis}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Contributions}{3}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Thesis Outline}{3}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Background and Related Work}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Foundations of Neural Chess Evaluation}{5}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}The Role of Evaluation and Classical Approaches}{5}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}The Shift to Neural Evaluation}{7}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}NNUE: A Hybrid Approach}{7}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Value Targets: Centipawns, Expected Value, and WDL}{8}{subsection.2.1.4}%
+\contentsline {subsection}{\numberline {2.1.5}Why Evaluation Must Be Cheap}{9}{subsection.2.1.5}%
+\contentsline {subsection}{\numberline {2.1.6}Current State of the Art for Tiny Hardware: Cfish}{10}{subsection.2.1.6}%
+\contentsline {section}{\numberline {2.2}Mixture of Experts and Specialization Paradigms}{10}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Fixed vs. Learned Routing}{11}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Applications in Vision, NLP, and Reinforcement Learning}{12}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Parameter-Efficient Specialization: From LoRA to NNUE Heads}{12}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Adapting MoE to Embedded Chess}{13}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Sample Gradients as a Learning Signal}{14}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Per-Sample Gradients}{14}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Gradient Similarity and Specialization}{15}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Gradient-Based Clustering}{15}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}State-Space Bucketing in Chess}{16}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Handcrafted Bucketing}{16}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}The Need for Data-Driven Bucketing}{17}{subsection.2.4.2}%
+\contentsline {section}{\numberline {2.5}Related Work and Positioning}{18}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Efficient Chess Engines and Quantization}{18}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Teacher--Student Evaluation}{19}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Gradient-Informed Specialization and the Research Gap}{19}{subsection.2.5.3}%
+\contentsline {chapter}{\numberline {3}Methodology and Experimental Pipeline}{22}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Overview of the Experimental Pipeline}{22}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Base Evaluation Architectures}{23}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Standard NNUE}{23}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}NNUE with a Learned L1 World Model}{23}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Mixture of Experts and State-Space Partitioning}{23}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Hard MoE with Piece-Count Clustering}{24}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Hard MoE with L1 Activation Clustering}{24}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Hard MoE with Sample-Gradient Clustering}{24}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}End-to-End Soft and Sparse MoE}{25}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}Training and Evaluation Protocol}{25}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Hyperparameter Selection and Dataset Scaling}{25}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Training Procedures}{25}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Evaluation Metrics}{26}{subsection.3.4.3}%
+\contentsline {chapter}{\numberline {4}Implementation: NNUE and MoE for Chess}{27}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Dataset and Teacher}{27}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Dataset Construction}{27}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Feature Encoding}{28}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Data Splits}{28}{subsection.4.1.3}%
+\contentsline {subsection}{\numberline {4.1.4}Teacher Model: Lc0}{28}{subsection.4.1.4}%
+\contentsline {subsection}{\numberline {4.1.5}Labelling Pipeline}{29}{subsection.4.1.5}%
+\contentsline {section}{\numberline {4.2}Base NNUE Architecture}{29}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Model Overview}{30}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Shared L1 Accumulator}{31}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Side-to-Move Reorder}{32}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}L2 Layer and Output Head}{32}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Training Objective}{33}{subsection.4.2.5}%
+\contentsline {subsection}{\numberline {4.2.6}Parameter Count and Model Size}{33}{subsection.4.2.6}%
+\contentsline {subsection}{\numberline {4.2.7}Training Protocol}{33}{subsection.4.2.7}%
+\contentsline {section}{\numberline {4.3}Sample Gradient Computation}{34}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Implementation with PyTorch}{34}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Parameter Selection}{35}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Normalisation}{35}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Storage and Memory Management}{35}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {4.3.5}Computational Cost and Timing}{36}{subsection.4.3.5}%
+\contentsline {section}{\numberline {4.4}Clustering}{37}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Dispatcher Training}{38}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Expert Fine-Tuning}{39}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Final MoE Model}{40}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Cfish as the Host Engine}{40}{section.4.8}%
+\contentsline {section}{\numberline {4.9}Integration with Cfish}{41}{section.4.9}%
+\contentsline {chapter}{\numberline {5}Experimental Results}{43}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Experimental Setup}{43}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Hardware and Software}{43}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Dataset and Teacher}{43}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Data Splits}{44}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.4}Models and Baselines}{44}{subsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.1.5}Training Protocol}{45}{subsection.5.1.5}%
+\contentsline {subsection}{\numberline {5.1.6}Evaluation Metrics}{46}{subsection.5.1.6}%
+\contentsline {subsection}{\numberline {5.1.7}Experiment Pipeline Overview}{46}{subsection.5.1.7}%
+\contentsline {section}{\numberline {5.2}Clustering}{46}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Clustering Algorithm}{46}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Clustering Metrics}{47}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Clustering Results}{48}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Dispatcher}{53}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Dispatcher Model}{53}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Dispatcher Metrics}{54}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Dispatcher Results}{54}{subsection.5.3.3}%
+\contentsline {section}{\numberline {5.4}Base Model}{62}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Base Model Architecture and Training}{62}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Base Model Metrics}{63}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}Base Model Results}{63}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Mixture of Experts}{65}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}MoE Architecture and Training}{65}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}MoE Metrics}{66}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}MoE Results}{67}{subsection.5.5.3}%
+\contentsline {subsection}{\numberline {5.5.4}MoE on a Weaker Base}{70}{subsection.5.5.4}%
+\contentsline {section}{\numberline {5.6}KITSUNE Two-Stage Routing}{71}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Summary of Experimental Findings}{72}{section.5.7}%
+\contentsline {chapter}{\numberline {6}Discussion}{74}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Interpretation of Results}{74}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Limitations}{75}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Generalisation}{76}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Comparison with Related Work}{76}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{78}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Summary of Contributions}{78}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Future Work}{79}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Closing Remarks}{80}{section.7.3}%
+\contentsline {chapter}{\numberline {A}Supplementary Material}{81}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Extra tables and hyperparameters}{81}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Extra plots}{81}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Implementation notes}{81}{section.A.3}%
+\contentsline {chapter}{Bibliography}{82}{appendix*.38}%

@@ -368,7 +368,6 @@ specifies a direction in the same space in which the model’s weights reside. T
 ### 2.5.3 Gradient-Based Expert Specialization
 
 #todo #nic muovere tutto in literature review
-#todo #nic 
 
 <span style="color: #808080;">[Related gradient-based works]</span> The works most directly related to this thesis are those that use gradient information to partition training data and train specialized experts on the resulting groups. These approaches share a common pipeline: compute per-sample gradients, cluster them, train an expert on each cluster, and deploy a routing mechanism to select the appropriate expert at inference. The differences lie in the domain, the type of expert, and the routing strategy.
 
