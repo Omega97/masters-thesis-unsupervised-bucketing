@@ -196,9 +196,16 @@ The qualitative evidence supports the quantitative picture. Projections of the g
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.86\textwidth]{../thesis-plots/umap_2d_gradients.png}
-	\caption{UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores and the antipodal centroid geometry observed at $B=2$.}
+	\includegraphics[width=0.7\textwidth]{../thesis-plots/umap_2d_gradients.png}
+	\caption{UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores.}
 	\label{fig:umap-2d-gradients}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{../thesis-plots/tsne_3d_board.png}
+	\caption{t-SNE 3D projection of the raw board features (1688-d). Unlike the gradient space, the raw feature space exhibits a highly fragmented structure with significant overlap between regions that would otherwise require distinct evaluation heads, motivating the use of learned latent representations for routing.}
+	\label{fig:tsne-3d-board}
 \end{figure}
 
 Taken together, the results indicate that the gradient-based partition is the most promising candidate for expert specialisation. The antipodal centroids at $B=2$ confirm that the two buckets correspond to opposite directions in head-parameter space -- positions whose gradients pull the head in contrary ways -- which is exactly the kind of diversity the method seeks. The near-zero agreement with the piece-count and activation-based partitions further suggests that these buckets do not correspond to coarse game-phase or geometric categories, but to a genuinely different structure grounded in the learning dynamics. The implication for the mixture-of-experts is that the gradient partition should induce expert task vectors that are more distinct from one another than those produced by any activation-based bucketing, a hypothesis examined in Section 5.5.
@@ -439,7 +446,8 @@ Four routing families and three controls are compared, each at $K \in \{2,4,8,16
 \item \textbf{Random dispatcher control} -- uniform random routing over the same experts, to isolate the contribution of routing from raw capacity.
 \end{enumerate}
 
-The proposed KITSUNE two-stage routing is treated separately in Section 5.6, since its results are still being collected.
+%% The proposed KITSUNE two-stage routing is treated separately in Section 5.6, since its results are still being collected.
+The proposed KITSUNE two-stage routing is evaluated separately in Section 5.6. Its implementation is functional and provides a preliminary validation of the two-stage routing principle; however, a complete analysis of the gradient distribution within each micro-bucket and of alternative stitching strategies remains future work.
 
 All experts are fine-tuned on the 2M-position training pack (\texttt{moe\_b4\_2m}), with frozen L1: two epochs per expert for the hard (dispatcher) variants and five epochs of joint training for the soft-gated and Switch variants. This gives $2\times10^6/K$ routed rows per expert -- far below the $7\times10^6$-per-expert budget identified for $H{=}256$ in Section 5.1.5 -- so every expert is trained in a data-starved regime relative to the base model's scaling behaviour (Section 5.4.3). The consequence of this shortfall is visible in every result of Section 5.5.3.
 
@@ -450,17 +458,16 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.86\textwidth]{../thesis-plots/expert-fine-tune-CE-30.png}
-	\caption{Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit{lucky} experts get to train on a mix of simpler positions.}
+	\caption{Cross-entropy trajectory during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit{lucky} experts get to train on a mix of simpler positions.}
 	\label{fig:expert-finetune-rprop}
 \end{figure}
 
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.86\textwidth]{../thesis-plots/expert-fine-tune-CE-15.png}
-	\caption{Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. The plot illustrates the stable convergence and the characteristic adaptive step-size mechanism of Rprop, which mitigates instability by stepping back when the loss temporarily increases, allowing the specialized heads to properly learn without collapsing.}
-	\label{fig:expert-finetune-rprop}
-\end{figure}
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=0.86\textwidth]{../thesis-plots/expert-fine-tune-CE-15.png}
+%	\caption{Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. The plot illustrates the stable convergence and the characteristic adaptive step-size mechanism of Rprop, which mitigates instability by stepping back when the loss temporarily increases, allowing the specialized heads to properly learn without collapsing.}
+%	\label{fig:expert-finetune-rprop}
+%\end{figure}
 
 
 \subsection{MoE Results}

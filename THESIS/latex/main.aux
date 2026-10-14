@@ -252,94 +252,94 @@
 \newlabel{fig:pca-2d-gradients-2}{{5.1}{54}{PCA projection of the gradient representation}{figure.caption.20}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces t-SNE projection of the gradient representation.}}{54}{figure.caption.21}\protected@file@percent }
 \newlabel{fig:tsne-2d-gradients-3}{{5.2}{54}{t-SNE projection of the gradient representation}{figure.caption.21}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores and the antipodal centroid geometry observed at $B=2$.}}{55}{figure.caption.22}\protected@file@percent }
-\newlabel{fig:umap-2d-gradients}{{5.3}{55}{UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores and the antipodal centroid geometry observed at $B=2$}{figure.caption.22}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}Dispatcher}{55}{section.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Dispatcher Model}{55}{subsection.5.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Dispatcher Metrics}{56}{subsection.5.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores.}}{55}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:umap-2d-gradients}{{5.3}{55}{UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores}{figure.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces t-SNE 3D projection of the raw board features (1688-d). Unlike the gradient space, the raw feature space exhibits a highly fragmented structure with significant overlap between regions that would otherwise require distinct evaluation heads, motivating the use of learned latent representations for routing.}}{55}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:tsne-3d-board}{{5.4}{55}{t-SNE 3D projection of the raw board features (1688-d). Unlike the gradient space, the raw feature space exhibits a highly fragmented structure with significant overlap between regions that would otherwise require distinct evaluation heads, motivating the use of learned latent representations for routing}{figure.caption.23}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Dispatcher}{56}{section.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Dispatcher Model}{56}{subsection.5.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Dispatcher Metrics}{57}{subsection.5.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Dispatcher Results}{57}{subsection.5.3.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Parameter-free centroid routers (\texttt  {argmin} cosine similarity to the $k$-means centroids), scored against the Euclidean Mini-Batch $k$-Means labels on one million positions. Chance is $1/B$; the majority dummy ranges from $0.727$ ($B=2$) to $0.172$ ($B=16$) for the L1 labels.}}{57}{table.caption.23}\protected@file@percent }
-\newlabel{tab:5.5}{{5.5}{57}{Parameter-free centroid routers (\texttt {argmin} cosine similarity to the $k$-means centroids), scored against the Euclidean Mini-Batch $k$-Means labels on one million positions. Chance is $1/B$; the majority dummy ranges from $0.727$ ($B=2$) to $0.172$ ($B=16$) for the L1 labels}{table.caption.23}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Dispatcher accuracy for the plots routers.}}{58}{figure.caption.24}\protected@file@percent }
-\newlabel{fig:accuracy-4}{{5.4}{58}{Dispatcher accuracy for the plots routers}{figure.caption.24}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Learned L1-to-L1 dispatchers on one million positions ($90/10$ split), scored against the L1 Mini-Batch $k$-Means labels. Chance is $1/B$; the majority dummy is $0.727$, $0.542$, $0.248$, and $0.172$ for $B=2,4,8,16$ respectively.}}{59}{table.caption.25}\protected@file@percent }
-\newlabel{tab:5.6}{{5.6}{59}{Learned L1-to-L1 dispatchers on one million positions ($90/10$ split), scored against the L1 Mini-Batch $k$-Means labels. Chance is $1/B$; the majority dummy is $0.727$, $0.542$, $0.248$, and $0.172$ for $B=2,4,8,16$ respectively}{table.caption.25}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Dispatcher accuracy for the plots routers.}}{59}{figure.caption.26}\protected@file@percent }
-\newlabel{fig:accuracy-5}{{5.5}{59}{Dispatcher accuracy for the plots routers}{figure.caption.26}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.7}{\ignorespaces MLP dispatchers (hidden width $h$) trained to predict the gradient $k$-means buckets from L1 activations, on one million positions ($90/10$ split). Chance is $1/B$; the majority dummy is $0.560$, $0.361$, $0.184$, and $0.134$ for $B=2,4,8,16$ respectively.}}{60}{table.caption.27}\protected@file@percent }
-\newlabel{tab:5.7}{{5.7}{60}{MLP dispatchers (hidden width $h$) trained to predict the gradient $k$-means buckets from L1 activations, on one million positions ($90/10$ split). Chance is $1/B$; the majority dummy is $0.560$, $0.361$, $0.184$, and $0.134$ for $B=2,4,8,16$ respectively}{table.caption.27}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.8}{\ignorespaces Alignment (ARI/NMI) between the fixed eight-bucket piece-count router and the L1 and gradient $k$-means partitions at each $B$, computed on one million positions.}}{61}{table.caption.28}\protected@file@percent }
-\newlabel{tab:5.8}{{5.8}{61}{Alignment (ARI/NMI) between the fixed eight-bucket piece-count router and the L1 and gradient $k$-means partitions at each $B$, computed on one million positions}{table.caption.28}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces Alignment of the piece-count router with the learned partitions.}}{62}{figure.caption.29}\protected@file@percent }
-\newlabel{fig:alignment-7}{{5.6}{62}{Alignment of the piece-count router with the learned partitions}{figure.caption.29}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Parameter-free centroid routers (\texttt  {argmin} cosine similarity to the $k$-means centroids), scored against the Euclidean Mini-Batch $k$-Means labels on one million positions. Chance is $1/B$; the majority dummy ranges from $0.727$ ($B=2$) to $0.172$ ($B=16$) for the L1 labels.}}{58}{table.caption.24}\protected@file@percent }
+\newlabel{tab:5.5}{{5.5}{58}{Parameter-free centroid routers (\texttt {argmin} cosine similarity to the $k$-means centroids), scored against the Euclidean Mini-Batch $k$-Means labels on one million positions. Chance is $1/B$; the majority dummy ranges from $0.727$ ($B=2$) to $0.172$ ($B=16$) for the L1 labels}{table.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Dispatcher accuracy for the plots routers.}}{58}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:accuracy-4}{{5.5}{58}{Dispatcher accuracy for the plots routers}{figure.caption.25}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Learned L1-to-L1 dispatchers on one million positions ($90/10$ split), scored against the L1 Mini-Batch $k$-Means labels. Chance is $1/B$; the majority dummy is $0.727$, $0.542$, $0.248$, and $0.172$ for $B=2,4,8,16$ respectively.}}{59}{table.caption.26}\protected@file@percent }
+\newlabel{tab:5.6}{{5.6}{59}{Learned L1-to-L1 dispatchers on one million positions ($90/10$ split), scored against the L1 Mini-Batch $k$-Means labels. Chance is $1/B$; the majority dummy is $0.727$, $0.542$, $0.248$, and $0.172$ for $B=2,4,8,16$ respectively}{table.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces Dispatcher accuracy for the plots routers.}}{59}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:accuracy-5}{{5.6}{59}{Dispatcher accuracy for the plots routers}{figure.caption.27}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.7}{\ignorespaces MLP dispatchers (hidden width $h$) trained to predict the gradient $k$-means buckets from L1 activations, on one million positions ($90/10$ split). Chance is $1/B$; the majority dummy is $0.560$, $0.361$, $0.184$, and $0.134$ for $B=2,4,8,16$ respectively.}}{60}{table.caption.28}\protected@file@percent }
+\newlabel{tab:5.7}{{5.7}{60}{MLP dispatchers (hidden width $h$) trained to predict the gradient $k$-means buckets from L1 activations, on one million positions ($90/10$ split). Chance is $1/B$; the majority dummy is $0.560$, $0.361$, $0.184$, and $0.134$ for $B=2,4,8,16$ respectively}{table.caption.28}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.8}{\ignorespaces Alignment (ARI/NMI) between the fixed eight-bucket piece-count router and the L1 and gradient $k$-means partitions at each $B$, computed on one million positions.}}{61}{table.caption.29}\protected@file@percent }
+\newlabel{tab:5.8}{{5.8}{61}{Alignment (ARI/NMI) between the fixed eight-bucket piece-count router and the L1 and gradient $k$-means partitions at each $B$, computed on one million positions}{table.caption.29}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces Alignment of the piece-count router with the learned partitions.}}{62}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:alignment-7}{{5.7}{62}{Alignment of the piece-count router with the learned partitions}{figure.caption.30}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5.4}Base Model}{62}{section.5.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Base Model Architecture and Training}{62}{subsection.5.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Base Model Metrics}{63}{subsection.5.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Base Model Results}{63}{subsection.5.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.9}{\ignorespaces Dense baselines (linear, single-hidden FFNN, dual-hidden FFNN) with full regression metrics and inference throughput on the 1.5M-position test set. The reference NNUE W128 H256 (174,723 parameters) attains CE 0.6303, beating the dual-hidden FFNN2 H256 at 2.9$\times $ the parameters.}}{64}{table.caption.30}\protected@file@percent }
-\newlabel{tab:5.9}{{5.9}{64}{Dense baselines (linear, single-hidden FFNN, dual-hidden FFNN) with full regression metrics and inference throughput on the 1.5M-position test set. The reference NNUE W128 H256 (174,723 parameters) attains CE 0.6303, beating the dual-hidden FFNN2 H256 at 2.9$\times $ the parameters}{table.caption.30}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces Test cross-entropy of the base NNUE against training-set size. From this plot we can infer that a NNUE model with two hidden layers of 64 neurons does not overfit a dataset larger than 3 million positions, though accuracy can still marginally increase with a bigger dataset.}}{65}{figure.caption.31}\protected@file@percent }
-\newlabel{fig:nnue-ce-vs-train-size-8}{{5.7}{65}{Test cross-entropy of the base NNUE against training-set size. From this plot we can infer that a NNUE model with two hidden layers of 64 neurons does not overfit a dataset larger than 3 million positions, though accuracy can still marginally increase with a bigger dataset}{figure.caption.31}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces Test cross-entropy of the base NNUE against training-set size. A NNUE model with two hidden layers of 256 neurons does not overfit a dataset larger than 7 million positions.}}{65}{figure.caption.32}\protected@file@percent }
-\newlabel{fig:nnue-ce-vs-train-size-9}{{5.8}{65}{Test cross-entropy of the base NNUE against training-set size. A NNUE model with two hidden layers of 256 neurons does not overfit a dataset larger than 7 million positions}{figure.caption.32}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.9}{\ignorespaces Dense baselines (linear, single-hidden FFNN, dual-hidden FFNN) with full regression metrics and inference throughput on the 1.5M-position test set. The reference NNUE W128 H256 (174,723 parameters) attains CE 0.6303, beating the dual-hidden FFNN2 H256 at 2.9$\times $ the parameters.}}{64}{table.caption.31}\protected@file@percent }
+\newlabel{tab:5.9}{{5.9}{64}{Dense baselines (linear, single-hidden FFNN, dual-hidden FFNN) with full regression metrics and inference throughput on the 1.5M-position test set. The reference NNUE W128 H256 (174,723 parameters) attains CE 0.6303, beating the dual-hidden FFNN2 H256 at 2.9$\times $ the parameters}{table.caption.31}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces Test cross-entropy of the base NNUE against training-set size. From this plot we can infer that a NNUE model with two hidden layers of 64 neurons does not overfit a dataset larger than 3 million positions, though accuracy can still marginally increase with a bigger dataset.}}{65}{figure.caption.32}\protected@file@percent }
+\newlabel{fig:nnue-ce-vs-train-size-8}{{5.8}{65}{Test cross-entropy of the base NNUE against training-set size. From this plot we can infer that a NNUE model with two hidden layers of 64 neurons does not overfit a dataset larger than 3 million positions, though accuracy can still marginally increase with a bigger dataset}{figure.caption.32}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.9}{\ignorespaces Test cross-entropy of the base NNUE against training-set size. A NNUE model with two hidden layers of 256 neurons does not overfit a dataset larger than 7 million positions.}}{65}{figure.caption.33}\protected@file@percent }
+\newlabel{fig:nnue-ce-vs-train-size-9}{{5.9}{65}{Test cross-entropy of the base NNUE against training-set size. A NNUE model with two hidden layers of 256 neurons does not overfit a dataset larger than 7 million positions}{figure.caption.33}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5.5}Mixture of Experts}{66}{section.5.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}MoE Architecture and Training}{66}{subsection.5.5.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}MoE Metrics}{67}{subsection.5.5.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.9}{\ignorespaces Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit  {lucky} experts get to train on a mix of simpler positions.}}{67}{figure.caption.33}\protected@file@percent }
-\newlabel{fig:expert-finetune-rprop}{{5.9}{67}{Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit {lucky} experts get to train on a mix of simpler positions}{figure.caption.33}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.10}{\ignorespaces Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. The plot illustrates the stable convergence and the characteristic adaptive step-size mechanism of Rprop, which mitigates instability by stepping back when the loss temporarily increases, allowing the specialized heads to properly learn without collapsing.}}{68}{figure.caption.34}\protected@file@percent }
-\newlabel{fig:expert-finetune-rprop}{{5.10}{68}{Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. The plot illustrates the stable convergence and the characteristic adaptive step-size mechanism of Rprop, which mitigates instability by stepping back when the loss temporarily increases, allowing the specialized heads to properly learn without collapsing}{figure.caption.34}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}MoE Results}{68}{subsection.5.5.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.10}{\ignorespaces Dispatcher-routed hard MoE (piece-count, L1-clustered, gradient-clustered) on the 50,000-position test subsample. The reference base attains CE 0.6303 and MAE 0.1326 on this subsample. "Dispatcher Top-1" is the MLP dispatcher's accuracy against its own k-means pseudo-labels (L1 or gradient).}}{69}{table.caption.35}\protected@file@percent }
-\newlabel{tab:5.10}{{5.10}{69}{Dispatcher-routed hard MoE (piece-count, L1-clustered, gradient-clustered) on the 50,000-position test subsample. The reference base attains CE 0.6303 and MAE 0.1326 on this subsample. "Dispatcher Top-1" is the MLP dispatcher's accuracy against its own k-means pseudo-labels (L1 or gradient)}{table.caption.35}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.11}{\ignorespaces End-to-end soft-gated MoE test CE (top-1 and top-2 gating), on the 50,000-position subsample. Base CE 0.6303. Gate entropy $\approx $ ln K and load variance $\approx $ 0 at every setting.}}{69}{table.caption.36}\protected@file@percent }
-\newlabel{tab:5.11}{{5.11}{69}{End-to-end soft-gated MoE test CE (top-1 and top-2 gating), on the 50,000-position subsample. Base CE 0.6303. Gate entropy $\approx $ ln K and load variance $\approx $ 0 at every setting}{table.caption.36}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.12}{\ignorespaces Switch (end-to-end sparse top-1) test CE vs. load-balancing weight $\alpha $, on the 50,000-position subsample. Base CE 0.6303.}}{70}{table.caption.37}\protected@file@percent }
-\newlabel{tab:5.12}{{5.12}{70}{Switch (end-to-end sparse top-1) test CE vs. load-balancing weight $\alpha $, on the 50,000-position subsample. Base CE 0.6303}{table.caption.37}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.13}{\ignorespaces Oracle upper bound on the gradient-clustered experts, on the 50,000-position subsample. "Dispatcher CE" is the realised MLP-routed MoE; "Nearest-centroid CE" is the cosine/nearest-centroid routing rule of Section 5.3.3; "Oracle CE" is the true $\arg \min _k \mathcal  {L}_k$ routing. The oracle uses the target at inference and is an unachievable upper bound.}}{70}{table.caption.38}\protected@file@percent }
-\newlabel{tab:5.13}{{5.13}{70}{Oracle upper bound on the gradient-clustered experts, on the 50,000-position subsample. "Dispatcher CE" is the realised MLP-routed MoE; "Nearest-centroid CE" is the cosine/nearest-centroid routing rule of Section 5.3.3; "Oracle CE" is the true $\arg \min _k \mathcal {L}_k$ routing. The oracle uses the target at inference and is an unachievable upper bound}{table.caption.38}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.14}{\ignorespaces Random dispatcher control (uniform random routing over the same experts), on the 50,000-position subsample. Base CE 0.6303; the trained-dispatcher MoE CE is given in Table 5.10.}}{71}{table.caption.39}\protected@file@percent }
-\newlabel{tab:5.14}{{5.14}{71}{Random dispatcher control (uniform random routing over the same experts), on the 50,000-position subsample. Base CE 0.6303; the trained-dispatcher MoE CE is given in Table 5.10}{table.caption.39}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.6}Summary of Experimental Findings}{71}{section.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Discussion}{73}{chapter.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.10}{\ignorespaces Cross-entropy trajectory during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit  {lucky} experts get to train on a mix of simpler positions.}}{67}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:expert-finetune-rprop}{{5.10}{67}{Cross-entropy trajectory during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit {lucky} experts get to train on a mix of simpler positions}{figure.caption.34}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}MoE Results}{67}{subsection.5.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.10}{\ignorespaces Dispatcher-routed hard MoE (piece-count, L1-clustered, gradient-clustered) on the 50,000-position test subsample. The reference base attains CE 0.6303 and MAE 0.1326 on this subsample. "Dispatcher Top-1" is the MLP dispatcher's accuracy against its own k-means pseudo-labels (L1 or gradient).}}{68}{table.caption.35}\protected@file@percent }
+\newlabel{tab:5.10}{{5.10}{68}{Dispatcher-routed hard MoE (piece-count, L1-clustered, gradient-clustered) on the 50,000-position test subsample. The reference base attains CE 0.6303 and MAE 0.1326 on this subsample. "Dispatcher Top-1" is the MLP dispatcher's accuracy against its own k-means pseudo-labels (L1 or gradient)}{table.caption.35}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.11}{\ignorespaces End-to-end soft-gated MoE test CE (top-1 and top-2 gating), on the 50,000-position subsample. Base CE 0.6303. Gate entropy $\approx $ ln K and load variance $\approx $ 0 at every setting.}}{68}{table.caption.36}\protected@file@percent }
+\newlabel{tab:5.11}{{5.11}{68}{End-to-end soft-gated MoE test CE (top-1 and top-2 gating), on the 50,000-position subsample. Base CE 0.6303. Gate entropy $\approx $ ln K and load variance $\approx $ 0 at every setting}{table.caption.36}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.12}{\ignorespaces Switch (end-to-end sparse top-1) test CE vs. load-balancing weight $\alpha $, on the 50,000-position subsample. Base CE 0.6303.}}{69}{table.caption.37}\protected@file@percent }
+\newlabel{tab:5.12}{{5.12}{69}{Switch (end-to-end sparse top-1) test CE vs. load-balancing weight $\alpha $, on the 50,000-position subsample. Base CE 0.6303}{table.caption.37}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.13}{\ignorespaces Oracle upper bound on the gradient-clustered experts, on the 50,000-position subsample. "Dispatcher CE" is the realised MLP-routed MoE; "Nearest-centroid CE" is the cosine/nearest-centroid routing rule of Section 5.3.3; "Oracle CE" is the true $\arg \min _k \mathcal  {L}_k$ routing. The oracle uses the target at inference and is an unachievable upper bound.}}{69}{table.caption.38}\protected@file@percent }
+\newlabel{tab:5.13}{{5.13}{69}{Oracle upper bound on the gradient-clustered experts, on the 50,000-position subsample. "Dispatcher CE" is the realised MLP-routed MoE; "Nearest-centroid CE" is the cosine/nearest-centroid routing rule of Section 5.3.3; "Oracle CE" is the true $\arg \min _k \mathcal {L}_k$ routing. The oracle uses the target at inference and is an unachievable upper bound}{table.caption.38}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.14}{\ignorespaces Random dispatcher control (uniform random routing over the same experts), on the 50,000-position subsample. Base CE 0.6303; the trained-dispatcher MoE CE is given in Table 5.10.}}{70}{table.caption.39}\protected@file@percent }
+\newlabel{tab:5.14}{{5.14}{70}{Random dispatcher control (uniform random routing over the same experts), on the 50,000-position subsample. Base CE 0.6303; the trained-dispatcher MoE CE is given in Table 5.10}{table.caption.39}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}Summary of Experimental Findings}{70}{section.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Discussion}{72}{chapter.6}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Interpretation of Results}{73}{section.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.2}Limitations}{74}{section.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.3}Generalisation}{75}{section.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.4}Comparison with Related Work}{75}{section.6.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{77}{chapter.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Interpretation of Results}{72}{section.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Limitations}{73}{section.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Generalisation}{74}{section.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.4}Comparison with Related Work}{74}{section.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{76}{chapter.7}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {7.1}Summary of Contributions}{77}{section.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7.2}Future Work}{78}{section.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7.3}Closing Remarks}{79}{section.7.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{80}{chapter*.40}\protected@file@percent }
-\abx@aux@page{36}{80}
-\abx@aux@page{37}{80}
-\abx@aux@page{38}{80}
-\abx@aux@page{39}{80}
-\abx@aux@page{40}{80}
-\abx@aux@page{41}{80}
-\abx@aux@page{42}{80}
-\abx@aux@page{43}{80}
-\abx@aux@page{44}{80}
-\abx@aux@page{45}{80}
-\abx@aux@page{46}{80}
-\abx@aux@page{47}{80}
-\abx@aux@page{48}{80}
-\abx@aux@page{49}{80}
-\abx@aux@page{50}{80}
-\abx@aux@page{51}{81}
-\abx@aux@page{52}{81}
-\abx@aux@page{53}{81}
-\abx@aux@page{54}{81}
-\abx@aux@page{55}{81}
-\abx@aux@page{56}{81}
-\abx@aux@page{57}{81}
-\abx@aux@page{58}{81}
-\abx@aux@page{59}{81}
-\abx@aux@page{60}{81}
+\@writefile{toc}{\contentsline {section}{\numberline {7.1}Summary of Contributions}{76}{section.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.2}Future Work}{77}{section.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.3}Closing Remarks}{78}{section.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{79}{chapter*.40}\protected@file@percent }
+\abx@aux@page{36}{79}
+\abx@aux@page{37}{79}
+\abx@aux@page{38}{79}
+\abx@aux@page{39}{79}
+\abx@aux@page{40}{79}
+\abx@aux@page{41}{79}
+\abx@aux@page{42}{79}
+\abx@aux@page{43}{79}
+\abx@aux@page{44}{79}
+\abx@aux@page{45}{79}
+\abx@aux@page{46}{79}
+\abx@aux@page{47}{79}
+\abx@aux@page{48}{79}
+\abx@aux@page{49}{79}
+\abx@aux@page{50}{79}
+\abx@aux@page{51}{80}
+\abx@aux@page{52}{80}
+\abx@aux@page{53}{80}
+\abx@aux@page{54}{80}
+\abx@aux@page{55}{80}
+\abx@aux@page{56}{80}
+\abx@aux@page{57}{80}
+\abx@aux@page{58}{80}
+\abx@aux@page{59}{80}
+\abx@aux@page{60}{80}
 \abx@aux@read@bbl@mdfivesum{485724B1DE265347AF2A0AB99B84E944}
 \abx@aux@defaultrefcontext{0}{browne2012}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{du2022}{nyt/global//global/global}
@@ -366,4 +366,4 @@
 \abx@aux@defaultrefcontext{0}{stockfishnnue}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{strehl2002}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{zhang2024}{nyt/global//global/global}
-\gdef \@abspage@last{93}
+\gdef \@abspage@last{92}

@@ -44,7 +44,8 @@ The main contributions of this thesis are summarized as follows:
 	\item \textbf{Data-driven State-space Partitioning:} We adapt sample-gradient clustering to NNUE evaluation, creating an unsupervised state-space bucketing scheme that avoids reliance on domain-specific heuristics.
 	\item \textbf{Lightweight Routing Mechanism:} We introduce a two-phase architecture where computationally expensive gradient clustering is restricted to offline training, while a lightweight dispatcher predicts expert assignment from frozen accumulator activations during inference.
 	\item \textbf{World-Model Integration:} We demonstrate the feasibility of replacing traditional hand-crafted accumulators with a learned world-model encoder, assessing its impact on representation learning and training efficiency.
-	\item \textbf{Embedded Benchmarking and Deployment:} We quantize and integrate the proposed models into the \emph{Cfish} engine, providing an empirical trade-off analysis between evaluation strength, memory footprint, and search speed on microcontroller hardware.
+	%% \item \textbf{Embedded Benchmarking and Deployment:} We quantize and integrate the proposed models into the \emph{Cfish} engine, providing an empirical trade-off analysis between evaluation strength, memory footprint, and search speed on microcontroller hardware.
+	\item \textbf{Embedded Benchmarking and Deployment:} We design a quantized integration path for the proposed models in the Cfish engine, specifying the memory layout, integer arithmetic, and inference procedure required for deployment on microcontroller hardware. The empirical analysis of evaluation strength, memory footprint, and search speed is left to future work.
 \end{itemize}
 
 \section{Thesis Outline}
