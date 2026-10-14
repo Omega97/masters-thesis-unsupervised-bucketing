@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10) (preloaded format=pdflatex 2026.8.30)  14 OCT 2026 19:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10) (preloaded format=pdflatex 2026.8.30)  14 OCT 2026 20:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1252,7 +1252,7 @@ ut line 104.
 File: ../thesis-plots/opening_middlegame_endgame.png Graphic file (type png)
 <use ../thesis-plots/opening_middlegame_endgame.png>
 Package pdftex.def Info: ../thesis-plots/opening_middlegame_endgame.png  used o
-n input line 175.
+n input line 176.
 (pdftex.def)             Requested size: 354.80612pt x 108.61353pt.
  [16 <../thesis-plots/opening_middlegame_endgame.png>]
 [17] [18] [19]) (chapters/method.tex [20] [21]
@@ -1284,7 +1284,7 @@ Chapter 5.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 50.
  [47] [48] [49] [50] [51]
-Underfull \hbox (badness 1297) in paragraph at lines 147--147
+Underfull \hbox (badness 1297) in paragraph at lines 149--149
 []\T1/lmr/m/n/12 (+20) Table 5.3: |DB-SCAN re-sults, fit-ted on a $\OT1/lmr/m/n
 /12 (+20) 100 000$\T1/lmr/m/n/12 (+20) -point sub-sam-ple with
  []
@@ -1296,7 +1296,7 @@ File: ../../RESULTS/clustering/plots/pca_2d_gradients.png Graphic file (type pn
 g)
 <use ../../RESULTS/clustering/plots/pca_2d_gradients.png>
 Package pdftex.def Info: ../../RESULTS/clustering/plots/pca_2d_gradients.png  u
-sed on input line 185.
+sed on input line 187.
 (pdftex.def)             Requested size: 354.80612pt x 299.38007pt.
  [53]
 <../../RESULTS/clustering/plots/tsne_2d_gradients.png, id=1152, 462.528pt x 390
@@ -1305,13 +1305,13 @@ File: ../../RESULTS/clustering/plots/tsne_2d_gradients.png Graphic file (type p
 ng)
 <use ../../RESULTS/clustering/plots/tsne_2d_gradients.png>
 Package pdftex.def Info: ../../RESULTS/clustering/plots/tsne_2d_gradients.png  
-used on input line 192.
+used on input line 194.
 (pdftex.def)             Requested size: 354.80612pt x 299.38007pt.
 <../thesis-plots/umap_2d_gradients.png, id=1153, 462.528pt x 390.258pt>
 File: ../thesis-plots/umap_2d_gradients.png Graphic file (type png)
 <use ../thesis-plots/umap_2d_gradients.png>
 Package pdftex.def Info: ../thesis-plots/umap_2d_gradients.png  used on input l
-ine 199.
+ine 201.
 (pdftex.def)             Requested size: 288.79422pt x 243.6784pt.
  [54 <../../RESULTS/clustering/plots/pca_2d_gradients.png> <../../RESULTS/clust
 ering/plots/tsne_2d_gradients.png>]
@@ -1319,7 +1319,7 @@ ering/plots/tsne_2d_gradients.png>]
 File: ../thesis-plots/tsne_3d_board.png Graphic file (type png)
 <use ../thesis-plots/tsne_3d_board.png>
 Package pdftex.def Info: ../thesis-plots/tsne_3d_board.png  used on input line 
-206.
+208.
 (pdftex.def)             Requested size: 288.79422pt x 261.15765pt.
  [55 <../thesis-plots/umap_2d_gradients.png> <../thesis-plots/tsne_3d_board.png
 >] [56] [57]
@@ -1329,7 +1329,7 @@ File: ../../RESULTS/dispatcher/centroid/plots/accuracy.png Graphic file (type p
 ng)
 <use ../../RESULTS/dispatcher/centroid/plots/accuracy.png>
 Package pdftex.def Info: ../../RESULTS/dispatcher/centroid/plots/accuracy.png  
-used on input line 256.
+used on input line 258.
 (pdftex.def)             Requested size: 354.80612pt x 225.78804pt.
  [58 <../../RESULTS/dispatcher/centroid/plots/accuracy.png>]
 <../../RESULTS/dispatcher/l1/plots/accuracy.png, id=1182, 505.89pt x 303.534pt>
@@ -1337,7 +1337,7 @@ used on input line 256.
 File: ../../RESULTS/dispatcher/l1/plots/accuracy.png Graphic file (type png)
 <use ../../RESULTS/dispatcher/l1/plots/accuracy.png>
 Package pdftex.def Info: ../../RESULTS/dispatcher/l1/plots/accuracy.png  used o
-n input line 294.
+n input line 296.
 (pdftex.def)             Requested size: 354.80612pt x 212.88918pt.
  [59 <../../RESULTS/dispatcher/l1/plots/accuracy.png>] [60]
 <../../RESULTS/dispatcher/piececount/plots/alignment.png, id=1192, 476.982pt x 
@@ -1346,7 +1346,7 @@ File: ../../RESULTS/dispatcher/piececount/plots/alignment.png Graphic file (typ
 e png)
 <use ../../RESULTS/dispatcher/piececount/plots/alignment.png>
 Package pdftex.def Info: ../../RESULTS/dispatcher/piececount/plots/alignment.pn
-g  used on input line 364.
+g  used on input line 366.
 (pdftex.def)             Requested size: 354.80612pt x 225.78804pt.
  [61] [62 <../../RESULTS/dispatcher/piececount/plots/alignment.png>] [63]
 <../../RESULTS/base/scaling/variable_dataset_size_ce_64.png, id=1207, 363.0363p
@@ -1355,7 +1355,7 @@ File: ../../RESULTS/base/scaling/variable_dataset_size_ce_64.png Graphic file (
 type png)
 <use ../../RESULTS/base/scaling/variable_dataset_size_ce_64.png>
 Package pdftex.def Info: ../../RESULTS/base/scaling/variable_dataset_size_ce_64
-.png  used on input line 415.
+.png  used on input line 417.
 (pdftex.def)             Requested size: 354.80612pt x 249.09634pt.
  [64]
 <../../RESULTS/base/scaling/variable_dataset_size_ce_256.png, id=1213, 363.0363
@@ -1364,7 +1364,7 @@ File: ../../RESULTS/base/scaling/variable_dataset_size_ce_256.png Graphic file
 (type png)
 <use ../../RESULTS/base/scaling/variable_dataset_size_ce_256.png>
 Package pdftex.def Info: ../../RESULTS/base/scaling/variable_dataset_size_ce_25
-6.png  used on input line 423.
+6.png  used on input line 425.
 (pdftex.def)             Requested size: 354.80612pt x 249.09634pt.
  [65 <../../RESULTS/base/scaling/variable_dataset_size_ce_64.png> <../../RESULT
 S/base/scaling/variable_dataset_size_ce_256.png>] [66]
@@ -1372,7 +1372,7 @@ S/base/scaling/variable_dataset_size_ce_256.png>] [66]
 File: ../thesis-plots/expert-fine-tune-CE-30.png Graphic file (type png)
 <use ../thesis-plots/expert-fine-tune-CE-30.png>
 Package pdftex.def Info: ../thesis-plots/expert-fine-tune-CE-30.png  used on in
-put line 459.
+put line 462.
 (pdftex.def)             Requested size: 354.80612pt x 156.10037pt.
  [67 <../thesis-plots/expert-fine-tune-CE-30.png (PNG copy)>] [68] [69] [70])
 (chapters/discussion.tex [71]
@@ -1398,11 +1398,11 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 27446 strings out of 475248
- 486251 string characters out of 5755453
+ 27444 strings out of 475248
+ 486227 string characters out of 5755453
  1950785 words of memory out of 5000000
  47973 multiletter control sequences out of 15000+600000
- 643874 words of font info for 241 fonts, out of 8000000 for 9000
+ 643745 words of font info for 240 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  69i,12n,117p,1700b,2287s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmb1
@@ -1424,7 +1424,7 @@ cone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt10.pfb><C:/Users/m
 onfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Us
 ers/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbol
 s/msbm10.pfb>
-Output written on main.pdf (92 pages, 4795552 bytes).
+Output written on main.pdf (92 pages, 4795822 bytes).
 PDF statistics:
  1479 PDF objects out of 1728 (max. 8388607)
  290 named destinations out of 1000 (max. 500000)
