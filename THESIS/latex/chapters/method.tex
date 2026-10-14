@@ -27,7 +27,7 @@ The primary baseline is the Efficiently Updatable Neural Network (NNUE). This ar
 
 To investigate whether the handcrafted sparse accumulator can be replaced by a learned representation, the pipeline also explores a variant where the conventional L1 accumulator is substituted with a learned "world model" encoder. Instead of relying on predefined piece-square features, this architecture utilizes a feedforward neural network encoder that processes the raw board state. The hypothesis is that shifting the learning effort entirely to a shared, learned representation might yield a more adaptable spatial understanding of the board, albeit at the cost of losing the incremental update efficiency of the standard NNUE accumulator.
 
-\section{Mixture of Experts and State-Space Partitioning}
+\section{Experts and State-Space Partitioning}
 
 To test the hypothesis that different regions of the state space require specialized evaluation heads, the pipeline extends the base architectures with Mixture-of-Experts (MoE) formulations. In all MoE variants, the total parameter budget is distributed across multiple expert heads, and a routing mechanism directs each position to the appropriate expert(s). The pipeline explores four distinct routing and partitioning strategies, ranging from simple heuristics to fully differentiable gating networks \parencite{shazeer2017}.
 

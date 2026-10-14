@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10) (preloaded format=pdflatex 2026.8.30)  14 OCT 2026 17:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10) (preloaded format=pdflatex 2026.8.30)  14 OCT 2026 18:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -932,7 +932,7 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'english'.
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 62
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 64
 .
  (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -944,24 +944,24 @@ LaTeX Warning: Label `fig:expert-finetune-rprop' multiply defined.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1040,9 +1040,9 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
  (main.bbl)
-Package biblatex Info: Reference section=0 on input line 62.
-Package biblatex Info: Reference segment=0 on input line 62.
-Package hyperref Info: Link coloring OFF on input line 62.
+Package biblatex Info: Reference section=0 on input line 64.
+Package biblatex Info: Reference segment=0 on input line 64.
+Package hyperref Info: Link coloring OFF on input line 64.
  (main.out) (main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
@@ -1050,13 +1050,13 @@ Package hyperref Info: Link coloring OFF on input line 62.
 \c@lstlisting=\count455
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 62.
-Package microtype Info: Applying patch `item' on input line 62.
-Package microtype Info: Applying patch `toc' on input line 62.
-Package microtype Info: Applying patch `eqnum' on input line 62.
-Package microtype Info: Applying patch `footnote' on input line 62.
-Package microtype Info: Applying patch `verbatim' on input line 62.
-LaTeX Info: Redefining \microtypesetup on input line 62.
+LaTeX Info: Redefining \microtypecontext on input line 64.
+Package microtype Info: Applying patch `item' on input line 64.
+Package microtype Info: Applying patch `toc' on input line 64.
+Package microtype Info: Applying patch `eqnum' on input line 64.
+Package microtype Info: Applying patch `footnote' on input line 64.
+Package microtype Info: Applying patch `verbatim' on input line 64.
+LaTeX Info: Redefining \microtypesetup on input line 64.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1073,14 +1073,14 @@ fg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-Package hyperref Info: Option `pageanchor' set `false' on input line 63.
-<../thesis-template/logo_centenario-eps-converted-to.pdf, id=443, 929.4725pt x 
+Package hyperref Info: Option `pageanchor' set `false' on input line 65.
+<../thesis-template/logo_centenario-eps-converted-to.pdf, id=447, 929.4725pt x 
 161.60374pt>
 File: ../thesis-template/logo_centenario-eps-converted-to.pdf Graphic file (typ
 e pdf)
 <use ../thesis-template/logo_centenario-eps-converted-to.pdf>
 Package pdftex.def Info: ../thesis-template/logo_centenario-eps-converted-to.pd
-f  used on input line 66.
+f  used on input line 68.
 (pdftex.def)             Requested size: 173.27652pt x 30.12555pt.
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/20.74'.
@@ -1092,35 +1092,35 @@ Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/12'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 7
-6.
+8.
  (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 7
-6.
+8.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-76.
+78.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-76.
+78.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 76.
+(Font)              <12> on input line 78.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 76.
+(Font)              <8> on input line 78.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 76.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 76.
+(Font)              <6> on input line 78.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 78.
 
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
@@ -1130,7 +1130,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 fg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 76.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 78.
 
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -1146,7 +1146,7 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 sis-template/logo_centenario-eps-converted-to.pdf>] [2
 
 ]
-Package hyperref Info: Option `pageanchor' set `true' on input line 103.
+Package hyperref Info: Option `pageanchor' set `true' on input line 105.
 
 (chapters/abstract.tex) [1
 
@@ -1187,7 +1187,7 @@ Package microtype Info: Loading generic protrusion settings for font family
  [10{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ma
 thsy.enc}] (chapters/introduction.tex
 Chapter 1.
-<../thesis-plots/nnue_incremental_update.png, id=825, 882.14569pt x 612.48825pt
+<../thesis-plots/nnue_incremental_update.png, id=831, 882.14569pt x 612.48825pt
 >
 File: ../thesis-plots/nnue_incremental_update.png Graphic file (type png)
 <use ../thesis-plots/nnue_incremental_update.png>
@@ -1198,15 +1198,12 @@ nput line 11.
 
 
  <../thesis-plots/nnue_incremental_update.png>]
-<../thesis-plots/L1_clustering.jpg, id=838, 963.6pt x 544.28343pt>
+<../thesis-plots/L1_clustering.jpg, id=844, 963.6pt x 544.28343pt>
 File: ../thesis-plots/L1_clustering.jpg Graphic file (type jpg)
 <use ../thesis-plots/L1_clustering.jpg>
 Package pdftex.def Info: ../thesis-plots/L1_clustering.jpg  used on input line 
 26.
 (pdftex.def)             Requested size: 354.80612pt x 200.41002pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [2 <../thesis-plots/L1_clustering.jpg>]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 4
 4.
@@ -1221,21 +1218,21 @@ Chapter 2.
 
 {C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex
 .enc}]
-<../thesis-plots/pesto_pawn_mg.png, id=862, 372.4314pt x 337.7418pt>
+<../thesis-plots/pesto_pawn_mg.png, id=868, 372.4314pt x 337.7418pt>
 File: ../thesis-plots/pesto_pawn_mg.png Graphic file (type png)
 <use ../thesis-plots/pesto_pawn_mg.png>
 Package pdftex.def Info: ../thesis-plots/pesto_pawn_mg.png  used on input line 
 23.
 (pdftex.def)             Requested size: 354.80612pt x 321.77538pt.
  [6 <../thesis-plots/pesto_pawn_mg.png>]
-<../thesis-plots/mcts_wiki.png, id=871, 1370.11874pt x 338.26375pt>
+<../thesis-plots/mcts_wiki.png, id=877, 1370.11874pt x 338.26375pt>
 File: ../thesis-plots/mcts_wiki.png Graphic file (type png)
 <use ../thesis-plots/mcts_wiki.png>
 Package pdftex.def Info: ../thesis-plots/mcts_wiki.png  used on input line 41.
-(pdftex.def)             Requested size: 354.80612pt x 87.5955pt.
+(pdftex.def)             Requested size: 412.56497pt x 101.85669pt.
  [7 <../thesis-plots/mcts_wiki.png>] [8]
 <../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7DEM.p
-ng, id=885, 1699.34875pt x 932.48375pt>
+ng, id=891, 1699.34875pt x 932.48375pt>
 File: ../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7
 DEM.png Graphic file (type png)
 <use ../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7D
@@ -1245,30 +1242,23 @@ Package pdftex.def Info: ../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_
 (pdftex.def)             Requested size: 354.80612pt x 194.68909pt.
  [9 <../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7D
 EM.png>] [10]
-<../thesis-plots/nnue_architecture_moe.png, id=898, 574.5465pt x 654.0435pt>
+<../thesis-plots/nnue_architecture_moe.png, id=904, 574.5465pt x 654.0435pt>
 File: ../thesis-plots/nnue_architecture_moe.png Graphic file (type png)
 <use ../thesis-plots/nnue_architecture_moe.png>
 Package pdftex.def Info: ../thesis-plots/nnue_architecture_moe.png  used on inp
 ut line 104.
 (pdftex.def)             Requested size: 354.80612pt x 403.90599pt.
  [11 <../thesis-plots/nnue_architecture_moe.png>]
-[12]
-Underfull \vbox (badness 2401) has occurred while \output is active []
-
- [13]
-Underfull \vbox (badness 3701) has occurred while \output is active []
-
- [14]
-[15]
-<../thesis-plots/opening_middlegame_endgame.png, id=931, 1119.8086pt x 357.2095
-3pt>
+[12] [13] [14] [15]
+<../thesis-plots/opening_middlegame_endgame.png, id=937, 1166.85938pt x 357.209
+53pt>
 File: ../thesis-plots/opening_middlegame_endgame.png Graphic file (type png)
 <use ../thesis-plots/opening_middlegame_endgame.png>
 Package pdftex.def Info: ../thesis-plots/opening_middlegame_endgame.png  used o
 n input line 175.
-(pdftex.def)             Requested size: 354.80612pt x 113.1811pt.
- [16 <../thesis-plots/opening_middlegame_endgame.png>] [17] [18] [19])
-(chapters/method.tex [20] [21]
+(pdftex.def)             Requested size: 354.80612pt x 108.61353pt.
+ [16 <../thesis-plots/opening_middlegame_endgame.png>]
+[17] [18] [19]) (chapters/method.tex [20] [21]
 Chapter 3.
 [22
 
@@ -1288,39 +1278,22 @@ File: ../thesis-plots/nnue_architecture_moe.png Graphic file (type png)
 Package pdftex.def Info: ../thesis-plots/nnue_architecture_moe.png  used on inp
 ut line 77.
 (pdftex.def)             Requested size: 354.80612pt x 403.90599pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [32]
-[33] [34] [35] [36] [37] [38] [39] [40] [41]
-Underfull \vbox (badness 3735) has occurred while \output is active []
-
- [42]
-[43]) (chapters/results.tex [44] [45]
+ [32] [33] [34] [35] [36] [37] [38] [39] [40] [41] [42] [43])
+(chapters/results.tex [44] [45]
 Chapter 5.
 [46
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 50.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [47]
-Underfull \vbox (badness 1158) has occurred while \output is active []
-
- [48]
-[49] [50] [51]
+ [47] [48] [49] [50] [51]
 Underfull \hbox (badness 1297) in paragraph at lines 147--147
 []\T1/lmr/m/n/12 (+20) Table 5.3: |DB-SCAN re-sults, fit-ted on a $\OT1/lmr/m/n
 /12 (+20) 100 000$\T1/lmr/m/n/12 (+20) -point sub-sam-ple with
  []
 
-
-Underfull \vbox (badness 1205) has occurred while \output is active []
-
- [52]
-<../../RESULTS/clustering/plots/pca_2d_gradients.png, id=1148, 462.528pt x 390.
+[52]
+<../../RESULTS/clustering/plots/pca_2d_gradients.png, id=1150, 462.528pt x 390.
 258pt>
 File: ../../RESULTS/clustering/plots/pca_2d_gradients.png Graphic file (type pn
 g)
@@ -1328,11 +1301,8 @@ g)
 Package pdftex.def Info: ../../RESULTS/clustering/plots/pca_2d_gradients.png  u
 sed on input line 185.
 (pdftex.def)             Requested size: 354.80612pt x 299.38007pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [53]
-<../../RESULTS/clustering/plots/tsne_2d_gradients.png, id=1154, 462.528pt x 390
+<../../RESULTS/clustering/plots/tsne_2d_gradients.png, id=1155, 462.528pt x 390
 .258pt>
 File: ../../RESULTS/clustering/plots/tsne_2d_gradients.png Graphic file (type p
 ng)
@@ -1340,17 +1310,16 @@ ng)
 Package pdftex.def Info: ../../RESULTS/clustering/plots/tsne_2d_gradients.png  
 used on input line 192.
 (pdftex.def)             Requested size: 354.80612pt x 299.38007pt.
-<../thesis-plots/umap_2d_gradients.png, id=1155, 462.528pt x 390.258pt>
+<../thesis-plots/umap_2d_gradients.png, id=1156, 462.528pt x 390.258pt>
 File: ../thesis-plots/umap_2d_gradients.png Graphic file (type png)
 <use ../thesis-plots/umap_2d_gradients.png>
 Package pdftex.def Info: ../thesis-plots/umap_2d_gradients.png  used on input l
 ine 199.
 (pdftex.def)             Requested size: 354.80612pt x 299.38007pt.
-
-[54 <../../RESULTS/clustering/plots/pca_2d_gradients.png> <../../RESULTS/cluste
-ring/plots/tsne_2d_gradients.png>] [55 <../thesis-plots/umap_2d_gradients.png>]
-[56]
-<../../RESULTS/dispatcher/centroid/plots/accuracy.png, id=1174, 476.982pt x 303
+ [54 <../../RESULTS/clustering/plots/pca_2d_gradients.png> <../../RESULTS/clust
+ering/plots/tsne_2d_gradients.png>] [55 <../thesis-plots/umap_2d_gradients.png>
+] [56]
+<../../RESULTS/dispatcher/centroid/plots/accuracy.png, id=1173, 476.982pt x 303
 .534pt>
 File: ../../RESULTS/dispatcher/centroid/plots/accuracy.png Graphic file (type p
 ng)
@@ -1358,37 +1327,16 @@ ng)
 Package pdftex.def Info: ../../RESULTS/dispatcher/centroid/plots/accuracy.png  
 used on input line 249.
 (pdftex.def)             Requested size: 354.80612pt x 225.78804pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [57]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [58 <../../RESULTS/dispatcher/centroid/plots/accuracy.png>]
-<../../RESULTS/dispatcher/l1/plots/accuracy.png, id=1186, 505.89pt x 303.534pt>
+ [57] [58 <../../RESULTS/dispatcher/centroid/plots/accuracy.png>]
+<../../RESULTS/dispatcher/l1/plots/accuracy.png, id=1183, 505.89pt x 303.534pt>
 
 File: ../../RESULTS/dispatcher/l1/plots/accuracy.png Graphic file (type png)
 <use ../../RESULTS/dispatcher/l1/plots/accuracy.png>
 Package pdftex.def Info: ../../RESULTS/dispatcher/l1/plots/accuracy.png  used o
 n input line 287.
 (pdftex.def)             Requested size: 354.80612pt x 212.88918pt.
- [59 <../../RESULTS/dispatcher/l1/plots/accuracy.png>]
-<../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png, id=1194, 491.436pt x
- 303.534pt>
-File: ../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png Graphic file (ty
-pe png)
-<use ../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png>
-Package pdftex.def Info: ../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.p
-ng  used on input line 323.
-(pdftex.def)             Requested size: 354.80612pt x 219.15567pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [60]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [61 <../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png>]
-<../../RESULTS/dispatcher/piececount/plots/alignment.png, id=1207, 476.982pt x 
+ [59 <../../RESULTS/dispatcher/l1/plots/accuracy.png>] [60]
+<../../RESULTS/dispatcher/piececount/plots/alignment.png, id=1193, 476.982pt x 
 303.534pt>
 File: ../../RESULTS/dispatcher/piececount/plots/alignment.png Graphic file (typ
 e png)
@@ -1396,11 +1344,8 @@ e png)
 Package pdftex.def Info: ../../RESULTS/dispatcher/piececount/plots/alignment.pn
 g  used on input line 357.
 (pdftex.def)             Requested size: 354.80612pt x 225.78804pt.
-
-Underfull \vbox (badness 5924) has occurred while \output is active []
-
- [62 <../../RESULTS/dispatcher/piececount/plots/alignment.png>] [63]
-<../../RESULTS/base/scaling/variable_dataset_size_ce_64.png, id=1218, 363.0363p
+ [61] [62 <../../RESULTS/dispatcher/piececount/plots/alignment.png>] [63]
+<../../RESULTS/base/scaling/variable_dataset_size_ce_64.png, id=1210, 363.0363p
 t x 254.8722pt>
 File: ../../RESULTS/base/scaling/variable_dataset_size_ce_64.png Graphic file (
 type png)
@@ -1408,11 +1353,8 @@ type png)
 Package pdftex.def Info: ../../RESULTS/base/scaling/variable_dataset_size_ce_64
 .png  used on input line 408.
 (pdftex.def)             Requested size: 354.80612pt x 249.09634pt.
-
-Underfull \vbox (badness 7486) has occurred while \output is active []
-
  [64]
-<../../RESULTS/base/scaling/variable_dataset_size_ce_256.png, id=1225, 363.0363
+<../../RESULTS/base/scaling/variable_dataset_size_ce_256.png, id=1217, 363.0363
 pt x 254.8722pt>
 File: ../../RESULTS/base/scaling/variable_dataset_size_ce_256.png Graphic file 
 (type png)
@@ -1420,32 +1362,23 @@ File: ../../RESULTS/base/scaling/variable_dataset_size_ce_256.png Graphic file
 Package pdftex.def Info: ../../RESULTS/base/scaling/variable_dataset_size_ce_25
 6.png  used on input line 416.
 (pdftex.def)             Requested size: 354.80612pt x 249.09634pt.
-
-[65 <../../RESULTS/base/scaling/variable_dataset_size_ce_64.png> <../../RESULTS
-/base/scaling/variable_dataset_size_ce_256.png>] [66]
-<../thesis-plots/expert-fine-tune-CE-30.png, id=1244, 1898.09125pt x 835.12pt>
+ [65 <../../RESULTS/base/scaling/variable_dataset_size_ce_64.png> <../../RESULT
+S/base/scaling/variable_dataset_size_ce_256.png>] [66]
+<../thesis-plots/expert-fine-tune-CE-30.png, id=1236, 1898.09125pt x 835.12pt>
 File: ../thesis-plots/expert-fine-tune-CE-30.png Graphic file (type png)
 <use ../thesis-plots/expert-fine-tune-CE-30.png>
 Package pdftex.def Info: ../thesis-plots/expert-fine-tune-CE-30.png  used on in
 put line 452.
 (pdftex.def)             Requested size: 354.80612pt x 156.10037pt.
-<../thesis-plots/expert-fine-tune-CE-15.png, id=1245, 1898.09125pt x 835.12pt>
+<../thesis-plots/expert-fine-tune-CE-15.png, id=1237, 1898.09125pt x 835.12pt>
 File: ../thesis-plots/expert-fine-tune-CE-15.png Graphic file (type png)
 <use ../thesis-plots/expert-fine-tune-CE-15.png>
 Package pdftex.def Info: ../thesis-plots/expert-fine-tune-CE-15.png  used on in
 put line 460.
 (pdftex.def)             Requested size: 354.80612pt x 156.10037pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [67 <../thesis-plots/expert-fine-tune-CE-30.png (PNG copy)>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [68 <../thesis-plots/expert-fine-tune-CE-15.png (PNG copy)>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [69]
-[70] [71]) (chapters/discussion.tex [72]
+ [67 <../thesis-plots/expert-fine-tune-CE-30.png (PNG copy)>] [68 <../thesis-pl
+ots/expert-fine-tune-CE-15.png (PNG copy)>]
+[69] [70] [71]) (chapters/discussion.tex [72]
 Chapter 6.
 [73
 
@@ -1453,11 +1386,7 @@ Chapter 6.
 Chapter 7.
 [77
 
-])
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [78]
-[79] [80
+]) [78] [79] [80
 
 
 ] [81] (main.aux)
@@ -1475,106 +1404,46 @@ Package rerunfilecheck Warning: File `main.out' has changed.
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: ECC9B86FA6B22E675879E2E2A3B127B2;20334
-(rerunfilecheck)             After:  20A36CA2A629CBDD27A90610EFAF2194;20742.
-
-Package biblatex Warning: Please rerun LaTeX.
-(biblatex)                Page breaks have changed.
-
+(rerunfilecheck)             Before: 1E09603B1F6C4136CF923C697CA631DE;20681
+(rerunfilecheck)             After:  50F7881ECF68839281DABB0BAC79CF5F;20681.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 27473 strings out of 475248
- 487082 string characters out of 5755453
+ 27452 strings out of 475248
+ 486413 string characters out of 5755453
  1950785 words of memory out of 5000000
- 47979 multiletter control sequences out of 15000+600000
+ 47973 multiletter control sequences out of 15000+600000
  643745 words of font info for 240 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  69i,12n,117p,1700b,2287s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-pdfTeX warning (dest): name{table.caption.35} has been referenced but does not 
+pdfTeX warning (dest): name{table.caption.40} has been referenced but does not 
 exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{table.caption.34} has been referenced but does not 
+pdfTeX warning (dest): name{table.caption.31} has been referenced but does not 
 exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{table.caption.33} has been referenced but does not 
+pdfTeX warning (dest): name{table.caption.29} has been referenced but does not 
 exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{table.caption.28} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.26} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.24} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.22} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.20} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.15} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.14} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{table.caption.13} has been referenced but does not 
-exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.31} has been referenced but does not
+pdfTeX warning (dest): name{figure.caption.35} has been referenced but does not
  exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{figure.caption.29} has been referenced but does not
+pdfTeX warning (dest): name{figure.caption.30} has been referenced but does not
  exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{figure.caption.27} has been referenced but does not
+pdfTeX warning (dest): name{figure.caption.28} has been referenced but does not
  exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{figure.caption.25} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.23} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.19} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.18} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.17} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.12} has been referenced but does not
- exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{chapter*.38} has been referenced but does not exist
+pdfTeX warning (dest): name{chapter*.41} has been referenced but does not exist
 , replaced by a fixed one
 
 <C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmb10.
@@ -1596,9 +1465,9 @@ ne/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt10.pfb><C:/Users/mon
 falcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/User
 s/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/
 msbm10.pfb>
-Output written on main.pdf (93 pages, 5632653 bytes).
+Output written on main.pdf (93 pages, 5603191 bytes).
 PDF statistics:
- 1507 PDF objects out of 1728 (max. 8388607)
- 313 named destinations out of 1000 (max. 500000)
- 47056 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 1492 PDF objects out of 1728 (max. 8388607)
+ 298 named destinations out of 1000 (max. 500000)
+ 47059 words of extra memory for PDF output out of 51595 (max. 10000000)
 
