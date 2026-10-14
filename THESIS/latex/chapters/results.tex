@@ -17,9 +17,9 @@ Each FEN is encoded into a sparse binary feature vector of dimension $d_{\text{i
 
 \subsection{Data Splits}
 
-The dataset is partitioned with a stratified per-slice random split: exactly 1\% of each slice is held out as the test set (seed 0), leaving the remaining 99\% for training. This keeps the same phase mix on both sides and prevents any single slice from leaking positions into the test set. The resulting test set contains \textbf{1,507,940 positions}; every test metric reported in this chapter is computed on this fixed set, and no test position participates in clustering, dispatcher training, or expert fine-tuning.
+The dataset is partitioned with a stratified per-slice random split: exactly 1\% of each slice is held out as the test set (seed 0), leaving the remaining 99\% for training. This keeps the same phase mix on both sides and prevents any single slice from leaking positions into the test set. The resulting test set contains 1,507,940 positions; every test metric reported in this chapter is computed on this fixed set, and no test position participates in clustering, dispatcher training, or expert fine-tuning.
 
-The clustering and dispatcher experiments operate on a representative \textbf{1,000,000-position subsample} of the training split (the same subsample reused across all representations), while the sample-gradient caches used for gradient-based routing are computed on up to \textbf{2,000,000} positions. Only summary statistics and projection coordinates are persisted from the clustering stage, never the full cluster assignments.
+The clustering and dispatcher experiments operate on a representative 1,000,000-position subsample of the training split (the same subsample reused across all representations), while the sample-gradient caches used for gradient-based routing are computed on up to 2,000,000 positions. Only summary statistics and projection coordinates are persisted from the clustering stage, never the full cluster assignments.
 
 \subsection{Models and Baselines}
 
@@ -153,7 +153,6 @@ Table 5.4 reports the agreement between the partitions at $B=8$. The board and L
 \begin{table}[H]
 \centering
 \small
-\resizebox{\textwidth}{!}{%
 \begin{tabular}{lll}
 \toprule
 Pair & ARI & NMI \\
@@ -166,19 +165,18 @@ L1 vs. piece count & 0.147 & 0.290 \\
 gradients vs. piece count & 0.042 & 0.088 \\
 \bottomrule
 \end{tabular}
-}
 \caption{Agreement (adjusted Rand index and normalised mutual information) between partitions at $B=8$, computed on one million positions. Higher values indicate closer agreement; the chance baseline is $0$.}
 \label{tab:5.4}
 \end{table}
 
 The final gradient-based clustering, fitted on two million positions for $B \in \{2, 4, 8\}$, reproduces the structure observed on one million positions. The silhouette scores are $0.250$, $0.215$, and $0.179$ for $B=2$, $4$, and $8$ respectively, within $0.02$ of the one-million-position estimates ($0.250$, $0.196$, and $0.191$), and the centroid geometry is preserved, though less tightly at $B=4$: the mean off-diagonal centroid cosine is $-0.938$, $-0.307$, and $-0.128$, against $-0.938$, $-0.229$, and $-0.126$ on the smaller sample -- the $B=2$ and $B=8$ centroids are essentially unchanged, while the $B=4$ centroids drift from $-0.229$ to $-0.307$. The buckets remain well balanced at each value of $B$, ranging from $55.8\%/44.2\%$ at $B=2$ to between $10.8\%$ and $16.0\%$ at $B=8$. The partition is therefore stable with respect to the sample size. As $B$ grows the centroids spread out and their mean pairwise similarity approaches zero: at $B=2$ they are nearly antipodal, while at $B=8$ the pairwise centroid cosines range from strongly negative (near $-0.95$) to moderately aligned (near $+0.72$), consistent with a partition that tiles a single dense gradient manifold rather than isolating well-separated modes.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.86\textwidth]{../../RESULTS/clustering/plots/previous_gradient_2m/silhouette.png}
-\caption{Silhouette of the gradient partition against the number of clusters.}
-\label{fig:silhouette-1}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.86\textwidth]{../../RESULTS/clustering/plots/previous_gradient_2m/silhouette.png}
+%\caption{Silhouette of the gradient partition against the number of clusters.}
+%\label{fig:silhouette-1}
+%\end{figure}
 
 The qualitative evidence supports the quantitative picture. Projections of the gradient space onto the first principal components, and the corresponding t-SNE and UMAP embeddings, show a single connected cloud along which the clusters form contiguous regions, consistent with the low silhouette values and the gradual loss of centroid separation as $B$ increases. In contrast, the L1 and board projections show clusters that are poorly separated and strongly overlapping, mirroring their near-zero cosine distances. The PCA projection of the gradient-based $B=2$ partition in particular shows the two clusters lying on opposite sides of the origin, in line with the antipodal centroids reported above.
 
@@ -194,6 +192,13 @@ The qualitative evidence supports the quantitative picture. Projections of the g
 \includegraphics[width=0.86\textwidth]{../../RESULTS/clustering/plots/tsne_2d_gradients.png}
 \caption{t-SNE projection of the gradient representation.}
 \label{fig:tsne-2d-gradients-3}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.86\textwidth]{../thesis-plots/umap_2d_gradients.png}
+	\caption{UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores and the antipodal centroid geometry observed at $B=2$.}
+	\label{fig:umap-2d-gradients}
 \end{figure}
 
 Taken together, the results indicate that the gradient-based partition is the most promising candidate for expert specialisation. The antipodal centroids at $B=2$ confirm that the two buckets correspond to opposite directions in head-parameter space -- positions whose gradients pull the head in contrary ways -- which is exactly the kind of diversity the method seeks. The near-zero agreement with the piece-count and activation-based partitions further suggests that these buckets do not correspond to coarse game-phase or geometric categories, but to a genuinely different structure grounded in the learning dynamics. The implication for the mixture-of-experts is that the gradient partition should induce expert task vectors that are more distinct from one another than those produced by any activation-based bucketing, a hypothesis examined in Section 5.5.
@@ -221,7 +226,6 @@ Table 5.5 reports the two parameter-free centroid routers. Both reproduce the Eu
 \begin{table}[H]
 \centering
 \small
-\resizebox{\textwidth}{!}{%
 \begin{tabular}{lllll}
 \toprule
 Representation & B & Top-1 & ARI & NMI \\
@@ -236,7 +240,6 @@ L1 & 8 & 0.948 & 0.893 & 0.872 \\
 L1 & 16 & 0.940 & 0.892 & 0.884 \\
 \bottomrule
 \end{tabular}
-}
 \caption{Parameter-free centroid routers (\texttt{argmin} cosine similarity to the $k$-means centroids), scored against the Euclidean Mini-Batch $k$-Means labels on one million positions. Chance is $1/B$; the majority dummy ranges from $0.727$ ($B=2$) to $0.172$ ($B=16$) for the L1 labels.}
 \label{tab:5.5}
 \end{table}
@@ -253,7 +256,6 @@ Table 5.6 reports the learned routers trained to predict the L1 $k$-means bucket
 \begin{table}[H]
 \centering
 \small
-\resizebox{\textwidth}{!}{%
 \begin{tabular}{llll}
 \toprule
 Router & B & Top-1 & ARI \\
@@ -276,7 +278,6 @@ XGBoost & 8 & 0.930 & 0.850 \\
 XGBoost & 16 & 0.891 & 0.799 \\
 \bottomrule
 \end{tabular}
-}
 \caption{Learned L1-to-L1 dispatchers on one million positions ($90/10$ split), scored against the L1 Mini-Batch $k$-Means labels. Chance is $1/B$; the majority dummy is $0.727$, $0.542$, $0.248$, and $0.172$ for $B=2,4,8,16$ respectively.}
 \label{tab:5.6}
 \end{table}
@@ -295,7 +296,6 @@ The picture reverses when the routers are trained to predict the \emph{gradient}
 \begin{table}[H]
 \centering
 \small
-\resizebox{\textwidth}{!}{%
 \begin{tabular}{lllll}
 \toprule
 Target & h & B & Top-1 & ARI \\
@@ -314,7 +314,6 @@ gradient & 64 & 16 & 0.483 & 0.368 \\
 gradient & 128 & 16 & 0.490 & 0.369 \\
 \bottomrule
 \end{tabular}
-}
 \caption{MLP dispatchers (hidden width $h$) trained to predict the gradient $k$-means buckets from L1 activations, on one million positions ($90/10$ split). Chance is $1/B$; the majority dummy is $0.560$, $0.361$, $0.184$, and $0.134$ for $B=2,4,8,16$ respectively.}
 \label{tab:5.7}
 \end{table}
@@ -335,7 +334,6 @@ The fixed eight-interval piece-count router is evaluated purely by its alignment
 \begin{table}[H]
 \centering
 \small
-\resizebox{\textwidth}{!}{%
 \begin{tabular}{llll}
 \toprule
 Target & B & ARI & NMI \\
@@ -350,7 +348,6 @@ gradient & 8 & 0.042 & 0.088 \\
 gradient & 16 & 0.045 & 0.120 \\
 \bottomrule
 \end{tabular}
-}
 \caption{Alignment (ARI/NMI) between the fixed eight-bucket piece-count router and the L1 and gradient $k$-means partitions at each $B$, computed on one million positions.}
 \label{tab:5.8}
 \end{table}
@@ -385,7 +382,6 @@ Table 5.9 reports the dense baselines with their full metrics. The linear model 
 \begin{table}[H]
 \centering
 \small
-\resizebox{\textwidth}{!}{%
 \begin{tabular}{lllllll}
 \toprule
 Model & Parameters & Test CE & Test MAE & Test MSE & $R^2$ & Infer NPS \\
@@ -399,7 +395,6 @@ FFNN2 H128 & 233091 & 0.645 & 0.149 & 0.062 & 0.873 & 2.65M \\
 FFNN2 H256 & 498947 & 0.632 & 0.135 & 0.053 & 0.893 & 2.56M \\
 \bottomrule
 \end{tabular}
-}
 \caption{Dense baselines (linear, single-hidden FFNN, dual-hidden FFNN) with full regression metrics and inference throughput on the 1.5M-position test set. The reference NNUE W128 H256 (174,723 parameters) attains CE 0.6303, beating the dual-hidden FFNN2 H256 at 2.9$\times$ the parameters.}
 \label{tab:5.9}
 \end{table}
@@ -410,10 +405,19 @@ The scaling of test CE with training-set size, shown for the $H=64$ and $H=256$ 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{../../RESULTS/base/scaling/nnue_ce_vs_train_size.png}
-\caption{Test cross-entropy of the base NNUE against training-set size.}
+\includegraphics[width=0.86\textwidth]{../../RESULTS/base/scaling/variable_dataset_size_ce_64.png}
+\caption{Test cross-entropy of the base NNUE against training-set size. From this plot we can infer that a NNUE model with two hidden layers of 64 neurons does not overfit a dataset larger than 3 million positions, though accuracy can still marginally increase with a bigger dataset.}
 \label{fig:nnue-ce-vs-train-size-8}
 \end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.86\textwidth]{../../RESULTS/base/scaling/variable_dataset_size_ce_256.png}
+	\caption{Test cross-entropy of the base NNUE against training-set size. A NNUE model with two hidden layers of 256 neurons does not overfit a dataset larger than 7 million positions.}
+	\label{fig:nnue-ce-vs-train-size-9}
+\end{figure}
+
 
 The reference base model is thus established as W128 H256, with full-test CE 0.6303 (Table 5.1) and, on the 50,000-position subsample used for the MoE comparisons of Section 5.5, CE 0.6303 and MAE 0.1326. Every MoE variant in the next section is judged against this model with the same frozen L1 accumulator.
 
@@ -443,6 +447,22 @@ All experts are fine-tuned on the 2M-position training pack (\texttt{moe\_b4\_2m
 
 Each MoE is scored on the 50,000-position test subsample used throughout this chapter, against the reference base (CE 0.6303, MAE 0.1326 on this subsample). The primary figures are the soft cross-entropy and the expected-value MAE of the complete MoE; for the hard variants the dispatcher's top-1 accuracy against its pseudo-ground-truth buckets is reported alongside, and for the soft variants the gate entropy and the load-balance variance quantify whether routing actually specialises. Per-bucket expert CE (vs. the base head's CE on the same bucket) measures whether individual experts improve on their own subset. The oracle and random-router evaluations use the exact same expert weights and test set, differing only in how the bucket index is chosen.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.86\textwidth]{../thesis-plots/expert-fine-tune-CE-30.png}
+	\caption{Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit{lucky} experts get to train on a mix of simpler positions.}
+	\label{fig:expert-finetune-rprop}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.86\textwidth]{../thesis-plots/expert-fine-tune-CE-15.png}
+	\caption{Cross-entropy trajectory during the expert fine-tuning phase using the Rprop optimizer. The plot illustrates the stable convergence and the characteristic adaptive step-size mechanism of Rprop, which mitigates instability by stepping back when the loss temporarily increases, allowing the specialized heads to properly learn without collapsing.}
+	\label{fig:expert-finetune-rprop}
+\end{figure}
+
+
 \subsection{MoE Results}
 
 \textbf{[Dispatcher-routed hard MoE]} Table 5.10 summarises the three hard variants. The headline is uniformly negative: \textbf{no routing variant decisively beats the base.} The piece-count MoE (K=8) is exactly tied with the base (CE 0.6303), and its per-bucket expert CE equals the base CE on every bucket — piece count carries no specialisation signal. The L1-clustered MoE is trivially recoverable by its dispatcher (top-1 0.996 $\to$ 0.980) yet gains essentially nothing: its CE ranges from 0.6309 (K=2) to 0.6300 (K=16). The gradient-clustered MoE is the most interesting: its dispatcher recovers the gradient partition only weakly (top-1 0.643 $\to$ 0.476, consistent with Section 5.3.3), yet both it (at K=8) and the L1-clustered MoE (at K=16) manage to edge out the base by a marginal 0.0003 in CE. However, this tiny gain is within the noise margin and remains capped by the weak dispatcher — the routing signal is present in the experts but not recoverable from L1.
@@ -450,23 +470,22 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \begin{table}[H]
 	\centering
 	\small
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lllll}
-			\toprule
-			Variant & $K$ & Dispatcher Top-1 & MoE CE & MoE MAE \\
-			\midrule
-			piece-count & 8 & — (fixed rule) & 0.6303 & 0.1331 \\
-			L1-clustered & 2 & 0.996 & 0.6309 & 0.1343 \\
-			L1-clustered & 4 & 0.992 & 0.6305 & 0.1343 \\
-			L1-clustered & 8 & 0.986 & 0.6303 & 0.1332 \\
-			L1-clustered & 16 & 0.980 & 0.6300 & 0.1327 \\
-			gradient-clustered & 2 & 0.643 & 0.6307 & 0.1338 \\
-			gradient-clustered & 4 & 0.587 & 0.6306 & 0.1345 \\
-			gradient-clustered & 8 & 0.534 & 0.6300 & 0.1328 \\
-			gradient-clustered & 16 & 0.476 & 0.6301 & 0.1330 \\
-			\bottomrule
-		\end{tabular}
-	}
+	\begin{tabular}{lllll}
+		\toprule
+		Variant & $K$ & Dispatcher Top-1 & MoE CE & MoE MAE \\
+		\midrule
+		piece-count & 8 & — (fixed rule) & 0.6303 & 0.1331 \\
+		L1-clustered & 2 & 0.996 & 0.6309 & 0.1343 \\
+		L1-clustered & 4 & 0.992 & 0.6305 & 0.1343 \\
+		L1-clustered & 8 & 0.986 & 0.6303 & 0.1332 \\
+		L1-clustered & 16 & 0.980 & 0.6300 & 0.1327 \\
+		gradient-clustered & 2 & 0.643 & 0.6307 & 0.1338 \\
+		gradient-clustered & 4 & 0.587 & 0.6306 & 0.1345 \\
+		gradient-clustered & 8 & 0.534 & 0.6300 & 0.1328 \\
+		gradient-clustered & 16 & 0.476 & 0.6301 & 0.1330 \\
+		\bottomrule
+	\end{tabular}
+
 	\caption{Dispatcher-routed hard MoE (piece-count, L1-clustered, gradient-clustered) on the 50,000-position test subsample. The reference base attains CE 0.6303 and MAE 0.1326 on this subsample. "Dispatcher Top-1" is the MLP dispatcher's accuracy against its own k-means pseudo-labels (L1 or gradient).}
 	\label{tab:5.10}
 \end{table}
@@ -476,16 +495,14 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \begin{table}[H]
 	\centering
 	\small
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lllll}
-			\toprule
-			Top-k & $K{=}2$ & $K{=}4$ & $K{=}8$ & $K{=}16$ \\
-			\midrule
-			top-1 & 0.6307 & 0.6315 & 0.6317 & 0.6323 \\
-			top-2 & 0.6304 & 0.6306 & 0.6306 & 0.6310 \\
-			\bottomrule
-		\end{tabular}
-	}
+	\begin{tabular}{lllll}
+		\toprule
+		Top-k & $K{=}2$ & $K{=}4$ & $K{=}8$ & $K{=}16$ \\
+		\midrule
+		top-1 & 0.6307 & 0.6315 & 0.6317 & 0.6323 \\
+		top-2 & 0.6304 & 0.6306 & 0.6306 & 0.6310 \\
+		\bottomrule
+	\end{tabular}
 	\caption{End-to-end soft-gated MoE test CE (top-1 and top-2 gating), on the 50,000-position subsample. Base CE 0.6303. Gate entropy $\approx$ ln K and load variance $\approx$ 0 at every setting.}
 	\label{tab:5.11}
 \end{table}
@@ -495,17 +512,15 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \begin{table}[H]
 	\centering
 	\small
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{lllll}
-			\toprule
-			$\alpha$ & $K{=}2$ & $K{=}4$ & $K{=}8$ & $K{=}16$ \\
-			\midrule
-			0.001 & 0.6307 & 0.6312 & 0.6316 & 0.6326 \\
-			0.01 & 0.6307 & 0.6312 & 0.6317 & 0.6323 \\
-			0.05 & 0.6309 & 0.6313 & 0.6319 & 0.6325 \\
-			\bottomrule
-		\end{tabular}
-	}
+	\begin{tabular}{lllll}
+		\toprule
+		$\alpha$ & $K{=}2$ & $K{=}4$ & $K{=}8$ & $K{=}16$ \\
+		\midrule
+		0.001 & 0.6307 & 0.6312 & 0.6316 & 0.6326 \\
+		0.01 & 0.6307 & 0.6312 & 0.6317 & 0.6323 \\
+		0.05 & 0.6309 & 0.6313 & 0.6319 & 0.6325 \\
+		\bottomrule
+	\end{tabular}
 	\caption{Switch (end-to-end sparse top-1) test CE vs. load-balancing weight $\alpha$, on the 50,000-position subsample. Base CE 0.6303.}
 	\label{tab:5.12}
 \end{table}
@@ -515,18 +530,16 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \begin{table}[H]
 	\centering
 	\small
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{llllll}
-			\toprule
-			$K$ & Base CE & Dispatcher CE & Nearest-centroid CE & Oracle CE & Oracle MAE \\
-			\midrule
-			2 & 0.6303 & 0.6307 & 0.6320 & 0.6244 & 0.1242 \\
-			4 & 0.6303 & 0.6306 & 0.6312 & 0.6160 & 0.1145 \\
-			8 & 0.6303 & 0.6300 & 0.6291 & 0.6067 & 0.1006 \\
-			16 & 0.6303 & 0.6301 & 0.6280 & 0.6005 & 0.0881 \\
-			\bottomrule
-		\end{tabular}
-	}
+	\begin{tabular}{llllll}
+		\toprule
+		$K$ & Base CE & Dispatcher CE & Nearest-centroid CE & Oracle CE & Oracle MAE \\
+		\midrule
+		2 & 0.6303 & 0.6307 & 0.6320 & 0.6244 & 0.1242 \\
+		4 & 0.6303 & 0.6306 & 0.6312 & 0.6160 & 0.1145 \\
+		8 & 0.6303 & 0.6300 & 0.6291 & 0.6067 & 0.1006 \\
+		16 & 0.6303 & 0.6301 & 0.6280 & 0.6005 & 0.0881 \\
+		\bottomrule
+	\end{tabular}
 	\caption{Oracle upper bound on the gradient-clustered experts, on the 50,000-position subsample. "Dispatcher CE" is the realised MLP-routed MoE; "Nearest-centroid CE" is the cosine/nearest-centroid routing rule of Section 5.3.3; "Oracle CE" is the true $\arg\min_k \mathcal{L}_k$ routing. The oracle uses the target at inference and is an unachievable upper bound.}
 	\label{tab:5.13}
 \end{table}
@@ -536,7 +549,7 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \begin{table}[H]
 	\centering
 	\small
-	\resizebox{\textwidth}{!}{%
+	\scalebox{1.0}{%
 		\begin{tabular}{lllll}
 			\toprule
 			Variant & $K{=}2$ & $K{=}4$ & $K{=}8$ & $K{=}16$ \\
@@ -551,8 +564,6 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \end{table}
 
 \textbf{[Synthesis]} Read together, the three controls tell a coherent story. The oracle proves the experts carry real, monotonic specialisation headroom (CE 0.600 at K=16), while the random router confirms that without correct routing, this capacity degrades performance below the baseline. The realised dispatchers sit essentially on top of the base because the deployable routing signals they can consume are too weak to recover the optimal assignment. The mixture-of-experts hypothesis therefore fails not for lack of capacity, but for lack of an \emph{inference-time} signal that identifies the right expert. Quantifying and, if possible, closing this geometric gap is the central open question carried into the Discussion and motivates the two-stage routing framework evaluated in Section 5.6.
-
----
 
 \section{Summary of Experimental Findings}
 

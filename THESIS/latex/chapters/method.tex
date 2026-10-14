@@ -56,6 +56,26 @@ To test whether the optimization dynamics of the model can guide expert speciali
 
 Finally, the pipeline evaluates fully differentiable routing mechanisms trained jointly with the experts. This includes \textbf{Soft-Gated MoE} (where the router outputs a softmax distribution and the top-$k$ experts are blended) and \textbf{Switch MoE} (a sparse, hard top-1 routing mechanism). Both are trained end-to-end with an auxiliary load-balancing loss to prevent expert collapse. This variant tests whether a jointly optimized routing policy can discover partitions superior to the offline, two-stage clustering methods, despite the strict computational constraints of the target hardware \parencite{shazeer2017} \parencite{fedus2021}.
 
+
+\subsection{KITSUNE: Knowledge-guided Initialization and Two-stage Segregation}
+\label{sec:kitsune}
+
+The experimental results presented in Chapter 5 reveal a fundamental geometric limitation in single-stage routing: while sample gradients provide the most informative signal for expert specialization, they form non-convex, scattered manifolds in the activation space that are poorly approximated by linear dispatchers. Conversely, L1 activations form convex, linearly separable regions but lack direct alignment with the learning signal. To bridge this gap without sacrificing inference efficiency, we propose \textbf{KITSUNE} (\textbf{K}nowledge-guided \textbf{I}nitialization and \textbf{T}wo-stage \textbf{S}egregation for \textbf{U}nsupervised \textbf{N}eural \textbf{E}xperts).
+
+KITSUNE decouples the geometric partitioning of the activation space from the semantic assignment of experts via a two-stage offline pipeline, reducing the online inference cost to a strictly linear operation plus a static lookup.
+
+\subsubsection*{Stage 1: Micro-Quantization of L1 Space}
+Instead of clustering directly into $B$ macro-experts, the L1 activation space is first partitioned into a large number of fine-grained \emph{micro-buckets} ($B'$), where $B' \gg B$ (e.g., $B'=64$ for $B=8$). Because these micro-buckets represent small, locally convex regions of the activation manifold, they can be recovered at inference time by a lightweight linear dispatcher with near-perfect accuracy ($>99\%$). This stage ensures that the online routing remains robust and computationally trivial.
+
+\subsubsection*{Stage 2: Gradient-Informed Stitching}
+The semantic specialization is introduced offline through a \emph{stitching} process. For each micro-bucket, we compute the mean sample gradient with respect to the head parameters. These mean gradients serve as high-fidelity proxies for the learning requirements of the positions within that micro-bucket. We then apply agglomerative clustering on these $B'$ gradient vectors to merge them into $B$ \emph{macro-experts}. 
+
+This stitching step allows the formation of arbitrarily non-convex and disconnected routing regions in the L1 space, as a single macro-expert may be composed of multiple disparate micro-buckets that share similar gradient directions. To ensure computational balance, the stitching algorithm enforces a constraint that merges micro-buckets in multiples, preventing any single expert from becoming a bottleneck during parallel evaluation.
+
+\subsubsection*{Inference and Benefits}
+At inference time, the KITSUNE router operates in two steps: (1) the linear dispatcher predicts the micro-bucket index from the L1 activations, and (2) a static lookup table maps this index to the final macro-expert. This architecture retains the actionable gradient signal that drives expert specialization—addressing the failure mode of standard gradient clustering—while preserving the zero-overhead, deterministic routing of L1-based methods. Furthermore, by initializing experts with positions that are not only geometrically close but also gradient-aligned, KITSUNE provides a more coherent starting point for the fine-tuning phase, potentially accelerating convergence and improving final evaluation strength.
+
+
 \section{Training and Evaluation Protocol}
 
 To ensure a fair and rigorous comparison across all architectures and routing strategies, the pipeline enforces a strict training and evaluation protocol.
