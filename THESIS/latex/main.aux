@@ -287,8 +287,8 @@
 \@writefile{toc}{\contentsline {section}{\numberline {5.5}Mixture of Experts}{66}{section.5.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}MoE Architecture and Training}{66}{subsection.5.5.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}MoE Metrics}{67}{subsection.5.5.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.10}{\ignorespaces Cross-entropy trajectory during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit  {lucky} experts get to train on a mix of simpler positions.}}{67}{figure.caption.34}\protected@file@percent }
-\newlabel{fig:expert-finetune-rprop}{{5.10}{67}{Cross-entropy trajectory during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit {lucky} experts get to train on a mix of simpler positions}{figure.caption.34}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.10}{\ignorespaces Decrease in Cross-entropy during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the experts are relatively stagnant, while the a few buckets are responsible for most of the improvement. The analysis shows that some \textit  {lucky} experts get to train on a mix of simpler positions.}}{67}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:expert-finetune-rprop}{{5.10}{67}{Decrease in Cross-entropy during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the experts are relatively stagnant, while the a few buckets are responsible for most of the improvement. The analysis shows that some \textit {lucky} experts get to train on a mix of simpler positions}{figure.caption.34}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}MoE Results}{67}{subsection.5.5.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {5.10}{\ignorespaces Dispatcher-routed hard MoE (piece-count, L1-clustered, gradient-clustered) on the 50,000-position test subsample. The reference base attains CE 0.6303 and MAE 0.1326 on this subsample. "Dispatcher Top-1" is the MLP dispatcher's accuracy against its own k-means pseudo-labels (L1 or gradient).}}{68}{table.caption.35}\protected@file@percent }
 \newlabel{tab:5.10}{{5.10}{68}{Dispatcher-routed hard MoE (piece-count, L1-clustered, gradient-clustered) on the 50,000-position test subsample. The reference base attains CE 0.6303 and MAE 0.1326 on this subsample. "Dispatcher Top-1" is the MLP dispatcher's accuracy against its own k-means pseudo-labels (L1 or gradient)}{table.caption.35}{}}
@@ -300,46 +300,52 @@
 \newlabel{tab:5.13}{{5.13}{69}{Oracle upper bound on the gradient-clustered experts, on the 50,000-position subsample. "Dispatcher CE" is the realised MLP-routed MoE; "Nearest-centroid CE" is the cosine/nearest-centroid routing rule of Section 5.3.3; "Oracle CE" is the true $\arg \min _k \mathcal {L}_k$ routing. The oracle uses the target at inference and is an unachievable upper bound}{table.caption.38}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {5.14}{\ignorespaces Random dispatcher control (uniform random routing over the same experts), on the 50,000-position subsample. Base CE 0.6303; the trained-dispatcher MoE CE is given in Table 5.10.}}{70}{table.caption.39}\protected@file@percent }
 \newlabel{tab:5.14}{{5.14}{70}{Random dispatcher control (uniform random routing over the same experts), on the 50,000-position subsample. Base CE 0.6303; the trained-dispatcher MoE CE is given in Table 5.10}{table.caption.39}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.6}Summary of Experimental Findings}{70}{section.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Discussion}{72}{chapter.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.4}MoE on a Weaker Base}{70}{subsection.5.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.15}{\ignorespaces Best L1-clustered hard-MoE runs on the weaker \texttt  {W64 H128} base (CE 0.6537). Each run uses a linear dispatcher and a longer expert fine-tuning budget than Section 5.5.3.}}{70}{table.caption.40}\protected@file@percent }
+\newlabel{tab:5.15}{{5.15}{70}{Best L1-clustered hard-MoE runs on the weaker \texttt {W64 H128} base (CE 0.6537). Each run uses a linear dispatcher and a longer expert fine-tuning budget than Section 5.5.3}{table.caption.40}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}KITSUNE Two-Stage Routing}{71}{section.5.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.16}{\ignorespaces KITSUNE on the \texttt  {W64 H128} base (CE 0.6537). $B'/K$ is the number of L1 micro-buckets per macro-expert. Best expert CE is the cross-entropy of the strongest expert on the positions assigned to it. The gain column is $(0.6537 - \text  {best expert CE}) / 0.6537$. It uses the full-base CE as the reference, so it is not a same-bucket comparison against the base head. The routed mixture CE is the separate column.}}{72}{table.caption.41}\protected@file@percent }
+\newlabel{tab:5.16}{{5.16}{72}{KITSUNE on the \texttt {W64 H128} base (CE 0.6537). $B'/K$ is the number of L1 micro-buckets per macro-expert. Best expert CE is the cross-entropy of the strongest expert on the positions assigned to it. The gain column is $(0.6537 - \text {best expert CE}) / 0.6537$. It uses the full-base CE as the reference, so it is not a same-bucket comparison against the base head. The routed mixture CE is the separate column}{table.caption.41}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.7}Summary of Experimental Findings}{72}{section.5.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Discussion}{74}{chapter.6}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Interpretation of Results}{72}{section.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.2}Limitations}{73}{section.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.3}Generalisation}{74}{section.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.4}Comparison with Related Work}{74}{section.6.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{76}{chapter.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Interpretation of Results}{74}{section.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Limitations}{75}{section.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Generalisation}{76}{section.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.4}Comparison with Related Work}{77}{section.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{78}{chapter.7}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {7.1}Summary of Contributions}{76}{section.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7.2}Future Work}{77}{section.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7.3}Closing Remarks}{78}{section.7.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{79}{chapter*.40}\protected@file@percent }
-\abx@aux@page{36}{79}
-\abx@aux@page{37}{79}
-\abx@aux@page{38}{79}
-\abx@aux@page{39}{79}
-\abx@aux@page{40}{79}
-\abx@aux@page{41}{79}
-\abx@aux@page{42}{79}
-\abx@aux@page{43}{79}
-\abx@aux@page{44}{79}
-\abx@aux@page{45}{79}
-\abx@aux@page{46}{79}
-\abx@aux@page{47}{79}
-\abx@aux@page{48}{79}
-\abx@aux@page{49}{79}
-\abx@aux@page{50}{79}
-\abx@aux@page{51}{80}
-\abx@aux@page{52}{80}
-\abx@aux@page{53}{80}
-\abx@aux@page{54}{80}
-\abx@aux@page{55}{80}
-\abx@aux@page{56}{80}
-\abx@aux@page{57}{80}
-\abx@aux@page{58}{80}
-\abx@aux@page{59}{80}
-\abx@aux@page{60}{80}
+\@writefile{toc}{\contentsline {section}{\numberline {7.1}Summary of Contributions}{78}{section.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.2}Future Work}{79}{section.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.3}Closing Remarks}{79}{section.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{81}{chapter*.42}\protected@file@percent }
+\abx@aux@page{36}{81}
+\abx@aux@page{37}{81}
+\abx@aux@page{38}{81}
+\abx@aux@page{39}{81}
+\abx@aux@page{40}{81}
+\abx@aux@page{41}{81}
+\abx@aux@page{42}{81}
+\abx@aux@page{43}{81}
+\abx@aux@page{44}{81}
+\abx@aux@page{45}{81}
+\abx@aux@page{46}{81}
+\abx@aux@page{47}{81}
+\abx@aux@page{48}{81}
+\abx@aux@page{49}{81}
+\abx@aux@page{50}{81}
+\abx@aux@page{51}{82}
+\abx@aux@page{52}{82}
+\abx@aux@page{53}{82}
+\abx@aux@page{54}{82}
+\abx@aux@page{55}{82}
+\abx@aux@page{56}{82}
+\abx@aux@page{57}{82}
+\abx@aux@page{58}{82}
+\abx@aux@page{59}{82}
+\abx@aux@page{60}{82}
 \abx@aux@read@bbl@mdfivesum{485724B1DE265347AF2A0AB99B84E944}
 \abx@aux@defaultrefcontext{0}{browne2012}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{du2022}{nyt/global//global/global}
@@ -366,4 +372,4 @@
 \abx@aux@defaultrefcontext{0}{stockfishnnue}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{strehl2002}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{zhang2024}{nyt/global//global/global}
-\gdef \@abspage@last{92}
+\gdef \@abspage@last{94}

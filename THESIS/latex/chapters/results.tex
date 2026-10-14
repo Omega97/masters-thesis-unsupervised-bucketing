@@ -52,7 +52,7 @@ NNUE W256 H512 & dual-POV two-hidden & 256 / 512 & 480515 & 0.6289 \\
 \label{tab:5.1}
 \end{table}
 
-The Mixture-of-Experts models evaluated in Section 5.5 share the frozen L1 accumulator of the reference base model and add $K$ expert heads plus a dispatcher. Two base checkpoints serve as MoE hosts: the reference \texttt{W128 H256} (CE 0.6303) and a smaller \texttt{W64 H128} (CE 0.6537) used for the second battery of Section 5.5.4. Four routing families are compared: fixed piece-count routing, L1-activation clustering, sample-gradient clustering, and end-to-end soft/sparse gating, each at $K \in \{2,4,8,16\}$ where applicable, alongside an oracle upper bound that assigns each position to the expert with lowest loss, and a random-routing control that isolates the contribution of routing from raw capacity. The proposed KITSUNE two-stage routing -- introduced in Chapter 3 -- is the follow-up method under implementation and is deferred to Section 5.6.
+The Mixture-of-Experts models evaluated in Section 5.5 share the frozen L1 accumulator of the reference base model and add $K$ expert heads plus a dispatcher. Two base checkpoints serve as MoE hosts: the reference \texttt{W128 H256} (CE 0.6303) and a smaller \texttt{W64 H128} (CE 0.6537) used for the second battery of Section 5.5.4. Four routing families are compared: fixed piece-count routing, L1-activation clustering, sample-gradient clustering, and end-to-end soft/sparse gating, each at $K \in \{2,4,8,16\}$ where applicable, alongside an oracle upper bound that assigns each position to the expert with lowest loss, and a random-routing control that isolates the contribution of routing from raw capacity. The proposed KITSUNE two-stage routing -- introduced in Chapter 3 -- is evaluated on the weaker base in Section 5.6.
 
 \subsection{Training Protocol}
 
@@ -76,7 +76,7 @@ In addition to evaluation accuracy, the quality of the routing mechanisms is ass
 
 \subsection{Experiment Pipeline Overview}
 
-The full battery follows a fixed four-stage pipeline, each stage exporting structured numerical tables and diagnostic plots: (i) \textbf{clustering} of three position representations -- raw board features (1688-d), L1 activations (256-d), and sample-wise head gradients (48-d) -- with mini-batch $k$-means at $k \in \{2,4,8,16\}$, DBSCAN, and a handcrafted piece-count baseline; (ii) \textbf{dispatcher training} to map L1 activations (or the board) to bucket IDs, spanning parameter-free cosine-centroid routers, linear/MLP heads, and decision-tree/XGBoost baselines, plus the proposed two-stage KITSUNE dispatcher (Section 5.6) which maps L1 to micro-buckets; (iii) \textbf{base-model training} as in Sections 5.1.4--5.1.5; and (iv) \textbf{MoE assembly and fine-tuning} of expert heads per partition. Each stage's results and plots are reported in Sections 5.2 through 5.5.
+The full battery follows a fixed four-stage pipeline, each stage exporting structured numerical tables and diagnostic plots: (i) \textbf{clustering} of three position representations -- raw board features (1688-d), L1 activations (256-d), and sample-wise head gradients (48-d) -- with mini-batch $k$-means at $k \in \{2,4,8,16\}$, DBSCAN, and a handcrafted piece-count baseline; (ii) \textbf{dispatcher training} to map L1 activations (or the board) to bucket IDs, spanning parameter-free cosine-centroid routers, linear/MLP heads, and decision-tree/XGBoost baselines, plus the proposed two-stage KITSUNE dispatcher (Section 5.6) which maps L1 to micro-buckets; (iii) \textbf{base-model training} as in Sections 5.1.4--5.1.5; and (iv) \textbf{MoE assembly and fine-tuning} of expert heads per partition. Each stage's results and plots are reported in Sections 5.2 through 5.6.
 
 \section{Clustering}
 
@@ -450,8 +450,7 @@ Four routing families and three controls are compared, each at $K \in \{2,4,8,16
 \item \textbf{Random dispatcher control} -- uniform random routing over the same experts, to isolate the contribution of routing from raw capacity.
 \end{enumerate}
 
-%% The proposed KITSUNE two-stage routing is treated separately in Section 5.6, since its results are still being collected.
-The proposed KITSUNE two-stage routing is evaluated separately in Section 5.6. Its implementation is functional and provides a preliminary validation of the two-stage routing principle; however, a complete analysis of the gradient distribution within each micro-bucket and of alternative stitching strategies remains future work.
+The KITSUNE two-stage routing is evaluated separately in Section 5.6, on the weaker base and the longer fine-tuning regime of Section 5.5.4.
 
 All experts are fine-tuned on the 2M-position training pack (\texttt{moe\_b4\_2m}), with frozen L1: two epochs per expert for the hard (dispatcher) variants and five epochs of joint training for the soft-gated and Switch variants. This gives $2\times10^6/K$ routed rows per expert -- far below the $7\times10^6$-per-expert budget identified for $H{=}256$ in Section 5.1.5 -- so every expert is trained in a data-starved regime relative to the base model's scaling behaviour (Section 5.4.3). The consequence of this shortfall is visible in every result of Section 5.5.3.
 
@@ -462,7 +461,7 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.86\textwidth]{../thesis-plots/expert-fine-tune-CE-30.png}
-	\caption{Cross-entropy trajectory during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the buckets see relatively little improvement, while the a few buckets are responsible for most of the gains. The analysis shows that some \textit{lucky} experts get to train on a mix of simpler positions.}
+	\caption{Decrease in Cross-entropy during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the experts are relatively stagnant, while the a few buckets are responsible for most of the improvement. The analysis shows that some \textit{lucky} experts get to train on a mix of simpler positions.}
 	\label{fig:expert-finetune-rprop}
 \end{figure}
 
@@ -574,7 +573,64 @@ Each MoE is scored on the 50,000-position test subsample used throughout this ch
 	\label{tab:5.14}
 \end{table}
 
-\textbf{[Synthesis]} Read together, the three controls tell a coherent story. The oracle proves the experts carry real, monotonic specialisation headroom (CE 0.600 at K=16), while the random router confirms that without correct routing, this capacity degrades performance below the baseline. The realised dispatchers sit essentially on top of the base because the deployable routing signals they can consume are too weak to recover the optimal assignment. The mixture-of-experts hypothesis therefore fails not for lack of capacity, but for lack of an \emph{inference-time} signal that identifies the right expert. Quantifying and, if possible, closing this geometric gap is the central open question carried into the Discussion and motivates the two-stage routing framework evaluated in Section 5.6.
+\textbf{[Synthesis]} Read together, the three controls tell a coherent story. The oracle proves the experts carry real, monotonic specialisation headroom (CE 0.600 at K=16), while the random router confirms that without correct routing, this capacity degrades performance below the baseline. The realised dispatchers sit essentially on top of the base because the deployable routing signals they can consume are too weak to recover the optimal assignment. The mixture-of-experts hypothesis therefore fails not for lack of capacity, but for lack of an \emph{inference-time} signal that identifies the right expert. Section 5.5.4 and Section 5.6 ask whether that gap narrows once the experts are given a weaker base, a longer fine-tuning budget, and a two-stage router.
+
+\subsection{MoE on a Weaker Base}
+Because the reference base leaves little headroom for routing to exploit, a second battery of about 25 runs loads the smaller \texttt{W64 H128} checkpoint (CE 0.6537) and fine-tunes the experts for longer, up to 30--100 epochs on 5M--100M rows. Unlike the first battery, these runs beat their base. Table~\ref{tab:5.15} lists the best L1-clustered hard-MoE runs, sorted by mixture CE.
+
+\begin{table}[H]
+	\centering
+	\small
+	\begin{tabular}{llll}
+		\toprule
+		Run & $K$ & MoE CE & vs base (0.6537) \\
+		\midrule
+		l1\_k4\_linear\_ep30\_10M\_100k & 4 & 0.6499 & $-0.0038$ \\
+		l1\_k16\_linear\_ep100\_rprop\_60M & 16 & 0.6502 & $-0.0035$ \\
+		l1\_k4\_linear\_ep30\_5M & 4 & 0.6505 & $-0.0032$ \\
+		l1\_k2\_linear\_ep30\_10M & 2 & 0.6505 & $-0.0032$ \\
+		l1\_k8\_linear\_ep50\_rprop\_25M & 8 & 0.6512 & $-0.0025$ \\
+		l1\_k8\_linear\_ep100\_rprop\_50M & 8 & 0.6515 & $-0.0022$ \\
+		\bottomrule
+	\end{tabular}
+	\caption{Best L1-clustered hard-MoE runs on the weaker \texttt{W64 H128} base (CE 0.6537). Each run uses a linear dispatcher and a longer expert fine-tuning budget than Section 5.5.3.}
+	\label{tab:5.15}
+\end{table}
+
+The gain sits in the L1-clustered hard MoE with a linear dispatcher. $K=4$, with roughly 30 expert epochs and 10M rows, is the best of this battery (CE 0.6499, a reduction of 0.0038). Moving to $K=16$, or training with Rprop for 100 epochs, does not improve on that figure. Two other families on the same base are weaker. Switch with $K=2$, 40 epochs and 10M rows reaches CE 0.6509 (a reduction of 0.0028). The piece-count sweeps, from 1M to 80M rows with Adam or SGD and 1--30 epochs, stay near the base, and the best of them land around 0.6516--0.6523. The same recipe on the reference \texttt{W128 H256} stays at parity with that base (Section 5.5.3).
+
+The most stable optimizer for these expert heads was a variant of resilient backpropagation (Rprop). Each weight keeps its own step size, updated from the sign of the gradient, and a step that increases the loss is rolled back while the step size is reduced. The longer Rprop runs in Table~\ref{tab:5.15} use this rule. The gains in this battery come from giving each expert enough data to specialise on a model that still has room to improve. That result is the empirical premise of the KITSUNE design in Section 5.6.
+
+\section{KITSUNE Two-Stage Routing}
+Sections 5.3 and 5.5 leave one obstruction. Gradient clusters carry the stronger specialisation signal, but a cheap router cannot recover them from L1 activations. L1 clusters are easy to dispatch and carry little of that signal. KITSUNE splits the two jobs. It first partitions the L1 space into convex micro-buckets that a linear dispatcher can recover, then stitches those micro-buckets into $K$ macro-experts offline by clustering their mean sample gradients. At inference the model evaluates a linear map from the L1 activation to a micro-bucket index and reads a static table. It does not compute a gradient, and it does not evaluate a non-linear router.
+
+The sweep uses the weaker \texttt{W64 H128} base (CE 0.6537) and the longer fine-tuning regime of Section 5.5.4. Table~\ref{tab:5.16} reports macro-expert counts $K \in \{4, 8, 16\}$ and micro-bucket factors $B'/K \in \{2, 4, 8\}$. The comparison point from the single-stage battery is the best L1-clustered run, CE 0.6499 (Table~\ref{tab:5.15}).
+
+\begin{table}[H]
+	\centering
+	\small
+	\begin{tabular}{lllll}
+		\toprule
+		$K$ & $B'/K$ & MoE CE & Best expert CE & Best-expert gain \\
+		\midrule
+		4 & 4 & 0.65118 & 0.63726 & 2.51\% \\
+		4 & 8 & 0.65137 & 0.64050 & 2.01\% \\
+		8 & 4 & 0.65102 & 0.61748 & 5.54\% \\
+		8 & 8 & 0.65093 & 0.61275 & 6.26\% \\
+		16 & 2 & 0.65043 & 0.60571 & 7.34\% \\
+		16 & 4 & 0.65061 & 0.60234 & 7.85\% \\
+		16 & 8 & 0.65138 & 0.60865 & 6.89\% \\
+		\bottomrule
+	\end{tabular}
+	\caption{KITSUNE on the \texttt{W64 H128} base (CE 0.6537). $B'/K$ is the number of L1 micro-buckets per macro-expert. Best expert CE is the cross-entropy of the strongest expert on the positions assigned to it. The gain column is $(0.6537 - \text{best expert CE}) / 0.6537$. It uses the full-base CE as the reference, so it is not a same-bucket comparison against the base head. The routed mixture CE is the separate column.}
+	\label{tab:5.16}
+\end{table}
+
+The lowest routed cross-entropy is 0.65043, at $K=16$ and factor $2$ ($B'=32$). That is 0.0033 below the single-head base and about 0.0005 above the best single-stage L1 run. On this base, the KITSUNE mixture matches that single-stage result and does not beat it. The change is in the specialist head. Scored on its own positions, the best expert reaches CE 0.60571 at the same setting, a 7.34\% reduction against the base CE of 0.6537. At factor $4$ ($B'=64$) that expert falls further, to 0.60234 (7.85\%), while the routed mixture moves slightly the other way, to 0.65061. Factor $8$ ($B'=128$) is worse on both figures: the mixture rises to 0.65138 and the best expert to 0.60865. At $K=16$, the useful factors on this sweep are $2$ and $4$.
+
+The expert CE of 0.60234 lies close to the oracle cross-entropy of 0.6005 in Table~\ref{tab:5.13}. The two figures are not a controlled comparison. Table~\ref{tab:5.13} is an argmin-loss ceiling on the strong \texttt{W128 H256} experts, whereas 0.60234 is one KITSUNE expert on the weaker base, evaluated on its own bucket. The proximity is consistent with gradient stitching producing a highly specialised head. It does not show that the deployed router has recovered the oracle assignment: the routed KITSUNE mixture remains near CE 0.650.
+
+Against the best single-stage system, KITSUNE keeps the same inference pattern, a linear dispatcher plus a lookup, and it can give one expert several disconnected L1 regions. The end-to-end gain over the weak base is of the same size as the $K=4$ L1 run in Section 5.5.4. The additional evidence is the expert-level CE, which keeps falling as $K$ grows from 4 to 16, until the micro-bucket factor passes 4.
 
 \section{Summary of Experimental Findings}
 
@@ -585,8 +641,8 @@ The empirical results of this chapter can be condensed into six findings.
 	\item \textbf{The routing gap.} L1 activations recover the L1 partition almost perfectly (top-1 $\approx 0.97$--$0.99$) but the gradient partition only weakly (top-1 $\approx 0.48$--$0.64$, ARI $\leq 0.37$). The deployable feature space lacks the information required to recover the optimal gradient-based assignment (Section 5.3.3).
 	\item \textbf{Base model scaling.} The dual-POV two-hidden NNUE is the best architecture per parameter, and its quality saturates at 30--70M training positions — far beyond the 2M positions available for expert fine-tuning in the first battery (Section 5.4.3).
 	\item \textbf{No routing gain on the reference base.} No MoE variant beats the strong reference base (CE 0.6303); the oracle headroom (CE 0.600--0.624) remains unreachable through single-stage L1 routing (Section 5.5.3).
-	\item \textbf{Gains require a weaker base and longer fine-tuning.} The second battery on the weaker \texttt{W64 H128} base (CE 0.6537), trained with 30--100 expert epochs on 5M--100M rows, yields the first reproducible gain: L1-clustered hard MoE with a linear dispatcher at $K=4$ reaches CE 0.6499 ($-0.0037$) (Section 5.5.4).
-	\item \textbf{A two-stage routing paradigm.} To express complex, non-convex gradient clusters through a strictly linear and cheap online router, a novel two-stage framework (KITSUNE) is proposed and evaluated in Section 5.6, decoupling the geometric partitioning from the gradient-aware expert assignment.
+	\item \textbf{Gains require a weaker base and longer fine-tuning.} The second battery on the weaker \texttt{W64 H128} base (CE 0.6537), trained with 30--100 expert epochs on 5M--100M rows, yields the first reproducible gain: L1-clustered hard MoE with a linear dispatcher at $K=4$ reaches CE 0.6499 ($-0.0038$) (Section 5.5.4).
+	\item \textbf{KITSUNE matches that gain and specialises individual experts.} On the same weak base, KITSUNE at $K=16$ and factor $2$ ($B'=32$) reaches a routed CE of 0.65043, about 0.0005 above the best single-stage L1 run. The best expert on its own bucket reaches CE 0.60571 (a 7.34\% reduction against the base CE), and factor $4$ pushes that expert to 0.60234. Factor $8$ at $K=16$ worsens both figures (Section 5.6).
 \end{enumerate}
 
-The Discussion will examine in depth: (i) the stability and separability of the gradient partition; (ii) why L1 activations fail to approximate gradient direction and whether the proposed two-stage routing closes that gap; (iii) the mismatch between the clustering objective and the argmin-loss routing objective; (iv) the extent to which the expert training budget — versus the $\sim$30M positions the base needs to saturate — is the binding constraint on expert specialisation; and (v) the computational trade-offs of the MoE head relative to a single dense head of equal capacity.
+The Discussion will examine in depth: (i) the stability and separability of the gradient partition; (ii) why the KITSUNE mixture stays level with single-stage L1 routing while individual experts move toward CE 0.60; (iii) the trade-off between micro-bucket resolution and gradient averaging, visible once $B'/K$ exceeds 4; (iv) the extent to which the expert training budget — versus the $\sim$30M positions the base needs to saturate — is the binding constraint on expert specialisation; and (v) the computational trade-offs of the MoE head relative to a single dense head of equal capacity.

@@ -99,14 +99,16 @@
 \contentsline {subsection}{\numberline {5.5.1}MoE Architecture and Training}{66}{subsection.5.5.1}%
 \contentsline {subsection}{\numberline {5.5.2}MoE Metrics}{67}{subsection.5.5.2}%
 \contentsline {subsection}{\numberline {5.5.3}MoE Results}{67}{subsection.5.5.3}%
-\contentsline {section}{\numberline {5.6}Summary of Experimental Findings}{70}{section.5.6}%
-\contentsline {chapter}{\numberline {6}Discussion}{72}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Interpretation of Results}{72}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Limitations}{73}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Generalisation}{74}{section.6.3}%
-\contentsline {section}{\numberline {6.4}Comparison with Related Work}{74}{section.6.4}%
-\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{76}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Summary of Contributions}{76}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Future Work}{77}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Closing Remarks}{78}{section.7.3}%
-\contentsline {chapter}{Bibliography}{79}{chapter*.40}%
+\contentsline {subsection}{\numberline {5.5.4}MoE on a Weaker Base}{70}{subsection.5.5.4}%
+\contentsline {section}{\numberline {5.6}KITSUNE Two-Stage Routing}{71}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Summary of Experimental Findings}{72}{section.5.7}%
+\contentsline {chapter}{\numberline {6}Discussion}{74}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Interpretation of Results}{74}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Limitations}{75}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Generalisation}{76}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Comparison with Related Work}{77}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{78}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Summary of Contributions}{78}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Future Work}{79}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Closing Remarks}{79}{section.7.3}%
+\contentsline {chapter}{Bibliography}{81}{chapter*.42}%
