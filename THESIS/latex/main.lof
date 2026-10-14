@@ -13,14 +13,14 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces NNUE with a mixture-of-experts head.}}{31}{figure.caption.12}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Silhouette of the gradient partition against the number of clusters.}}{51}{figure.caption.17}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces PCA projection of the gradient representation.}}{52}{figure.caption.18}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces t-SNE projection of the gradient representation.}}{52}{figure.caption.19}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Dispatcher accuracy for the plots routers.}}{55}{figure.caption.21}%
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Dispatcher accuracy for the plots routers.}}{58}{figure.caption.23}%
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Accuracy gradient.}}{60}{figure.caption.25}%
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Alignment of the piece-count router with the learned partitions.}}{62}{figure.caption.27}%
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Test cross-entropy of the base NNUE against training-set size.}}{65}{figure.caption.29}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Silhouette of the gradient partition against the number of clusters.}}{52}{figure.caption.17}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces PCA projection of the gradient representation.}}{53}{figure.caption.18}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces t-SNE projection of the gradient representation.}}{53}{figure.caption.19}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Dispatcher accuracy for the plots routers.}}{56}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Dispatcher accuracy for the plots routers.}}{59}{figure.caption.23}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Accuracy gradient.}}{61}{figure.caption.25}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Alignment of the piece-count router with the learned partitions.}}{63}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Test cross-entropy of the base NNUE against training-set size.}}{66}{figure.caption.29}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

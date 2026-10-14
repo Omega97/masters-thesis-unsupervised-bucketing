@@ -3,7 +3,7 @@
 
 \section{Overview of the Experimental Pipeline}
 
-The core of this work is a systematic experimental pipeline designed to compare various neural evaluation architectures and state-space partitioning strategies under the constraints of embedded chess engines. Rather than focusing on a single novel algorithm in isolation, this thesis evaluates a battery of techniques that take inspiration from other fields, like LLMs and robotics. They span from standard baselines, like vanilla NNUE, to advanced Mixture-of-Experts (MoE) formulations. The pipeline is structured around a rigorous loop of architectural design, hyperparameter selection, large-scale training, and precise evaluation against a strong teacher signal.
+The core of this work is a systematic experimental pipeline designed to compare various neural evaluation architectures and state-space partitioning strategies under the constraints of embedded chess engines. Rather than focusing on a single novel algorithm in isolation, this thesis evaluates a battery of techniques that take inspiration from other fields, like LLMs and robotics. They range from standard baselines, like vanilla NNUE, to advanced Mixture-of-Experts (MoE) formulations. The pipeline is structured around a rigorous loop of architectural design, hyperparameter selection, large-scale training, and precise evaluation against a strong teacher signal.
 
 The foundation of the entire pipeline is a large-scale dataset of approximately 150 million chess positions. These positions are extracted from human games and labeled with high-quality Win-Draw-Loss (WDL) probability distributions by the Leela Chess Zero (Lc0) engine at search depth 1. This provides a rich, calibrated soft-target distribution that captures the teacher's uncertainty, serving as the ground truth for all subsequent training and evaluation \parencite{lczero}.
 
@@ -41,14 +41,15 @@ Moving away from handcrafted rules, this variant employs unsupervised clustering
 
 \subsection{Hard MoE with Sample-Gradient Clustering}
 
-The core novel contribution of this thesis is a data-driven partitioning method based on the learning signal itself. Instead of clustering what the model \emph{knows} (activations), this method clusters what the model \emph{needs to adjust} (per-sample gradients). The pipeline for this variant consists of five stages:
+% [Gradient Clustering]
+To test whether the optimization dynamics of the model can guide expert specialization, this thesis explores a partitioning method based on per-sample gradients. Rather than clustering what the model currently \emph{knows} (its hidden activations), this approach clusters what the model \emph{needs to adjust} to better fit each individual position. By grouping positions that demand similar parameter updates, the resulting buckets are inherently aligned with the learning signal, theoretically minimizing optimization conflicts during expert fine-tuning. The pipeline for this variant consists of five stages:
 
 \begin{enumerate}
-\item \textbf{Base Training:} Train a reference NNUE to convergence to establish a stable parameter space.
-\item \textbf{Gradient Extraction:} Compute the per-sample gradients of the loss with respect to the head parameters for every position in the dataset. These vectors are L2-normalized to focus purely on the direction of the required update.
-\item \textbf{Clustering:} Apply Mini-Batch K-Means to the normalized gradient vectors to discover $B$ distinct buckets of positions with aligned learning requirements.
-\item \textbf{Dispatcher Training:} Since gradients are unavailable at inference time, a lightweight linear or MLP dispatcher is trained to map the frozen L1 activations to the discovered gradient buckets.
-\item \textbf{Expert Fine-Tuning:} The base head is cloned $B$ times, and each expert is fine-tuned exclusively on the positions assigned to its corresponding gradient bucket.
+	\item \textbf{Base Training:} A reference NNUE is trained to convergence on the full dataset. This establishes a stable parameter space and provides the frozen L1 representation required for subsequent routing.
+	\item \textbf{Gradient Extraction:} For every position in the dataset, the per-sample gradient of the loss is computed with respect to the \emph{trainable head parameters} (excluding the frozen L1 accumulator). These vectors are L2-normalized to focus the clustering purely on the direction of the required update, discarding magnitude information which is sensitive to position difficulty.
+	\item \textbf{Clustering:} Mini-Batch K-Means is applied to the normalized gradient vectors to discover $B$ distinct buckets of positions exhibiting aligned learning requirements.
+	\item \textbf{Dispatcher Training:} Since computing gradients at inference time is computationally prohibitive and requires the unknown teacher evaluation, a lightweight dispatcher must be trained to predict the gradient bucket assignment using only the frozen L1 activations. This step introduces a fundamental geometric challenge, as the gradient decision boundaries are often non-convex and scattered within the linear L1 activation space.
+	\item \textbf{Expert Fine-Tuning:} The base head is cloned $B$ times, and each expert is fine-tuned exclusively on the positions assigned to its corresponding gradient bucket, while the shared L1 accumulator remains frozen.
 \end{enumerate}
 
 \subsection{End-to-End Soft and Sparse MoE}
@@ -65,19 +66,21 @@ Before committing to the final MoE experiments, the pipeline includes a scaling 
 
 \subsection{Training Procedures}
 
-All models are trained using the Adam optimizer with a linearly decaying learning rate. The loss function is universally the \textbf{soft cross-entropy} between the model's predicted WDL distribution and the Lc0 teacher distribution \parencite{kingma2015}.
+Base models and end-to-end soft MoE variants are trained using the Adam optimizer \parencite{kingma2015} with a linearly decaying learning rate. The loss function is universally the \textbf{soft cross-entropy} between the model's predicted WDL distribution and the Lc0 teacher distribution. 
+
+For the hard MoE variants, the training is split into a base phase (using Adam) and an expert fine-tuning phase. Crucially, during the expert fine-tuning phase, the optimizer is switched to \textbf{Rprop} (resilient backpropagation). As detailed in the experimental results, Rprop's sign-only, per-weight step-size adaptation proves significantly more stable than Adam for fine-tuning the small, specialized expert heads, preventing the premature convergence and instability observed with adaptive gradient methods.
 
 \begin{itemize}
-\item For \textbf{base models and L1-clustered/gradient-clustered hard MoE}, the training is split into a base phase and an expert fine-tuning phase (where the L1 accumulator remains frozen).
-\item For \textbf{end-to-end MoE}, the experts and the gating network are updated jointly, with the load-balancing loss weighted to ensure uniform expert utilization.
-\item The \textbf{piece-count} variant requires no routing training, as the buckets are fixed by definition.
+	\item For \textbf{base models and end-to-end MoE}, the training relies entirely on Adam, with the load-balancing loss weighted to ensure uniform expert utilization in the soft-gated variants.
+	\item For \textbf{L1-clustered and gradient-clustered hard MoE}, the expert fine-tuning phase utilizes Rprop to ensure stable specialization, while the L1 accumulator remains frozen.
+	\item The \textbf{piece-count} variant requires no routing training, as the buckets are fixed by definition.
 \end{itemize}
 
 \subsection{Evaluation Metrics}
 
-The primary metric for model selection and comparison is the \textbf{Cross-Entropy (CE)} evaluated on a strictly held-out test set of positions. CE directly measures the divergence between the student's predicted WDL distribution and the teacher's true distribution, capturing both the accuracy and the calibrated uncertainty of the evaluation. Additionally, the pipeline tracks: \parencite{hubert1985} \parencite{strehl2002}
+The primary metric for model selection and comparison is the \textbf{Cross-Entropy (CE)} evaluated on a strictly held-out test set of positions. CE directly measures the divergence between the student's predicted WDL distribution and the teacher's true distribution, capturing both the accuracy and the calibrated uncertainty of the evaluation. Additionally, the pipeline tracks:
 
 \begin{itemize}
-\item \textbf{Mean Absolute Error (MAE)} on the scalar expected value ($p_W - p_L$), which correlates with the actual search behavior of the engine.
-\item \textbf{Routing Diagnostics:} For the hard MoE variants, the pipeline evaluates the dispatcher's Top-1 accuracy, as well as clustering agreement metrics (Adjusted Rand Index, Normalized Mutual Information) to quantify how faithfully the deployable routing signal (L1 activations) recovers the offline partition (especially for the gradient-based method).
+	\item \textbf{Mean Absolute Error (MAE)} on the scalar expected value ($p_W - p_L$), which correlates with the actual search behavior of the engine.
+	\item \textbf{Routing Diagnostics:} For the hard MoE variants, the pipeline evaluates the dispatcher's Top-1 accuracy, as well as clustering agreement metrics such as the Adjusted Rand Index \parencite{hubert1985} and Normalized Mutual Information \parencite{strehl2002}. These quantify how faithfully the deployable routing signal (L1 activations) recovers the offline partition (especially for the gradient-based method).
 \end{itemize}

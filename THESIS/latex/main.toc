@@ -44,7 +44,7 @@
 \contentsline {subsection}{\numberline {3.3.4}End-to-End Soft and Sparse MoE}{25}{subsection.3.3.4}%
 \contentsline {section}{\numberline {3.4}Training and Evaluation Protocol}{25}{section.3.4}%
 \contentsline {subsection}{\numberline {3.4.1}Hyperparameter Selection and Dataset Scaling}{25}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Training Procedures}{25}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.2}Training Procedures}{26}{subsection.3.4.2}%
 \contentsline {subsection}{\numberline {3.4.3}Evaluation Metrics}{26}{subsection.3.4.3}%
 \contentsline {chapter}{\numberline {4}Implementation: NNUE and MoE for Chess}{27}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Dataset and Teacher}{27}{section.4.1}%
@@ -71,47 +71,45 @@
 \contentsline {section}{\numberline {4.5}Dispatcher Training}{38}{section.4.5}%
 \contentsline {section}{\numberline {4.6}Expert Fine-Tuning}{39}{section.4.6}%
 \contentsline {section}{\numberline {4.7}Final MoE Model}{40}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Cfish as the Host Engine}{40}{section.4.8}%
+\contentsline {section}{\numberline {4.8}Cfish as the Host Engine}{41}{section.4.8}%
 \contentsline {section}{\numberline {4.9}Integration with Cfish}{41}{section.4.9}%
-\contentsline {chapter}{\numberline {5}Experimental Results}{43}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Experimental Setup}{43}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Hardware and Software}{43}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Dataset and Teacher}{43}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Data Splits}{44}{subsection.5.1.3}%
-\contentsline {subsection}{\numberline {5.1.4}Models and Baselines}{44}{subsection.5.1.4}%
-\contentsline {subsection}{\numberline {5.1.5}Training Protocol}{45}{subsection.5.1.5}%
-\contentsline {subsection}{\numberline {5.1.6}Evaluation Metrics}{46}{subsection.5.1.6}%
-\contentsline {subsection}{\numberline {5.1.7}Experiment Pipeline Overview}{46}{subsection.5.1.7}%
-\contentsline {section}{\numberline {5.2}Clustering}{46}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Clustering Algorithm}{46}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Clustering Metrics}{47}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Clustering Results}{48}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Dispatcher}{53}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Dispatcher Model}{53}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Dispatcher Metrics}{54}{subsection.5.3.2}%
-\contentsline {subsection}{\numberline {5.3.3}Dispatcher Results}{54}{subsection.5.3.3}%
-\contentsline {section}{\numberline {5.4}Base Model}{62}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Base Model Architecture and Training}{62}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Base Model Metrics}{63}{subsection.5.4.2}%
-\contentsline {subsection}{\numberline {5.4.3}Base Model Results}{63}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}Mixture of Experts}{65}{section.5.5}%
-\contentsline {subsection}{\numberline {5.5.1}MoE Architecture and Training}{65}{subsection.5.5.1}%
-\contentsline {subsection}{\numberline {5.5.2}MoE Metrics}{66}{subsection.5.5.2}%
-\contentsline {subsection}{\numberline {5.5.3}MoE Results}{67}{subsection.5.5.3}%
-\contentsline {subsection}{\numberline {5.5.4}MoE on a Weaker Base}{70}{subsection.5.5.4}%
-\contentsline {section}{\numberline {5.6}KITSUNE Two-Stage Routing}{71}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Summary of Experimental Findings}{72}{section.5.7}%
-\contentsline {chapter}{\numberline {6}Discussion}{74}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Interpretation of Results}{74}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Limitations}{75}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Generalisation}{76}{section.6.3}%
-\contentsline {section}{\numberline {6.4}Comparison with Related Work}{76}{section.6.4}%
-\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{78}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Summary of Contributions}{78}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Future Work}{79}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Closing Remarks}{80}{section.7.3}%
-\contentsline {chapter}{\numberline {A}Supplementary Material}{81}{appendix.A}%
-\contentsline {section}{\numberline {A.1}Extra tables and hyperparameters}{81}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Extra plots}{81}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Implementation notes}{81}{section.A.3}%
-\contentsline {chapter}{Bibliography}{82}{appendix*.38}%
+\contentsline {chapter}{\numberline {5}Experimental Results}{44}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Experimental Setup}{44}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Hardware and Software}{44}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Dataset and Teacher}{44}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Data Splits}{45}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.4}Models and Baselines}{45}{subsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.1.5}Training Protocol}{46}{subsection.5.1.5}%
+\contentsline {subsection}{\numberline {5.1.6}Evaluation Metrics}{47}{subsection.5.1.6}%
+\contentsline {subsection}{\numberline {5.1.7}Experiment Pipeline Overview}{47}{subsection.5.1.7}%
+\contentsline {section}{\numberline {5.2}Clustering}{48}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Clustering Algorithm}{48}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Clustering Metrics}{48}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Clustering Results}{49}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Dispatcher}{54}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Dispatcher Model}{54}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Dispatcher Metrics}{55}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Dispatcher Results}{55}{subsection.5.3.3}%
+\contentsline {section}{\numberline {5.4}Base Model}{63}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Base Model Architecture and Training}{63}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Base Model Metrics}{64}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}Base Model Results}{64}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Mixture of Experts}{66}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}MoE Architecture and Training}{66}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}MoE Metrics}{67}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}MoE Results}{68}{subsection.5.5.3}%
+\contentsline {section}{\numberline {5.6}Summary of Experimental Findings}{71}{section.5.6}%
+\contentsline {chapter}{\numberline {6}Discussion}{72}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Interpretation of Results}{72}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Limitations}{73}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Generalisation}{74}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Comparison with Related Work}{74}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{76}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Summary of Contributions}{76}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Future Work}{77}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Closing Remarks}{78}{section.7.3}%
+\contentsline {chapter}{\numberline {A}Supplementary Material}{79}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Extra tables and hyperparameters}{79}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Extra plots}{79}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Implementation notes}{79}{section.A.3}%
+\contentsline {chapter}{Bibliography}{80}{appendix*.35}%
