@@ -255,8 +255,9 @@ L1 & 16 & 0.940 & 0.892 & 0.884 \\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{../../RESULTS/dispatcher/centroid/plots/accuracy.png}
-\caption{Dispatcher accuracy for the plots routers.}
+%% \includegraphics[width=0.86\textwidth]{../../RESULTS/dispatcher/centroid/plots/accuracy.png}
+\includegraphics[width=0.86\textwidth]{../../THESIS/thesis-plots/bars_5_5.png}
+\caption{A parameter-free centroid router based on cosine similarity to the k-means centroids recovers the original cluster labels with high top-1 accuracy for both board features and L1 activations across B = 2–16, with L1 performing best.}
 \label{fig:accuracy-4}
 \end{figure}
 
@@ -293,8 +294,9 @@ XGBoost & 16 & 0.891 & 0.799 \\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{../../RESULTS/dispatcher/l1/plots/accuracy.png}
-\caption{Dispatcher accuracy for the plots routers.}
+%% \includegraphics[width=0.86\textwidth]{../../RESULTS/dispatcher/l1/plots/accuracy.png}
+\includegraphics[width=0.86\textwidth]{../../THESIS/thesis-plots/bars_5_6.png}
+\caption{Learned L1-to-L1 dispatchers (especially a simple MLP) recover the L1 Mini-Batch k-means partition almost perfectly from the activations themselves, far above the chance baseline, confirming that the L1 clusters are nearly linearly separable.}
 \label{fig:accuracy-5}
 \end{figure}
 
