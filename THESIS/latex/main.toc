@@ -1,8 +1,11 @@
 \babel@toc {english}{}\relax 
 \contentsline {chapter}{Abstract}{i}{chapter*.1}%
-\contentsline {chapter}{Contents}{ii}{chapter*.2}%
-\contentsline {chapter}{List of Figures}{vii}{chapter*.3}%
-\contentsline {chapter}{List of Tables}{ix}{chapter*.4}%
+\contentsline {chapter}{Sommario}{ii}{chapter*.2}%
+\babel@toc {italian}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{Contents}{iii}{chapter*.3}%
+\contentsline {chapter}{List of Figures}{viii}{chapter*.4}%
+\contentsline {chapter}{List of Tables}{x}{chapter*.5}%
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Motivation}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Scope of the Thesis}{3}{section.1.2}%
@@ -111,4 +114,4 @@
 \contentsline {section}{\numberline {7.1}Summary of Contributions}{78}{section.7.1}%
 \contentsline {section}{\numberline {7.2}Future Work}{79}{section.7.2}%
 \contentsline {section}{\numberline {7.3}Closing Remarks}{79}{section.7.3}%
-\contentsline {chapter}{Bibliography}{81}{chapter*.42}%
+\contentsline {chapter}{Bibliography}{81}{chapter*.43}%

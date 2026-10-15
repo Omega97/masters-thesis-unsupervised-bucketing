@@ -1,0 +1,9 @@
+% !TeX root = ../main.tex
+
+\begin{otherlanguage}{italian}
+Nel contesto dei motori per giochi da tavolo con risorse limitate, un modo comune per migliorare le prestazioni è partizionare lo spazio degli stati e assegnare esperti distinti a ciascuna regione. È l'idea alla base delle architetture \emph{Mixture of Experts} (MoE), ma definire la partizione a mano richiede competenza di dominio e può dare risultati subottimali.
+
+Questo lavoro confronta alcuni modi per estendere le \emph{Efficiently Updatable Neural Networks} (NNUE) oltre la formulazione usuale, con tecniche già usate in altre aree del machine learning e ancora poco comuni nei motori scacchistici NNUE. Le MoE permettono a più teste specializzate di condividere una rappresentazione NNUE comune. Si esplora anche un partizionamento basato sui gradienti dei singoli esempi di training, per raggruppare posizioni con esigenze di apprendimento simili. Per rendere l'architettura più trasferibile, si sperimenta inoltre un accumulatore NNUE appreso come modello del mondo della partita.
+
+Il clustering L1 unito a una MoE migliora la valutazione con un aumento contenuto di memoria e costo di inferenza, e un dispatcher leggero riproduce la partizione appresa. Il partizionamento basato sui gradienti è invece difficile da usare in inferenza, perché i gradienti dipendono dal valore vero della posizione, ignoto a runtime. Si propone infine KITSUNE, un routing in due stadi che combina micro-bucket L1, facili da assegnare, con un accorpamento offline guidato dai gradienti. Su una base più debole la miscela instradata eguaglia il miglior risultato L1 a singolo stadio, e i singoli esperti diventano nettamente più specializzati; alzare il fattore di micro-bucket oltre quattro per esperto non porta ulteriori guadagni.
+\end{otherlanguage}

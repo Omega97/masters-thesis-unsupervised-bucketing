@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10) (preloaded format=pdflatex 2026.8.30)  12 OCT 2026 23:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.10) (preloaded format=pdflatex 2026.8.30)  15 OCT 2026 11:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -134,6 +134,13 @@ ef)
 File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
  babel
 )
+(C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/babel-italian\ital
+ian.ldf
+Language: italian 2026/01/13 v.1.5.02 Italian support for the babel system
+\it@lettering=\count266
+\it@doublequoteactive=\count267
+\it@ISOcompliance=\count268
+)
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/babel-english\engl
 ish.ldf
 Language: english 2017/06/06 v3.3r English support from the babel system
@@ -148,6 +155,16 @@ Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
 babel-english.tex
 Package babel Info: Importing font and identification data for english
 (babel)             from babel-en.ini. Reported on input line 11.
+)
+(C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/it\
+babel-italian.tex
+Package babel Info: Importing font and identification data for italian
+(babel)             from babel-it.ini. Reported on input line 11.
+)
+(C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.
+sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count269
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.
 sty
@@ -186,14 +203,14 @@ Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count266
+\inf@bad=\count270
 LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count267
-\leftroot@=\count268
+\uproot@=\count271
+\leftroot@=\count272
 LaTeX Info: Redefining \overline on input line 399.
 LaTeX Info: Redefining \colon on input line 410.
-\classnum@=\count269
-\DOTSCASE@=\count270
+\classnum@=\count273
+\DOTSCASE@=\count274
 LaTeX Info: Redefining \ldots on input line 496.
 LaTeX Info: Redefining \dots on input line 499.
 LaTeX Info: Redefining \cdots on input line 620.
@@ -206,20 +223,20 @@ LaTeX Info: Redefining \Bigg on input line 725.
 \big@size=\dimen152
 LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count271
+\macc@depth=\count275
 LaTeX Info: Redefining \bmod on input line 905.
 LaTeX Info: Redefining \pmod on input line 910.
 LaTeX Info: Redefining \smash on input line 940.
 LaTeX Info: Redefining \relbar on input line 970.
 LaTeX Info: Redefining \Relbar on input line 971.
-\c@MaxMatrixCols=\count272
+\c@MaxMatrixCols=\count276
 \dotsspace@=\muskip16
-\c@parentequation=\count273
-\dspbrk@lvl=\count274
+\c@parentequation=\count277
+\dspbrk@lvl=\count278
 \tag@help=\toks25
-\row@=\count275
-\column@=\count276
-\maxfields@=\count277
+\row@=\count279
+\column@=\count280
+\maxfields@=\count281
 \andhelp@=\toks26
 \eqnshift@=\dimen153
 \alignsep@=\dimen154
@@ -260,7 +277,7 @@ File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count278
+\c@float@type=\count282
 \float@exts=\toks29
 \float@box=\box53
 \@float@everytoks=\toks30
@@ -279,12 +296,12 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \cmidrulesep=\dimen168
 \cmidrulekern=\dimen169
 \defaultaddspace=\dimen170
-\@cmidla=\count279
-\@cmidlb=\count280
+\@cmidla=\count283
+\@cmidlb=\count284
 \@aboverulesep=\dimen171
 \@belowrulesep=\dimen172
-\@thisruleclass=\count281
-\@lastruleclass=\count282
+\@thisruleclass=\count285
+\@lastruleclass=\count286
 \@thisrulewidth=\dimen173
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
@@ -304,34 +321,28 @@ Package: longtable 2021-09-01 v4.17 Multi-page Table package (DPC)
 \LTright=\skip56
 \LTpre=\skip57
 \LTpost=\skip58
-\LTchunksize=\count283
+\LTchunksize=\count287
 \LTcapwidth=\dimen176
 \LT@head=\box57
 \LT@firsthead=\box58
 \LT@foot=\box59
 \LT@lastfoot=\box60
 \LT@gbox=\box61
-\LT@cols=\count284
-\LT@rows=\count285
-\c@LT@tables=\count286
-\c@LT@chunks=\count287
+\LT@cols=\count288
+\LT@rows=\count289
+\c@LT@tables=\count290
+\c@LT@chunks=\count291
 \LT@p@ftn=\toks32
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquotes.
 sty
 Package: csquotes 2026-05-19 v5.2p context-sensitive quotations (JAW)
-
-(C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.
-sty
-Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count288
-)
-\csq@reset=\count289
-\csq@gtype=\count290
-\csq@glevel=\count291
-\csq@qlevel=\count292
-\csq@maxlvl=\count293
-\csq@tshold=\count294
+\csq@reset=\count292
+\csq@gtype=\count293
+\csq@glevel=\count294
+\csq@qlevel=\count295
+\csq@maxlvl=\count296
+\csq@tshold=\count297
 \csq@ltx@everypar=\toks33
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquotes.
@@ -376,7 +387,7 @@ Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 ))
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count295
+\lrq@indent=\count298
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
@@ -386,49 +397,49 @@ Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-\c@tabx@nest=\count296
-\c@listtotal=\count297
-\c@listcount=\count298
-\c@liststart=\count299
-\c@liststop=\count300
-\c@citecount=\count301
-\c@citetotal=\count302
-\c@multicitecount=\count303
-\c@multicitetotal=\count304
-\c@instcount=\count305
-\c@maxnames=\count306
-\c@minnames=\count307
-\c@maxitems=\count308
-\c@minitems=\count309
-\c@citecounter=\count310
-\c@maxcitecounter=\count311
-\c@savedcitecounter=\count312
-\c@uniquelist=\count313
-\c@uniquename=\count314
-\c@refsection=\count315
-\c@refsegment=\count316
-\c@maxextratitle=\count317
-\c@maxextratitleyear=\count318
-\c@maxextraname=\count319
-\c@maxextradate=\count320
-\c@maxextraalpha=\count321
-\c@abbrvpenalty=\count322
-\c@highnamepenalty=\count323
-\c@lownamepenalty=\count324
-\c@maxparens=\count325
-\c@parenlevel=\count326
-\blx@tempcnta=\count327
-\blx@tempcntb=\count328
-\blx@tempcntc=\count329
-\c@blx@maxsection=\count330
-\blx@maxsegment@0=\count331
-\blx@notetype=\count332
-\blx@parenlevel@text=\count333
-\blx@parenlevel@foot=\count334
-\blx@sectionciteorder@0=\count335
-\blx@sectionciteorderinternal@0=\count336
-\blx@entrysetcounter=\count337
-\blx@biblioinstance=\count338
+\c@tabx@nest=\count299
+\c@listtotal=\count300
+\c@listcount=\count301
+\c@liststart=\count302
+\c@liststop=\count303
+\c@citecount=\count304
+\c@citetotal=\count305
+\c@multicitecount=\count306
+\c@multicitetotal=\count307
+\c@instcount=\count308
+\c@maxnames=\count309
+\c@minnames=\count310
+\c@maxitems=\count311
+\c@minitems=\count312
+\c@citecounter=\count313
+\c@maxcitecounter=\count314
+\c@savedcitecounter=\count315
+\c@uniquelist=\count316
+\c@uniquename=\count317
+\c@refsection=\count318
+\c@refsegment=\count319
+\c@maxextratitle=\count320
+\c@maxextratitleyear=\count321
+\c@maxextraname=\count322
+\c@maxextradate=\count323
+\c@maxextraalpha=\count324
+\c@abbrvpenalty=\count325
+\c@highnamepenalty=\count326
+\c@lownamepenalty=\count327
+\c@maxparens=\count328
+\c@parenlevel=\count329
+\blx@tempcnta=\count330
+\blx@tempcntb=\count331
+\blx@tempcntc=\count332
+\c@blx@maxsection=\count333
+\blx@maxsegment@0=\count334
+\blx@notetype=\count335
+\blx@parenlevel@text=\count336
+\blx@parenlevel@foot=\count337
+\blx@sectionciteorder@0=\count338
+\blx@sectionciteorderinternal@0=\count339
+\blx@entrysetcounter=\count340
+\blx@biblioinstance=\count341
 \labelnumberwidth=\skip59
 \labelalphawidth=\skip60
 \biblabelsep=\skip61
@@ -440,9 +451,9 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 \blx@bcfin=\read3
 \blx@bcfout=\write3
 \blx@langwohyphens=\language80
-\c@mincomprange=\count339
-\c@maxcomprange=\count340
-\c@mincompwidth=\count341
+\c@mincomprange=\count342
+\c@maxcomprange=\count343
+\c@mincompwidth=\count344
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -454,74 +465,74 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'authoryear.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count342
-\c@savedafterword=\count343
-\c@annotator=\count344
-\c@savedannotator=\count345
-\c@author=\count346
-\c@savedauthor=\count347
-\c@bookauthor=\count348
-\c@savedbookauthor=\count349
-\c@commentator=\count350
-\c@savedcommentator=\count351
-\c@editor=\count352
-\c@savededitor=\count353
-\c@editora=\count354
-\c@savededitora=\count355
-\c@editorb=\count356
-\c@savededitorb=\count357
-\c@editorc=\count358
-\c@savededitorc=\count359
-\c@foreword=\count360
-\c@savedforeword=\count361
-\c@holder=\count362
-\c@savedholder=\count363
-\c@introduction=\count364
-\c@savedintroduction=\count365
-\c@namea=\count366
-\c@savednamea=\count367
-\c@nameb=\count368
-\c@savednameb=\count369
-\c@namec=\count370
-\c@savednamec=\count371
-\c@translator=\count372
-\c@savedtranslator=\count373
-\c@shortauthor=\count374
-\c@savedshortauthor=\count375
-\c@shorteditor=\count376
-\c@savedshorteditor=\count377
-\c@labelname=\count378
-\c@savedlabelname=\count379
-\c@institution=\count380
-\c@savedinstitution=\count381
-\c@lista=\count382
-\c@savedlista=\count383
-\c@listb=\count384
-\c@savedlistb=\count385
-\c@listc=\count386
-\c@savedlistc=\count387
-\c@listd=\count388
-\c@savedlistd=\count389
-\c@liste=\count390
-\c@savedliste=\count391
-\c@listf=\count392
-\c@savedlistf=\count393
-\c@location=\count394
-\c@savedlocation=\count395
-\c@organization=\count396
-\c@savedorganization=\count397
-\c@origlocation=\count398
-\c@savedoriglocation=\count399
-\c@origpublisher=\count400
-\c@savedorigpublisher=\count401
-\c@publisher=\count402
-\c@savedpublisher=\count403
-\c@language=\count404
-\c@savedlanguage=\count405
-\c@origlanguage=\count406
-\c@savedoriglanguage=\count407
-\c@pageref=\count408
-\c@savedpageref=\count409
+\c@afterword=\count345
+\c@savedafterword=\count346
+\c@annotator=\count347
+\c@savedannotator=\count348
+\c@author=\count349
+\c@savedauthor=\count350
+\c@bookauthor=\count351
+\c@savedbookauthor=\count352
+\c@commentator=\count353
+\c@savedcommentator=\count354
+\c@editor=\count355
+\c@savededitor=\count356
+\c@editora=\count357
+\c@savededitora=\count358
+\c@editorb=\count359
+\c@savededitorb=\count360
+\c@editorc=\count361
+\c@savededitorc=\count362
+\c@foreword=\count363
+\c@savedforeword=\count364
+\c@holder=\count365
+\c@savedholder=\count366
+\c@introduction=\count367
+\c@savedintroduction=\count368
+\c@namea=\count369
+\c@savednamea=\count370
+\c@nameb=\count371
+\c@savednameb=\count372
+\c@namec=\count373
+\c@savednamec=\count374
+\c@translator=\count375
+\c@savedtranslator=\count376
+\c@shortauthor=\count377
+\c@savedshortauthor=\count378
+\c@shorteditor=\count379
+\c@savedshorteditor=\count380
+\c@labelname=\count381
+\c@savedlabelname=\count382
+\c@institution=\count383
+\c@savedinstitution=\count384
+\c@lista=\count385
+\c@savedlista=\count386
+\c@listb=\count387
+\c@savedlistb=\count388
+\c@listc=\count389
+\c@savedlistc=\count390
+\c@listd=\count391
+\c@savedlistd=\count392
+\c@liste=\count393
+\c@savedliste=\count394
+\c@listf=\count395
+\c@savedlistf=\count396
+\c@location=\count397
+\c@savedlocation=\count398
+\c@organization=\count399
+\c@savedorganization=\count400
+\c@origlocation=\count401
+\c@savedoriglocation=\count402
+\c@origpublisher=\count403
+\c@savedorigpublisher=\count404
+\c@publisher=\count405
+\c@savedpublisher=\count406
+\c@language=\count407
+\c@savedlanguage=\count408
+\c@origlanguage=\count409
+\c@savedoriglanguage=\count410
+\c@pageref=\count411
+\c@savedpageref=\count412
 \shorthandwidth=\skip67
 \shortjournalwidth=\skip68
 \shortserieswidth=\skip69
@@ -549,19 +560,19 @@ Package biblatex Info: ... file 'biblatex.def' found.
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.
 def
 File: biblatex.def 2023/03/05 v3.19 biblatex compatibility (PK/MW)
-\c@textcitecount=\count410
-\c@textcitetotal=\count411
-\c@textcitemaxnames=\count412
-\c@biburlbigbreakpenalty=\count413
-\c@biburlbreakpenalty=\count414
-\c@biburlnumpenalty=\count415
-\c@biburlucpenalty=\count416
-\c@biburllcpenalty=\count417
+\c@textcitecount=\count413
+\c@textcitetotal=\count414
+\c@textcitemaxnames=\count415
+\c@biburlbigbreakpenalty=\count416
+\c@biburlbreakpenalty=\count417
+\c@biburlnumpenalty=\count418
+\c@biburlucpenalty=\count419
+\c@biburllcpenalty=\count420
 \biburlbigskip=\muskip18
 \biburlnumskip=\muskip19
 \biburlucskip=\muskip20
 \biburllcskip=\muskip21
-\c@smartand=\count418
+\c@smartand=\count421
 )
 Package biblatex Info: Trying to load bibliography style 'authoryear'...
 Package biblatex Info: ... file 'authoryear.bbx' found.
@@ -575,8 +586,8 @@ Package biblatex Info: ... file 'standard.bbx' found.
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/bbx\stand
 ard.bbx
 File: standard.bbx 2023/03/05 v3.19 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count419
-\c@bbx:relatedtotal=\count420
+\c@bbx:relatedcount=\count422
+\c@bbx:relatedtotal=\count423
 ))
 Package biblatex Info: Trying to load citation style 'authoryear'...
 Package biblatex Info: ... file 'authoryear.cbx' found.
@@ -608,7 +619,7 @@ Package: expl3 2023-08-29 L3 programming layer (loader)
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backen
 d-pdftex.def
 File: l3backend-pdftex.def 2023-04-19 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count421
+\l__color_backend_stack_int=\count424
 \l__pdf_internal_box=\box62
 ))
 Package biblatex Info: ... and expl3
@@ -625,7 +636,7 @@ Package: xparse 2023-08-29 L3 Experimental document command parser
 Package: blx-case-expl3 2023/03/05 v3.19 expl3 case changing code for biblatex
 ))
 Package biblatex Info: Delimiter 'finalnamedelim' in context '' already defined
-, overwriting on input line 20.
+, overwriting on input line 21.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.
 sty
@@ -663,11 +674,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count422
+\c@section@level=\count425
 )
 \@linkdim=\dimen177
-\Hy@linkcounter=\count423
-\Hy@pagecounter=\count424
+\Hy@linkcounter=\count426
+\Hy@pagecounter=\count427
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.de
 f
@@ -679,7 +690,7 @@ Now handling font encoding PD1 ...
 sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count425
+\Hy@SavedSpaceFactor=\count428
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2023-07-08 v7.01b Hyperref: PDF Unicode definition (HO)
@@ -693,7 +704,7 @@ Package hyperref Info: Plain pages OFF on input line 4182.
 Package hyperref Info: Backreferencing OFF on input line 4187.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4434.
-\c@Hy@tempcnt=\count426
+\c@Hy@tempcnt=\count429
 LaTeX Info: Redefining \url on input line 4772.
 \XeTeXLinkMargin=\dimen178
 
@@ -706,7 +717,7 @@ tcalc.sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count427
+\Fld@menulength=\count430
 \Field@Width=\dimen179
 \Fld@charsize=\dimen180
 Package hyperref Info: Hyper figures OFF on input line 6051.
@@ -722,9 +733,9 @@ sty
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count428
-\c@Item=\count429
-\c@Hfootnote=\count430
+\Hy@abspage=\count431
+\c@Item=\count432
+\c@Hfootnote=\count433
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 
@@ -738,8 +749,8 @@ Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
 kage
 with kernel methods
 )
-\Fld@listcount=\count431
-\c@bookmark@seq@number=\count432
+\Fld@listcount=\count434
+\c@bookmark@seq@number=\count435
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rer
 unfilecheck.sty
@@ -795,24 +806,24 @@ Package tocbibind Note: Using chapter style headings, unless overridden.
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.
 sty
-\lst@mode=\count433
+\lst@mode=\count436
 \lst@gtempboxa=\box63
 \lst@token=\toks35
-\lst@length=\count434
+\lst@length=\count437
 \lst@currlwidth=\dimen181
-\lst@column=\count435
-\lst@pos=\count436
+\lst@column=\count438
+\lst@pos=\count439
 \lst@lostspace=\dimen182
 \lst@width=\dimen183
-\lst@newlines=\count437
-\lst@lineno=\count438
+\lst@newlines=\count440
+\lst@lineno=\count441
 \lst@maxwidth=\dimen184
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.s
 ty
 File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
-\c@lstnumber=\count439
-\lst@skipnumbers=\count440
+\c@lstnumber=\count442
+\lst@skipnumbers=\count443
 \lst@framebox=\box64
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.
@@ -838,8 +849,8 @@ Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
 \caption@hangindent=\dimen192
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count441
-\c@continuedfloat=\count442
+\c@caption@flags=\count444
+\c@continuedfloat=\count445
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
@@ -853,9 +864,9 @@ Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 .sty
 Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
 Package caption Info: New subtype `subfigure' on input line 238.
-\c@subfigure=\count443
+\c@subfigure=\count446
 Package caption Info: New subtype `subtable' on input line 238.
-\c@subtable=\count444
+\c@subtable=\count447
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\lmodern.sty
 Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
@@ -897,7 +908,7 @@ e.sty
 Package: microtype 2026/03/01 v3.2d Micro-typographical refinements (RS)
 \MT@toks=\toks36
 \MT@tempbox=\box65
-\MT@count=\count445
+\MT@count=\count448
 LaTeX Info: Redefining \noprotrusionifhmode on input line 1084.
 LaTeX Info: Redefining \leftprotrusion on input line 1085.
 \MT@prot@toks=\toks37
@@ -906,7 +917,7 @@ LaTeX Info: Redefining \textls on input line 1449.
 \MT@outer@kern=\dimen193
 LaTeX Info: Redefining \microtypecontext on input line 2053.
 LaTeX Info: Redefining \textmicrotypecontext on input line 2070.
-\MT@listname@count=\count446
+\MT@listname@count=\count449
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtyp
 e-pdftex.def
@@ -932,7 +943,7 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'english'.
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 61
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 64
 .
  (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -941,24 +952,24 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 IS\latex\out\main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 61.
-LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 64.
+LaTeX Font Info:    ... okay on input line 64.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -994,22 +1005,24 @@ LaTeX Font Info:    ... okay on input line 61.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@mv@tabular=\count447
-\c@mv@boldtabular=\count448
+\c@mv@tabular=\count450
+\c@mv@boldtabular=\count451
+LaTeX Info: Redefining \it@ocap on input line 64.
+LaTeX Info: Redefining \it@ccap on input line 64.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-p
 df.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count449
+\scratchcounter=\count452
 \scratchdimen=\dimen194
 \scratchbox=\box66
-\nofMPsegments=\count450
-\nofMParguments=\count451
+\nofMPsegments=\count453
+\nofMParguments=\count454
 \everyMPshowfont=\toks38
-\MPscratchCnt=\count452
+\MPscratchCnt=\count455
 \MPscratchDim=\dimen195
-\MPnumerator=\count453
-\makeMPintoPDFobject=\count454
+\MPnumerator=\count456
+\makeMPintoPDFobject=\count457
 \everyMPtoPDFconversion=\toks39
 )
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epsto
@@ -1029,6 +1042,13 @@ Package biblatex Info: ... file 'english.lbx' found.
 sh.lbx
 File: english.lbx 2023/03/05 v3.19 biblatex localization (PK/MW)
 )
+Package biblatex Info: Trying to load language 'italian'...
+Package biblatex Info: ... file 'italian.lbx' found.
+
+(C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/lbx\itali
+an.lbx
+File: italian.lbx 2023/03/05 v3.19 biblatex localization (PK/MW)
+)
 Package biblatex Info: Input encoding 'utf8' detected.
 Package biblatex Info: Automatic encoding selection.
 (biblatex)             Assuming data encoding 'utf8'.
@@ -1039,9 +1059,9 @@ Package biblatex Info: ... file 'main.bbl' found.
 
 (C:\Users\monfalcone\PycharmProjects\masters-thesis-unsupervised-bucketing\THES
 IS\latex\out\main.bbl)
-Package biblatex Info: Reference section=0 on input line 61.
-Package biblatex Info: Reference segment=0 on input line 61.
-Package hyperref Info: Link coloring OFF on input line 61.
+Package biblatex Info: Reference section=0 on input line 64.
+Package biblatex Info: Reference segment=0 on input line 64.
+Package hyperref Info: Link coloring OFF on input line 64.
 
 (C:\Users\monfalcone\PycharmProjects\masters-thesis-unsupervised-bucketing\THES
 IS\latex\out\main.out)
@@ -1050,16 +1070,16 @@ IS\latex\out\main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-\c@lstlisting=\count455
+\c@lstlisting=\count458
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 61.
-Package microtype Info: Applying patch `item' on input line 61.
-Package microtype Info: Applying patch `toc' on input line 61.
-Package microtype Info: Applying patch `eqnum' on input line 61.
-Package microtype Info: Applying patch `footnote' on input line 61.
-Package microtype Info: Applying patch `verbatim' on input line 61.
-LaTeX Info: Redefining \microtypesetup on input line 61.
+LaTeX Info: Redefining \microtypecontext on input line 64.
+Package microtype Info: Applying patch `item' on input line 64.
+Package microtype Info: Applying patch `toc' on input line 64.
+Package microtype Info: Applying patch `eqnum' on input line 64.
+Package microtype Info: Applying patch `footnote' on input line 64.
+Package microtype Info: Applying patch `verbatim' on input line 64.
+LaTeX Info: Redefining \microtypesetup on input line 64.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1076,14 +1096,14 @@ fg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-Package hyperref Info: Option `pageanchor' set `false' on input line 62.
-<../thesis-template/logo_centenario-eps-converted-to.pdf, id=467, 929.4725pt x 
+Package hyperref Info: Option `pageanchor' set `false' on input line 65.
+<../thesis-template/logo_centenario-eps-converted-to.pdf, id=459, 929.4725pt x 
 161.60374pt>
 File: ../thesis-template/logo_centenario-eps-converted-to.pdf Graphic file (typ
 e pdf)
 <use ../thesis-template/logo_centenario-eps-converted-to.pdf>
 Package pdftex.def Info: ../thesis-template/logo_centenario-eps-converted-to.pd
-f  used on input line 65.
+f  used on input line 68.
 (pdftex.def)             Requested size: 173.27652pt x 30.12555pt.
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/20.74'.
@@ -1095,35 +1115,35 @@ Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/12'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 7
-5.
+8.
  (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 7
-5.
+8.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-75.
+78.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-75.
+78.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 75.
+(Font)              <12> on input line 78.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 75.
+(Font)              <8> on input line 78.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 75.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 75.
+(Font)              <6> on input line 78.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 78.
 
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
@@ -1133,7 +1153,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 fg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 75.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 78.
 
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -1149,33 +1169,35 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 sis-template/logo_centenario-eps-converted-to.pdf>] [2
 
 ]
-Package hyperref Info: Option `pageanchor' set `true' on input line 102.
+Package hyperref Info: Option `pageanchor' set `true' on input line 105.
 
 (chapters/abstract.tex) [1
 
 
 
+] (chapters/sommario.tex) [2
+
 ]
 (C:\Users\monfalcone\PycharmProjects\masters-thesis-unsupervised-bucketing\THES
-IS\latex\out\main.toc [2
+IS\latex\out\main.toc [3
 
-] [3] [4] [5])
+] [4] [5] [6])
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
- [6]
+ [7]
 (C:\Users\monfalcone\PycharmProjects\masters-thesis-unsupervised-bucketing\THES
-IS\latex\out\main.lof)
+IS\latex\out\main.lof [8
+
+])
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
- [7
-
-]
+ [9]
 (C:\Users\monfalcone\PycharmProjects\masters-thesis-unsupervised-bucketing\THES
 IS\latex\out\main.lot
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 8
-.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
+1.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -1185,7 +1207,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-[8
+[10
 
 {C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc
 }{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathi
@@ -1193,283 +1215,212 @@ t.enc}])
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
- [9{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mat
-hsy.enc}] (chapters/introduction.tex
+ [11{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ma
+thsy.enc}] (chapters/introduction.tex
 Chapter 1.
-<../thesis-plots/nnue_incremental_update.png, id=838, 882.14569pt x 612.48825pt
+<../thesis-plots/nnue_incremental_update.png, id=867, 882.14569pt x 612.48825pt
 >
 File: ../thesis-plots/nnue_incremental_update.png Graphic file (type png)
 <use ../thesis-plots/nnue_incremental_update.png>
 Package pdftex.def Info: ../thesis-plots/nnue_incremental_update.png  used on i
-nput line 9.
+nput line 11.
 (pdftex.def)             Requested size: 354.80612pt x 246.3461pt.
 [1
 
 
  <../thesis-plots/nnue_incremental_update.png>]
-<../thesis-plots/L1_clustering.jpg, id=847, 963.6pt x 544.28343pt>
+<../thesis-plots/L1_clustering.jpg, id=879, 963.6pt x 544.28343pt>
 File: ../thesis-plots/L1_clustering.jpg Graphic file (type jpg)
 <use ../thesis-plots/L1_clustering.jpg>
 Package pdftex.def Info: ../thesis-plots/L1_clustering.jpg  used on input line 
-20.
+26.
 (pdftex.def)             Requested size: 354.80612pt x 200.41002pt.
- [2 <../thesis-plots/L1_clustering.jpg>] [3]) (chapters/background.tex [4]
-Chapter 2.
-[5
-
-]
-<../thesis-plots/pesto_pawn_mg.png, id=874, 372.4314pt x 337.7418pt>
-File: ../thesis-plots/pesto_pawn_mg.png Graphic file (type png)
-<use ../thesis-plots/pesto_pawn_mg.png>
-Package pdftex.def Info: ../thesis-plots/pesto_pawn_mg.png  used on input line 
-31.
-(pdftex.def)             Requested size: 354.80612pt x 321.77538pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [6{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mat
-hex.enc}]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [7 <../thesis-plots/pesto_pawn_mg.png>]
-<../thesis-plots/mcts_wiki.png, id=889, 1370.11874pt x 338.26375pt>
-File: ../thesis-plots/mcts_wiki.png Graphic file (type png)
-<use ../thesis-plots/mcts_wiki.png>
-Package pdftex.def Info: ../thesis-plots/mcts_wiki.png  used on input line 48.
-(pdftex.def)             Requested size: 354.80612pt x 87.5955pt.
-<../thesis-plots/alphazero_elo_plot.jpg, id=890, 472.76625pt x 119.69719pt>
-File: ../thesis-plots/alphazero_elo_plot.jpg Graphic file (type jpg)
-<use ../thesis-plots/alphazero_elo_plot.jpg>
-Package pdftex.def Info: ../thesis-plots/alphazero_elo_plot.jpg  used on input 
-line 61.
-(pdftex.def)             Requested size: 354.80612pt x 89.83293pt.
- [8 <../thesis-plots/mcts_wiki.png>] [9 <../thesis-plots/alphazero_elo_plot.jpg
->]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 9
-5.
+ [2 <../thesis-plots/L1_clustering.jpg>]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 4
+4.
 
 (C:\Users\monfalcone\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-[10{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1
+[3{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.
+enc}]) (chapters/background.tex [4]
+Chapter 2.
+[5
+
+{C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex
 .enc}]
+<../thesis-plots/pesto_pawn_mg.png, id=903, 372.4314pt x 337.7418pt>
+File: ../thesis-plots/pesto_pawn_mg.png Graphic file (type png)
+<use ../thesis-plots/pesto_pawn_mg.png>
+Package pdftex.def Info: ../thesis-plots/pesto_pawn_mg.png  used on input line 
+23.
+(pdftex.def)             Requested size: 354.80612pt x 321.77538pt.
+ [6 <../thesis-plots/pesto_pawn_mg.png>]
+<../thesis-plots/mcts_wiki.png, id=913, 1370.11874pt x 338.26375pt>
+File: ../thesis-plots/mcts_wiki.png Graphic file (type png)
+<use ../thesis-plots/mcts_wiki.png>
+Package pdftex.def Info: ../thesis-plots/mcts_wiki.png  used on input line 41.
+(pdftex.def)             Requested size: 412.56497pt x 101.85669pt.
+ [7 <../thesis-plots/mcts_wiki.png>] [8]
 <../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7DEM.p
-ng, id=913, 1699.34875pt x 932.48375pt>
+ng, id=926, 1699.34875pt x 932.48375pt>
 File: ../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7
 DEM.png Graphic file (type png)
 <use ../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7D
 EM.png>
 Package pdftex.def Info: ../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_
-2026_01_01_16_PMQZ7DEM.png  used on input line 110.
+2026_01_01_16_PMQZ7DEM.png  used on input line 82.
 (pdftex.def)             Requested size: 354.80612pt x 194.68909pt.
- [11 <../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7
-DEM.png>]
-<../thesis-plots/nnue_architecture_moe.png, id=921, 574.5465pt x 654.0435pt>
+ [9 <../thesis-plots/alpha_beta_search_ChatGPT_Image_Jun_1_2026_01_01_16_PMQZ7D
+EM.png>] [10]
+<../thesis-plots/nnue_architecture_moe.png, id=939, 574.5465pt x 654.0435pt>
 File: ../thesis-plots/nnue_architecture_moe.png Graphic file (type png)
 <use ../thesis-plots/nnue_architecture_moe.png>
 Package pdftex.def Info: ../thesis-plots/nnue_architecture_moe.png  used on inp
-ut line 135.
+ut line 104.
 (pdftex.def)             Requested size: 354.80612pt x 403.90599pt.
- [12] [13 <../thesis-plots/nnue_architecture_moe.png>] [14]
-[15] [16] [17] [18]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [19]
-<../thesis-plots/opening_middlegame_endgame.png, id=971, 1088.56688pt x 357.962
-34pt>
+ [11 <../thesis-plots/nnue_architecture_moe.png>]
+[12] [13] [14] [15]
+<../thesis-plots/opening_middlegame_endgame.png, id=972, 1166.85938pt x 357.209
+53pt>
 File: ../thesis-plots/opening_middlegame_endgame.png Graphic file (type png)
 <use ../thesis-plots/opening_middlegame_endgame.png>
 Package pdftex.def Info: ../thesis-plots/opening_middlegame_endgame.png  used o
-n input line 224.
-(pdftex.def)             Requested size: 354.80612pt x 116.66956pt.
-
-[20 <../thesis-plots/opening_middlegame_endgame.png>] [21] [22] [23] [24]
-[25]) (chapters/method.tex [26]
+n input line 176.
+(pdftex.def)             Requested size: 354.80612pt x 108.61353pt.
+ [16 <../thesis-plots/opening_middlegame_endgame.png>]
+[17] [18] [19]) (chapters/method.tex [20] [21]
 Chapter 3.
-[27
+[22
 
-] [28] [29] [30]) (chapters/implementation.tex [31]
+] [23] [24] [25] [26] [27]) (chapters/implementation.tex [28]
 Chapter 4.
-[32
+[29
 
-] [33]
-Underfull \hbox (badness 1057) in paragraph at lines 52--53
+] [30]
+Underfull \hbox (badness 1057) in paragraph at lines 53--54
 []\T1/lmr/m/n/12 (+20) For this work, we la-bel po-si-tions us-ing Lc0's lat-es
 t best net-work (e.g.,
  []
 
-[34]
+[31]
 File: ../thesis-plots/nnue_architecture_moe.png Graphic file (type png)
 <use ../thesis-plots/nnue_architecture_moe.png>
 Package pdftex.def Info: ../thesis-plots/nnue_architecture_moe.png  used on inp
-ut line 76.
+ut line 77.
 (pdftex.def)             Requested size: 354.80612pt x 403.90599pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [35]
-[36] [37] [38] [39] [40] [41] [42] [43] [44] [45] [46]) (chapters/results.tex
-[47]
+ [32] [33] [34] [35] [36] [37] [38] [39] [40] [41] [42] [43])
+(chapters/results.tex [44] [45]
 Chapter 5.
-[48
+[46
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 49.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [49]
-Underfull \vbox (badness 1158) has occurred while \output is active []
-
- [50]
-[51] [52] [53]
-Underfull \hbox (badness 1297) in paragraph at lines 143--143
+(Font)              <10.95> on input line 50.
+ [47] [48] [49] [50] [51]
+Underfull \hbox (badness 1297) in paragraph at lines 149--149
 []\T1/lmr/m/n/12 (+20) Table 5.3: |DB-SCAN re-sults, fit-ted on a $\OT1/lmr/m/n
 /12 (+20) 100 000$\T1/lmr/m/n/12 (+20) -point sub-sam-ple with
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [54]
-<../../RESULTS/clustering/plots/previous_gradient_2m/silhouette.png, id=1176, 4
-62.528pt x 303.534pt>
-File: ../../RESULTS/clustering/plots/previous_gradient_2m/silhouette.png Graphi
-c file (type png)
-<use ../../RESULTS/clustering/plots/previous_gradient_2m/silhouette.png>
-Package pdftex.def Info: ../../RESULTS/clustering/plots/previous_gradient_2m/si
-lhouette.png  used on input line 174.
-(pdftex.def)             Requested size: 354.80612pt x 232.85117pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [55]
-<../../RESULTS/clustering/plots/pca_2d_gradients.png, id=1181, 462.528pt x 390.
+[52]
+<../../RESULTS/clustering/plots/pca_2d_gradients.png, id=1184, 462.528pt x 390.
 258pt>
 File: ../../RESULTS/clustering/plots/pca_2d_gradients.png Graphic file (type pn
 g)
 <use ../../RESULTS/clustering/plots/pca_2d_gradients.png>
 Package pdftex.def Info: ../../RESULTS/clustering/plots/pca_2d_gradients.png  u
-sed on input line 183.
+sed on input line 187.
 (pdftex.def)             Requested size: 354.80612pt x 299.38007pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [56 <../../RESULTS/clustering/plots/previous_gradient_2m/silhouette.png>]
-<../../RESULTS/clustering/plots/tsne_2d_gradients.png, id=1188, 462.528pt x 390
+ [53]
+<../../RESULTS/clustering/plots/tsne_2d_gradients.png, id=1189, 462.528pt x 390
 .258pt>
 File: ../../RESULTS/clustering/plots/tsne_2d_gradients.png Graphic file (type p
 ng)
 <use ../../RESULTS/clustering/plots/tsne_2d_gradients.png>
 Package pdftex.def Info: ../../RESULTS/clustering/plots/tsne_2d_gradients.png  
-used on input line 190.
+used on input line 194.
 (pdftex.def)             Requested size: 354.80612pt x 299.38007pt.
- [57 <../../RESULTS/clustering/plots/pca_2d_gradients.png> <../../RESULTS/clust
-ering/plots/tsne_2d_gradients.png>] [58] [59]
-<../../RESULTS/dispatcher/centroid/plots/accuracy.png, id=1203, 476.982pt x 303
-.534pt>
-File: ../../RESULTS/dispatcher/centroid/plots/accuracy.png Graphic file (type p
-ng)
-<use ../../RESULTS/dispatcher/centroid/plots/accuracy.png>
-Package pdftex.def Info: ../../RESULTS/dispatcher/centroid/plots/accuracy.png  
-used on input line 242.
-(pdftex.def)             Requested size: 354.80612pt x 225.78804pt.
- [60 <../../RESULTS/dispatcher/centroid/plots/accuracy.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [61]
-<../../RESULTS/dispatcher/l1/plots/accuracy.png, id=1213, 505.89pt x 303.534pt>
-
-File: ../../RESULTS/dispatcher/l1/plots/accuracy.png Graphic file (type png)
-<use ../../RESULTS/dispatcher/l1/plots/accuracy.png>
-Package pdftex.def Info: ../../RESULTS/dispatcher/l1/plots/accuracy.png  used o
-n input line 282.
-(pdftex.def)             Requested size: 354.80612pt x 212.88918pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [62]
-Underfull \vbox (badness 6758) has occurred while \output is active []
-
- [63 <../../RESULTS/dispatcher/l1/plots/accuracy.png>]
-<../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png, id=1224, 491.436pt x
- 303.534pt>
-File: ../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png Graphic file (ty
-pe png)
-<use ../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png>
-Package pdftex.def Info: ../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.p
-ng  used on input line 320.
-(pdftex.def)             Requested size: 354.80612pt x 219.15567pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [64]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [65 <../../RESULTS/dispatcher/mlp/plots/accuracy_gradient.png>]
-<../../RESULTS/dispatcher/piececount/plots/alignment.png, id=1234, 476.982pt x 
+<../thesis-plots/umap_2d_gradients.png, id=1190, 462.528pt x 390.258pt>
+File: ../thesis-plots/umap_2d_gradients.png Graphic file (type png)
+<use ../thesis-plots/umap_2d_gradients.png>
+Package pdftex.def Info: ../thesis-plots/umap_2d_gradients.png  used on input l
+ine 201.
+(pdftex.def)             Requested size: 288.79422pt x 243.6784pt.
+ [54 <../../RESULTS/clustering/plots/pca_2d_gradients.png> <../../RESULTS/clust
+ering/plots/tsne_2d_gradients.png>]
+<../thesis-plots/tsne_3d_board.png, id=1198, 447.55779pt x 404.712pt>
+File: ../thesis-plots/tsne_3d_board.png Graphic file (type png)
+<use ../thesis-plots/tsne_3d_board.png>
+Package pdftex.def Info: ../thesis-plots/tsne_3d_board.png  used on input line 
+208.
+(pdftex.def)             Requested size: 288.79422pt x 261.15765pt.
+ [55 <../thesis-plots/umap_2d_gradients.png> <../thesis-plots/tsne_3d_board.png
+>] [56] [57]
+<../../THESIS/thesis-plots/bars_5_5.png, id=1213, 569.9694pt x 352.1958pt>
+File: ../../THESIS/thesis-plots/bars_5_5.png Graphic file (type png)
+<use ../../THESIS/thesis-plots/bars_5_5.png>
+Package pdftex.def Info: ../../THESIS/thesis-plots/bars_5_5.png  used on input 
+line 259.
+(pdftex.def)             Requested size: 354.80612pt x 219.25124pt.
+ [58 <../../THESIS/thesis-plots/bars_5_5.png>]
+<../../THESIS/thesis-plots/bars_5_6.png, id=1219, 569.4876pt x 352.1958pt>
+File: ../../THESIS/thesis-plots/bars_5_6.png Graphic file (type png)
+<use ../../THESIS/thesis-plots/bars_5_6.png>
+Package pdftex.def Info: ../../THESIS/thesis-plots/bars_5_6.png  used on input 
+line 298.
+(pdftex.def)             Requested size: 354.80612pt x 219.43396pt.
+ [59 <../../THESIS/thesis-plots/bars_5_6.png>] [60]
+<../../RESULTS/dispatcher/piececount/plots/alignment.png, id=1230, 476.982pt x 
 303.534pt>
 File: ../../RESULTS/dispatcher/piececount/plots/alignment.png Graphic file (typ
 e png)
 <use ../../RESULTS/dispatcher/piececount/plots/alignment.png>
 Package pdftex.def Info: ../../RESULTS/dispatcher/piececount/plots/alignment.pn
-g  used on input line 356.
+g  used on input line 368.
 (pdftex.def)             Requested size: 354.80612pt x 225.78804pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [66]
-[67 <../../RESULTS/dispatcher/piececount/plots/alignment.png>]
-Underfull \vbox (badness 7522) has occurred while \output is active []
-
- [68]
-<../../RESULTS/base/scaling/nnue_ce_vs_train_size.png, id=1249, 363.0363pt x 25
-4.8722pt>
-File: ../../RESULTS/base/scaling/nnue_ce_vs_train_size.png Graphic file (type p
-ng)
-<use ../../RESULTS/base/scaling/nnue_ce_vs_train_size.png>
-Package pdftex.def Info: ../../RESULTS/base/scaling/nnue_ce_vs_train_size.png  
-used on input line 409.
+[61] [62 <../../RESULTS/dispatcher/piececount/plots/alignment.png>] [63]
+<../../RESULTS/base/scaling/variable_dataset_size_ce_64.png, id=1244, 363.0363p
+t x 254.8722pt>
+File: ../../RESULTS/base/scaling/variable_dataset_size_ce_64.png Graphic file (
+type png)
+<use ../../RESULTS/base/scaling/variable_dataset_size_ce_64.png>
+Package pdftex.def Info: ../../RESULTS/base/scaling/variable_dataset_size_ce_64
+.png  used on input line 419.
 (pdftex.def)             Requested size: 354.80612pt x 249.09634pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [69]
-[70 <../../RESULTS/base/scaling/nnue_ce_vs_train_size.png>] [71]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [72]
-[73]
-Underfull \vbox (badness 1383) has occurred while \output is active []
-
- [74]
-Underfull \vbox (badness 6016) has occurred while \output is active []
-
- [75]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [76])
-(chapters/discussion.tex [77] [78]
+[64]
+<../../RESULTS/base/scaling/variable_dataset_size_ce_256.png, id=1250, 363.0363
+pt x 254.8722pt>
+File: ../../RESULTS/base/scaling/variable_dataset_size_ce_256.png Graphic file 
+(type png)
+<use ../../RESULTS/base/scaling/variable_dataset_size_ce_256.png>
+Package pdftex.def Info: ../../RESULTS/base/scaling/variable_dataset_size_ce_25
+6.png  used on input line 427.
+(pdftex.def)             Requested size: 354.80612pt x 249.09634pt.
+ [65 <../../RESULTS/base/scaling/variable_dataset_size_ce_64.png> <../../RESULT
+S/base/scaling/variable_dataset_size_ce_256.png>] [66]
+<../thesis-plots/expert-fine-tune-CE-30.png, id=1269, 1898.09125pt x 835.12pt>
+File: ../thesis-plots/expert-fine-tune-CE-30.png Graphic file (type png)
+<use ../thesis-plots/expert-fine-tune-CE-30.png>
+Package pdftex.def Info: ../thesis-plots/expert-fine-tune-CE-30.png  used on in
+put line 463.
+(pdftex.def)             Requested size: 354.80612pt x 156.10037pt.
+ [67 <../thesis-plots/expert-fine-tune-CE-30.png (PNG copy)>] [68] [69] [70] [7
+1] [72])
+(chapters/discussion.tex [73]
 Chapter 6.
-[79
+[74
 
-] [80] [81]) (chapters/conclusion.tex [82]
+] [75] [76]) (chapters/conclusion.tex [77]
 Chapter 7.
-[83
+[78
 
-])
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [84]
-(chapters/appendix.tex [85]
-Appendix A.
-) [86
-
-] [87
+]) [79] [80] [81
 
 
-] [88]
+] [82]
 (C:\Users\monfalcone\PycharmProjects\masters-thesis-unsupervised-bucketing\THES
 IS\latex\out\main.aux)
  ***********
@@ -1477,19 +1428,19 @@ LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2023-08-29>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: C51159F34B214F1E2635FF8AC75CFBA1;20582.
+(rerunfilecheck)             Checksum: FD7810A26D19B9360B8DD162DE18EDC7;21129.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 27475 strings out of 475248
- 487796 string characters out of 5755453
- 1949785 words of memory out of 5000000
- 47978 multiletter control sequences out of 15000+600000
- 643787 words of font info for 240 fonts, out of 8000000 for 9000
+ 27633 strings out of 475248
+ 490632 string characters out of 5755453
+ 1952785 words of memory out of 5000000
+ 48131 multiletter control sequences out of 15000+600000
+ 644051 words of font info for 244 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 69i,12n,117p,1700b,2287s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 69i,12n,117p,1700b,2330s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmb1
 0.pfb><C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/
 lmcsc10.pfb><C:/Users/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/publ
@@ -1510,9 +1461,9 @@ onfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Us
 ers/monfalcone/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbol
 s/msbm10.pfb>
 Output written on C:\Users\monfalcone\PycharmProjects\masters-thesis-unsupervis
-ed-bucketing\THESIS\latex\out\main.pdf (99 pages, 3172343 bytes).
+ed-bucketing\THESIS\latex\out\main.pdf (95 pages, 4833243 bytes).
 PDF statistics:
  1531 PDF objects out of 1728 (max. 8388607)
- 313 named destinations out of 1000 (max. 500000)
- 47094 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 298 named destinations out of 1000 (max. 500000)
+ 47083 words of extra memory for PDF output out of 51595 (max. 10000000)
 

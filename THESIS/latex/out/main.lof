@@ -1,27 +1,30 @@
 \babel@toc {english}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Incremental update of the NNUE accumulator.}}{1}{figure.caption.5}%
-\contentsline {figure}{\numberline {1.2}{\ignorespaces Positions clustered by L1 activations and projected to two dimensions.}}{2}{figure.caption.6}%
+\babel@toc {italian}{}\relax 
+\babel@toc {english}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces PeSTO middlegame pawn table, in centipawns.}}{7}{figure.caption.7}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces The four steps of Monte Carlo tree search.}}{8}{figure.caption.8}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces AlphaZero playing strength during training.}}{9}{figure.caption.9}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Alpha-beta search and pruning.}}{11}{figure.caption.10}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces NNUE with a mixture-of-experts head.}}{13}{figure.caption.11}%
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Opening, middlegame, and endgame positions.}}{20}{figure.caption.12}%
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Incremental update of the NNUE accumulator.}}{1}{figure.caption.6}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Positions clustered by L1 activations and projected to two dimensions.}}{2}{figure.caption.7}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces PeSTO middlegame pawn table, in centipawns.}}{6}{figure.caption.8}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces The four steps of Monte Carlo tree search.}}{7}{figure.caption.9}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Alpha-beta search and pruning.}}{9}{figure.caption.10}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces NNUE with a mixture-of-experts head.}}{11}{figure.caption.11}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Opening, middlegame, and endgame positions.}}{16}{figure.caption.12}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces NNUE with a mixture-of-experts head.}}{36}{figure.caption.13}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces NNUE with a mixture-of-experts head.}}{33}{figure.caption.16}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Silhouette of the gradient partition against the number of clusters.}}{56}{figure.caption.18}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces PCA projection of the gradient representation.}}{57}{figure.caption.19}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces t-SNE projection of the gradient representation.}}{57}{figure.caption.20}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Dispatcher accuracy for the plots routers.}}{60}{figure.caption.22}%
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Dispatcher accuracy for the plots routers.}}{63}{figure.caption.24}%
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Accuracy gradient.}}{65}{figure.caption.26}%
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Alignment of the piece-count router with the learned partitions.}}{67}{figure.caption.28}%
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Test cross-entropy of the base NNUE against training-set size.}}{70}{figure.caption.30}%
-\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces PCA projection of the gradient representation.}}{54}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces t-SNE projection of the gradient representation.}}{54}{figure.caption.22}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces UMAP projection of the gradient representation. The visualization highlights the contiguous nature of the gradient clusters along a single dense manifold, consistent with the high silhouette scores.}}{55}{figure.caption.23}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces t-SNE 3D projection of the raw board features (1688-d). Unlike the gradient space, the raw feature space exhibits a highly fragmented structure with significant overlap between regions that would otherwise require distinct evaluation heads, motivating the use of learned latent representations for routing.}}{55}{figure.caption.24}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces A parameter-free centroid router based on cosine similarity to the k-means centroids recovers the original cluster labels with high top-1 accuracy for both board features and L1 activations across B = 2–16, with L1 performing best.}}{58}{figure.caption.26}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Learned L1-to-L1 dispatchers (especially a simple MLP) recover the L1 Mini-Batch k-means partition almost perfectly from the activations themselves, far above the chance baseline, confirming that the L1 clusters are nearly linearly separable.}}{59}{figure.caption.28}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Alignment of the piece-count router with the learned partitions.}}{62}{figure.caption.31}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Test cross-entropy of the base NNUE against training-set size. From this plot we can infer that a NNUE model with two hidden layers of 64 neurons does not overfit a dataset larger than 3 million positions, though accuracy can still marginally increase with a bigger dataset.}}{65}{figure.caption.33}%
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Test cross-entropy of the base NNUE against training-set size. A NNUE model with two hidden layers of 256 neurons does not overfit a dataset larger than 7 million positions.}}{65}{figure.caption.34}%
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Decrease in Cross-entropy during the fine-tuning phase of the L1 clustering expert, using the Rprop optimizer. This figure shows that the majority of the experts are relatively stagnant, while the a few buckets are responsible for most of the improvement. The analysis shows that some \textit {lucky} experts get to train on a mix of simpler positions.}}{67}{figure.caption.35}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
