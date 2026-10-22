@@ -1,9 +1,6 @@
 
 # Cheat-sheet dei paper della tesi 📚
 
-Ho recuperato il materiale della tua tesi Unsupervised State Bucketing for Mixture of Experts in Resource-Constrained Chess Engines e sto organizzando i riferimenti per idea, contributo scientifico e collegamento con il tuo lavoro.
-
-La cosa importante da tenere a mente è che i paper non hanno tutti lo stesso ruolo: alcuni introducono le architetture che usi, altri motivano le tue scelte metodologiche, altri ancora sono lavori concorrenti con cui confrontare il tuo contributo.
 
 ## 1. Chess engines, NNUE e ricerca
 
@@ -37,7 +34,7 @@ Collegamento con la tesi: è la base concettuale della tua architettura: input s
 
 3\. Documentazione NNUE di Stockfish
 
-[Documentazione ufficiale](https://official-stockfish.github.io/docs/nnue-pytorch-wiki/docs/nnue.html) · [Repository NNUE-PyTorch](https://github.com/official-stockfish/nnue-pytorch/blob/master/docs/nnue.md)
+[Official_documentation](https://official-stockfish.github.io/docs/nnue-pytorch-wiki/docs/nnue.html) · [Repository_NNUE-PyTorch](https://github.com/official-stockfish/nnue-pytorch/blob/master/docs/nnue.md)
 
 Riferimento implementativo
 
@@ -63,7 +60,7 @@ Nota: questo è un riferimento software, non un paper scientifico.
 
 5\. Helfenstein et al. — M2CTS (2024 preprint; versione journal 2026)
 
-[Preprint](https://arxiv.org/abs/2401.16852) · [Pubblicazione IEEE](https://www-live.dfki.de/en/web/research/projects-and-publications/publication/17385)
+[Preprint](https://arxiv.org/abs/2401.16852) · [Pubblication IEEE](https://www-live.dfki.de/en/web/research/projects-and-publications/publication/17385)
 
 Confronto diretto
 
